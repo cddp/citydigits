@@ -1,0 +1,29 @@
+{% load static %}
+<div class="pull-down-menu">
+    <div class="columns">
+        <div class="col-big">
+            {% include "lottery/pull_down_intro.html" %}
+        </div>
+        <div class="col-small">
+          {% if menu.small.contents %}
+            {{ menu.small.contents }}
+          {% endif %}
+          {% if menu.small.links %}
+          <ul class="menu-nav-list">
+            {% for link in menu.small.links %}
+            <a class="menu-nav-link" href="{{link.url}}">
+              <li>{{link.text}}</li>
+            </a>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+    </div>
+    <div class="pull-handle">
+        <img src="{% get_static_prefix %}img/chevron-up-white.png">
+    </div>
+</div>
+
+
+
+
