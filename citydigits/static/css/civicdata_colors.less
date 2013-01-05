@@ -1,0 +1,39 @@
+// Color Scheme
+
+//@navy2: #011D3D;
+@purple: #3E2455;
+@fuschia: #7A1D5D;
+@magenta: #B00951;
+@hotred: #D72534;
+
+@navy: #0D2630;
+@ocean: #046968;
+@sea: #38B387;
+@pond: #A0FC8A;
+@black: #000;
+@white: #FCFCFC;
+
+@blue: #1F2059;
+
+@text: @black;
+@link: @navy;
+@hover: @ocean;
+@gray: #ABABAB;
+@back: @white;
+@mid: @ocean;
+@midcolor: @ocean;
+@flipcolor: @magenta;
+@cloud: lighten(@sea, 20%);
+
+.maincolor() {
+  background-color: @back;
+  color: @text;
+}
+.flipcolor() {
+  background-color: @text;
+  color: @back;
+}
+.bluecolor() {
+  background-color: @navy;
+  color: @back;
+}

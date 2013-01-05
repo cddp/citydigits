@@ -1,0 +1,23 @@
+.clear() {
+  margin: 0;
+  padding: 0;
+}
+.xpad() {
+  padding-left: @pad;
+  padding-right: @pad;
+}
+.cols(@numcols) {
+  width: (@numcols * @col) + ((@numcols - 1) * @gut);
+}
+.padcols(@numcols) {
+  width: (@numcols * @col) + ((@numcols - 1) * @gut) - (@pad * 2);
+  .xpad;
+}
+.ypad(@fraction:2, @bottom:1, @top:1) {
+  padding-top: (@vu / @fraction) * @top;
+  padding-bottom: (@vu / @fraction) * @bottom;
+}
+.xline(@bottom:1px, @top:1px){
+  border-top: @bottom solid @gray;
+  border-bottom: @top solid @gray;
+}

@@ -1,0 +1,75 @@
+// Typography Dimensions
+@char: 16px;
+@vu: 20px;
+@gut: 8px;
+@col: 340px;
+@pad: 12px;
+
+// colors
+@import "fonts/OpenGeorgia.less";
+@import "civicdata_colors.less";
+@import "grids.less";
+
+
+// Base Types
+em {
+  font-style: italic;
+}
+strong {
+  font-weight: 600;
+}
+h1, h2, h3, h4 {
+  font-weight: 600;
+  .clear;
+}
+h1 {
+  font-size: 2em;
+  .ypad(1.25);
+}
+h2 {
+  font-size: 1.2em;
+  .ypad(4);
+}
+h3 {
+  font-size: 1em;
+  .ypad(4);
+}
+p {
+  .clear;
+  .ypad(2);
+}
+
+
+// General Settings
+html {
+  .clear;
+}
+
+body {
+  .clear;
+  font-family: @sans;
+  font-size: @char;
+  line-height: @vu;
+  font-weight: 300;
+  .maincolor;
+}
+
+a {
+  text-decoration: none;
+  color: @link;
+  &:visited  {
+    color: @link;
+  }
+  &:hover {
+    color: @hover;
+  }
+}
+
+
+
+#header {
+}
+#content {
+}
+
+
