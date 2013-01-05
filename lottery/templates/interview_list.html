@@ -1,23 +1,18 @@
 {% extends "base.html" %}
 
-{% block body %}
-  <div id="header">
-    {% block header %}
-      {% include "pull_down_menu.html" %}
-    {% endblock %}
-  </div>
-  <div id="content">
-  {% block content %}
-    {% if interviews %}
-    <ul class="interview-list">
-    {% for interview in interviews %}
-      <li id="interview-{{interview.id}}" class="interview" >
-      </li>
-    {% endfor %}
-    </ul>
-    {% endif %}
-  {% endblock %}
-  </div>
+{% block header %}
+  {% include "lottery/public_pull_down_menu.html" %}
+{% endblock %}
+
+{% block contents %}
+  {% if interviews %}
+  <ul class="interview-list">
+  {% for interview in interviews %}
+    <li id="interview-{{interview.id}}" class="interview" >
+    </li>
+  {% endfor %}
+  </ul>
+  {% endif %}
 {% endblock %}
 
 

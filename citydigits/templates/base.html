@@ -1,0 +1,35 @@
+{% load static %}
+<!doctype html>
+<html lang="{% if language %}{{language}}{% else %}en-us{%endif %}">
+    <head>
+      <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
+      <link rel="shortcut icon" href="{% get_static_prefix %}img/favicon.png">
+        <meta charset="UTF-8">
+        <title>{% block title %}{%if page_title %}{{ page_title }}{%else%}CityDigits{%endif%}{% endblock %}</title>
+        {% block css %}
+        <link rel="stylesheet" href="{% get_static_prefix %}css/base.css" type="text/css"/>
+        {% endblock %}
+    </head>
+    <body>
+      {% block body %}
+      <div id="header">
+          {% block header %}
+          <h1>CityDigits</h1>
+          {% endblock %}
+      </div>
+      <div id="contents">
+          {% block contents %}
+          <p><a href="/lottery">Check out the lottery application.</a></p>
+          {% endblock %}
+      </div>
+      {% endblock %}
+        {% block js %}
+        <script type="text/javascript" src="{% get_static_prefix %}js/jquery.min.js"></script>
+        {% endblock %}
+    </body>
+</html>
+
+
+
+
+

@@ -1,8 +1,8 @@
 // Typography Dimensions
-@char: 16px;
-@vu: 20px;
-@gut: 8px;
-@col: 340px;
+@char: 20px;
+@vu: 36px;
+@gut: 12px;
+@col: 180px;
 @pad: 12px;
 
 // colors
@@ -20,23 +20,17 @@ strong {
 }
 h1, h2, h3, h4 {
   font-weight: 600;
+  font-size: 1em;
   .clear;
 }
 h1 {
-  font-size: 2em;
-  .ypad(1.25);
-}
-h2 {
   font-size: 1.2em;
-  .ypad(4);
-}
-h3 {
-  font-size: 1em;
-  .ypad(4);
 }
 p {
   .clear;
-  .ypad(2);
+}
+ul {
+  list-style-type: none;
 }
 
 
@@ -68,8 +62,48 @@ a {
 
 
 #header {
+  background-color: rgba(0,0,0,0.8);
+  color: @white;
+  width: 100%;
+  position: absolute;
+  a {
+    color: @white;
+    &:visited {
+      color: @white;
+    }
+    &:hover {
+      color: @hover;
+    }
+  }
 }
-#content {
+#contents {
+  .ypad(1);
+  .xpad();
+}
+
+.pull-down-menu {
+  margin: 0 auto;
+  .cols(6);
+  .columns {
+    padding-top: @vu;
+    .col-big {
+      .cols(4);
+      position: absolute;
+    }
+    .col-small {
+      margin-left: @col * 4 + @gut * 3;
+      margin-top: -@vu/2; // This is a workaround for a bug
+      .cols(2);
+    }
+  }
+  .pull-handle {
+    text-align: center;
+    cursor: pointer;
+    img {
+      height: @vu;
+      opacity: 0.6;
+    }
+  }
 }
 
 

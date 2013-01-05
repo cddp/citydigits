@@ -23,11 +23,11 @@ urlpatterns = patterns('',
     # interview_detail
     url(r'^interviews/(\d+)/', interview_detail, name="interview_detail"),
     # interview_map
-    url(r'^interviews-map/', interview_map, name="interview_map"),
+    url(r'^map/', interview_map, name="interview_map"),
     # intrview map highlight
-    url(r'^interviews-map/(\d+)/', interview_map, name="interview_highlight"),
+    url(r'^map/(\d+)/', interview_map, name="interview_highlight"),
     # interview_split
-    url(r'^interviews-split/(\d+)/', interview_split, name="interview_split"),
+    url(r'^map-split/(\d+)/', interview_split, name="interview_split"),
 
     # public_tutorial
     url(r'^tutorial/', public_tutorial, name="public_tutorial"),

@@ -7,7 +7,28 @@ from lottery.models import Interview
 def drop_down_menu():
     # just return a dictionary of stuff
     d = {
+        'small':{
+            'contents':"",
+            "links":[
+                {
+                    'url':"/lottery/login/",
+                    'text':"BSSJ Student Login",
+                },
+                {
+                    'url':"/lottery/interviews/",
+                    'text':"Browse Interviews",
+                },
+                {
+                    'url':"/lottery/map/",
+                    'text':"Explore the Map",
+                },
+                {
+                    'url':"/lottery", # this url does nothing at the moment
+                    'text':"Explore the Data",
+                },
+                ]
             }
+    }
     return d
 
 def user_menu():
@@ -24,6 +45,10 @@ def public_splash(request):
         'page_title':None,
         #'interviews':interviews,
         'splash':True,
+        'scripts':[
+            'jquery.min.js',
+            'drop_down_menu.js',
+            ],
     }
     templates = [
         'lottery/interview_map.html',

@@ -1,1 +1,20 @@
-<p>hey, this is a photo grid</p>
+{% extends "lottery/interview_list.html" %}
+{% load static %}
+
+{% block contents %}
+  <p>hey, this is a photo grid</p>
+{% endblock %}
+
+{% block js %}
+    {% for script in scripts %}
+    <script type="text/javascript" src="{% get_static_prefix %}js/{{script}}"></script>
+    {% endfor %}
+{% endblock %}
+
+
+
+
+
+
+
+
