@@ -1,0 +1,104 @@
+/*
+Font Settings for open sans
+    Open Sans weights (300, 400, 600, 700)
+    an 800 exists but I wouldn't want to use it.
+    
+*/
+em {
+  font-style: italic;
+}
+strong {
+  font-weight: 600;
+}
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 600;
+  margin: 0;
+  padding: 0;
+}
+h1 {
+  font-size: 2em;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+h2 {
+  font-size: 1.2em;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+h3 {
+  font-size: 1em;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+p {
+  margin: 0;
+  padding: 0;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+html {
+  margin: 0;
+  padding: 0;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Open Sans", "Helvetica Neue", "Helvetica", "Droid Sans", "Arial", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 300;
+  background-color: #fcfcfc;
+  color: #000000;
+}
+a {
+  text-decoration: none;
+  color: #0d2630;
+}
+a:visited {
+  color: #0d2630;
+}
+a:hover {
+  color: #046968;
+}
+#header {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  height: 100%;
+  width: 356px;
+  opacity: 0.96;
+  background-color: #0d2630;
+  color: #fcfcfc;
+}
+#header .titleblock {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+#map {
+  height: 100%;
+  width: 100%;
+}
+.datadisplay {
+  font-weight: 400;
+  padding-left: 12px;
+  padding-right: 12px;
+  color: #d72534;
+}
+svg circle {
+  r: 8;
+  fill: #000000;
+  stroke: #fcfcfc;
+}
+svg circle:hover {
+  fill: #d72534;
+  stroke-width: 2px;
+  cursor: pointer;
+}
+.school {
+  fill: #a0fc8a;
+  stroke: #000000;
+}
