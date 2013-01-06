@@ -45,10 +45,6 @@ def public_splash(request):
         'page_title':"Home - CityDigits",
         #'interviews':interviews,
         'splash':True,
-        'scripts':[
-            'jquery.min.js',
-            'drop_down_menu.js',
-            ],
     }
     templates = [
         'lottery/interview_map.html',
@@ -69,10 +65,6 @@ def interview_photo_grid(request):
         'page_title':"Interviews - CityDigits",
         #'interviews':interviews,
         'splash':False,
-        'scripts':[
-            'jquery.min.js',
-            'drop_down_menu.js',
-            ],
     }
     template = 'lottery/interview_photo_grid.html',
     return render_to_response( template, c )
@@ -83,10 +75,6 @@ def interview_map(request, highlight_id=None):
         'page_title':"Interview Map - CityDigits",
         #'interviews':interviews,
         'splash':False,
-        'scripts':[
-            'jquery.min.js',
-            'drop_down_menu.js',
-            ],
     }
     template = 'lottery/interview_map.html',
     return render_to_response( template, c )

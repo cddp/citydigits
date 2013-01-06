@@ -58,6 +58,7 @@ a:hover {
   color: #fcfcfc;
   width: 100%;
   position: absolute;
+  z-index: 3;
 }
 #header a {
   color: #fcfcfc;
@@ -73,6 +74,12 @@ a:hover {
   padding-bottom: 36px;
   padding-left: 12px;
   padding-right: 12px;
+}
+#map {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 .pull-down-menu {
   margin: 0 auto;

@@ -66,6 +66,7 @@ a {
   color: @white;
   width: 100%;
   position: absolute;
+  z-index: 3;
   a {
     color: @white;
     &:visited {
@@ -76,9 +77,17 @@ a {
     }
   }
 }
+
 #contents {
   .ypad(1);
   .xpad();
+}
+
+#map {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .pull-down-menu {

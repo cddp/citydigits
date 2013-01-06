@@ -1,14 +1,20 @@
 {% extends "lottery/interview_list.html" %}
 {% load static %}
 
+{% block css %}
+  <link rel="stylesheet" href="{% get_static_prefix %}css/base.css" type="text/css"/>
+  <script src='http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.js'></script>
+  <link href='http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.css' rel='stylesheet' />
+{% endblock %}
+
 {% block contents %}
-  <p>This would be a map.</p>
+<div id='map'></div>
 {% endblock %}
 
 {% block js %}
-    {% for script in scripts %}
-    <script type="text/javascript" src="{% get_static_prefix %}js/{{script}}"></script>
-    {% endfor %}
+    <script type="text/javascript" src="{% get_static_prefix %}js/jquery.min.js"></script>
+    <script type="text/javascript" src="{% get_static_prefix %}js/drop_down_menu.js"></script>
+    <script type="text/javascript" src="{% get_static_prefix %}js/map.js"></script>
 {% endblock %}
 
 
