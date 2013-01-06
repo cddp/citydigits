@@ -9,6 +9,7 @@ from lottery.views import (
             user_tutorial,
             interview_detail,
             interview_split,
+            data_explorer,
         )
 
 urlpatterns = patterns('',
@@ -28,6 +29,8 @@ urlpatterns = patterns('',
     url(r'^map/(\d+)/$', interview_map, name="interview_highlight"),
     # interview_split
     url(r'^map-split/(\d+)/$', interview_split, name="interview_split"),
+
+    url(r'^data/$', data_explorer, name="data_explorer"),
 
     # public_tutorial
     url(r'^tutorial/$', public_tutorial, name="public_tutorial"),

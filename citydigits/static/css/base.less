@@ -108,9 +108,17 @@ a {
   .pull-handle {
     text-align: center;
     cursor: pointer;
-    img {
-      height: @vu;
-      opacity: 0.6;
+    svg {
+      fill: @white;
+      opacity: 0.2;
+    }
+    &:hover {
+      svg {
+        fill: @hover;
+      }
+    }
+    g.flipped {
+      transform: rotate(180, 18, 18);
     }
   }
 }

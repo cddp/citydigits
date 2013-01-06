@@ -6,11 +6,11 @@
 {% endblock %}
 
 {% block js %}
-    {% for script in scripts %}
-    <script type="text/javascript" src="{% get_static_prefix %}js/jquery.min.js"></script>
-    <script type="text/javascript" src="{% get_static_prefix %}js/drop_down_menu.js"></script>
-    <script type="text/javascript" src="{% get_static_prefix %}js/map.js"></script>
-    {% endfor %}
+    {% include "jquery" %}
+    {% include "lottery/dropdown_js.html" %}
+    <script type="text/javascript">
+      console.log("hello photo grid");
+    </script>
 {% endblock %}
 
 

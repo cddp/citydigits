@@ -101,7 +101,13 @@ a:hover {
   text-align: center;
   cursor: pointer;
 }
-.pull-down-menu .pull-handle img {
-  height: 36px;
-  opacity: 0.6;
+.pull-down-menu .pull-handle svg {
+  fill: #fcfcfc;
+  opacity: 0.2;
+}
+.pull-down-menu .pull-handle:hover svg {
+  fill: #046968;
+}
+.pull-down-menu .pull-handle g.flipped {
+  transform: rotate(180, 18, 18);
 }

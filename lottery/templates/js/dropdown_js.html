@@ -1,0 +1,24 @@
+<script type="text/javascript">
+
+function slideMenu(e, speed){
+    // slide-collapse the menu columns, leaving only the handle
+    $(".pull-down-menu .columns").slideToggle( speed||170 );
+    // flip the little arrow thing
+    var chev = $("g.chevron");
+    var t = chev.attr("transform");
+    if (t===undefined||t==="rotate(0)"){
+        chev.attr("transform", "rotate(180, 18, 21)");
+    } else {
+        chev.attr("transform", "rotate(0)" );
+    }
+}
+
+$(".pull-handle").click(slideMenu);
+
+{% if not splash %}
+
+slideMenu("", 100);
+
+{% endif %}
+
+  </script>

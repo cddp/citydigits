@@ -11,8 +11,8 @@ def drop_down_menu():
             'contents':"",
             "links":[
                 {
-                    'url':"/lottery/login/",
-                    'text':"BSSJ Student Login",
+                    'url':"/login/",
+                    'text':"User Login",
                 },
                 {
                     'url':"/lottery/interviews/",
@@ -23,7 +23,7 @@ def drop_down_menu():
                     'text':"Explore the Map",
                 },
                 {
-                    'url':"/lottery", # this url does nothing at the moment
+                    'url':"/lottery/data/", # this url does nothing at the moment
                     'text':"Explore the Data",
                 },
                 ]
@@ -40,11 +40,12 @@ def public_splash(request):
     # if authenticated, go to user home
     #if request.user.is_authenticated:
         #return user_home( request )
+    # this should also highlight a particular interview
     c = {
         "menu":drop_down_menu(),
-        'page_title':"Home - CityDigits",
+        'page_title':"Home - CityDigits: Lottery",
+        'splash': True,
         #'interviews':interviews,
-        'splash':True,
     }
     templates = [
         'lottery/interview_map.html',
@@ -57,14 +58,19 @@ def user_home(request):
     pass
 
 def about(request):
-    pass
+    c = {
+        "menu":drop_down_menu(),
+        'page_title':"About - CityDigits: Lottery",
+        #'interviews':interviews,
+    }
+    template = "lottery/about.html"
+    return render_to_response( template, c )
 
 def interview_photo_grid(request):
     c = {
         "menu":drop_down_menu(),
-        'page_title':"Interviews - CityDigits",
+        'page_title':"Interviews - CityDigits: Lottery",
         #'interviews':interviews,
-        'splash':False,
     }
     template = 'lottery/interview_photo_grid.html',
     return render_to_response( template, c )
@@ -72,11 +78,19 @@ def interview_photo_grid(request):
 def interview_map(request, highlight_id=None):
     c = {
         "menu":drop_down_menu(),
-        'page_title':"Interview Map - CityDigits",
+        'page_title':"Interview Map - CityDigits: Lottery",
         #'interviews':interviews,
-        'splash':False,
     }
     template = 'lottery/interview_map.html',
+    return render_to_response( template, c )
+
+def data_explorer(request):
+    c = {
+        "menu":drop_down_menu(),
+        'page_title':"Data Explorer - CityDigits: Lottery: Lottery",
+        #'interviews':interviews,
+    }
+    template = 'lottery/data_explorer.html',
     return render_to_response( template, c )
 
 def public_tutorial(request):

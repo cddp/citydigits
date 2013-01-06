@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block contents %}
+{% include "registration/login_form.html" %}
+{% endblock %}
+
+
+{% block js %}
+    {% include "js/jquery" %}
+    <script type="text/javascript">
+    $("id_username").focus();
+    </script>
+{% endblock %}
+
+
+
+
+
