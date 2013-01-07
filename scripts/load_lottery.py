@@ -1,12 +1,21 @@
+"""
+A script for loading data for the lottery application
+
+
+"""
 import os
 import cPickle as pickle
 
+from django.contrib.gis.geos import Point
+
+import xlrd
 from datertots.core import (xls_to_dicts, writeToXls,
             csv_dictionaries, detect_encoding)
-from datertots.nyc_zip import nyc_zips
-from load_filters import cutoffs, replacers
+from scripts.nyc_zip import nyc_zips
 
+from lottery.models import Location, Retailer, SalesWeek, Win
 
+from scripts.load_filters import cutoffs, replacers
 
 
 folder = "/Users/benjamin/Dropbox/CDDP/CityDigits/Lottery/01_DATA/raw_FOIA_data"
@@ -19,11 +28,17 @@ sales_files = [os.path.join( sales_folder,
 
 winnings_folder = os.path.join( folder, "Winnings Data" )
 winnings_files = [g for g in os.listdir( winnings_folder ) if ".xlsx" in g]
+winnings = [os.path.join(winnings_folder, h) for h in winnings_files]
 xls_folder = "/Users/benjamin/Dropbox/CDDP/CityDigits/Lottery/01_DATA/spreadsheets"
 sales_xls = os.path.join( xls_folder, "NYC_Sales-Aggregated_by_address.xls")
+corrections_xls = os.path.join( xls_folder, "retailer cleanup tables",
+                                            "notfound_location_corrections.xls")
 
 
 def address_key( item, add_key ):
+    """This function creates a composite string from several components of an
+    object's address.
+    """
     return '%s, %s, %s %s' % (
         item[add_key],
         item['city'],
@@ -62,9 +77,13 @@ def read( filename ):
     print 'read from %s' % filename
     return data
 
-
-def load_locations():
-    """Run First"""
+def load_locations(): # load these into django models and save them
+    """Run First
+        This extracts the addresses, and retailer IDs from the agent directory provided by NY
+        Lotto.The addresses do not necessarily match the addresses that have
+        been previously geocoded.
+        It will only extract addresses with NY City zip codes.
+    """
     # get raw locations
     rows = csv_dictionaries( agents )
     # make ny locations with raw locations
@@ -80,9 +99,13 @@ def load_locations():
                     }
             full = address_key( raw_location, 'street_address' )
             raw_location['address'] = full
-            # store location
+
+            # the key for locations is the full raw address
             if full not in locations:
                 locations[full] = raw_location
+
+            # the key for retailers is the agent number. And retailers retain
+            # the full raw address.
             retailer = {
                     'name': agent['BUSNM'],
                     'retailer_id': agent['AGTNO'],
@@ -92,8 +115,13 @@ def load_locations():
     write( 'raw_ny_retailers', retailers )
     write( 'raw_ny_locations', locations )
 
-def load_edited_addresses():
-    """Run Second"""
+def load_edited_addresses():# load these into django models and save them
+    """Run Second
+        This will take the raw addresses extracted in step one and filter them,
+        using the address filters.
+        It essentially copies all the raw locations, and stores them in a new
+        dicitionary using their filtered address as a key.
+    """
     locations = read( 'raw_ny_locations' )
     new_locs = {}
     for k in locations:
@@ -105,10 +133,20 @@ def load_edited_addresses():
         new_locs[newkey] = loc
     write( 'filtered_ny_locations', new_locs )
 
-def load_points():
-    """Run Third"""
+def load_points(): # load these into django models and save them
+    """Run Third
+        This compares the filtered addresses to the previously geocoded points,
+        in order to determine the lat lng of each location.  It simply records
+        what was and was not found. Ater this step it is necessary to correct
+        the addresses that did not match. The resulting corrections can be found
+        in the file 'notfound_location_corrections.xls'.
+    """
+    # locations are the listed locations
     locations = read( 'filtered_ny_locations' )
+
+    # sales are the sales locations
     sales = xls_to_dicts( sales_xls )
+
     not_found = {}
     found = {}
     for row in sales:
@@ -142,23 +180,110 @@ def load_points():
     sellers = [r[k] for k in r]
     xls( 'retailers.xls', sellers )
 
+def repair_points():
+    """
+    What it should do now that I have corrections.
+        if the address is not found:
+            look in the list of not_found locations
+            get the listed_address
+            use that to look up the listed location
+            treat it as found
+    """
+    locations = read( 'filtered_ny_locations' )
+    sales = xls_to_dicts( sales_xls )
+    corrections = xls_to_dicts( corrections_xls )
+    for row in sales:
+        add = row['address']
+        street_add = row['street_address']
+        # deal with the broken ones
+        if add not in locations:
+            # find the correction
+            corrected = find_dict( street_add, corrections, 'sales_address' )
+            if not corrected:
+                print add
+            location = locations[corrected['listed_address']]
+        else:
+            location = locations[add]
+        # make the point and location objects
+        point = Point( row['lng'], row['lat'] )
+        loc = Location()
+        loc.point = point
+        # use the address information from sales, not from the retailer
+        # listings, because these are the addresses that were geocoded
+        loc.address_text = add
+        loc.raw_address_text = location['address']
+        loc.street_address = street_add
+        loc.city = row['city']
+        loc.state = 'NY'
+        loc.zipcode = int(row['zipcode'])
+        # save the new location object
+        loc.save()
 
-def load_interviews():
-    # get the interviews from the sample data
-    pass
-
-def load_photos():
-    # get the photos from the sample data
-    pass
+def add_retailers():
+    retailers_db = read( 'raw_ny_retailers' )
+    retailers = [retailers_db[k] for k in retailers_db]
+    # look up the location for each retailer
+    for retailer in retailers:
+        # use the raw address for this location to lookup the retailer
+        raw_address = retailer['location']
+        try:
+            location = Location.objects.get(raw_address_text=raw_address)
+        except:
+            print "couldn't find %s" % retailer['name']
+            location = None
+        if location:
+            print 'found %s at %s' % (retailer['name'], location)
+            retail = Retailer()
+            retail.location = location
+            retail.name = retailer['name']
+            retail.retailer_id = retailer['retailer_id']
+            retail.save()
+            print 'saved'
 
 def load_winnings():
-    # get the winnings from the raw data
-    pass
+    """open and read winnings data and load it into the database
+        The winnings records contain address components as well as retailer ids
+        but this will only use the retailer ids and will not load the addresses
+        from the winnings
+    """
+    for f in winnings:
+        new_wins = xls_to_dicts(f, column_to_datetime='Date Won/Claimed')
+        for win in new_wins:
+            retailer_id = str(int(win['Ret #']))
+            try:
+                retailer = Retailer.objects.get(retailer_id=retailer_id)
+            except:
+                retailer = None
+            if retailer:
+                print 'found at %s' % retailer
+                date = win['Date Won/Claimed']
+                amount = win['Prize']
+                game = win['Game Name']
+                win_obj = Win()
+                win_obj.retailer = retailer
+                win_obj.date = date
+                win_obj.amount = amount
+                win_obj.game = game
+                win_obj.save()
+                print 'saved'
 
-if __name__=='__main__':
-    #load_locations()
-    #load_edited_addresses()
-    load_points( )
+
+def find_dict( val, others, key ):
+    """A function to match a dictionary to another out of a list, based on the
+    value of a particular key.
+    """
+    for other in others:
+        if other[key] == val:
+            return other
+
+################# Run things ###################
+#load_locations()
+#load_edited_addresses()
+#load_points( )
+#repair_points()
+#add_retailers()
+load_winnings()
+
 
 
 

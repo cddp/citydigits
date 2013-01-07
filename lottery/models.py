@@ -20,13 +20,14 @@ class Location( GeeseModel ):
     point = models.PointField( null=True, blank=True )
     address_text = models.TextField( null=True, blank=True )
     street_address = models.CharField( max_length=500, null=True, blank=True )
+    raw_address_text = models.TextField( null=True, blank=True )
     city = models.CharField( max_length=100, null=True, blank=True )
     state = models.CharField( max_length=100, null=True, blank=True )
     zipcode = models.CharField( max_length=100, null=True, blank=True )
 
     def __unicode__(self):
-        if self.latitude:
-            return '%s, %s' % ( self.longitude, self.latitude )
+        if self.point:
+            return 'Location: %s' % str(self.point.coords)
         else:
             return self.address_text
 

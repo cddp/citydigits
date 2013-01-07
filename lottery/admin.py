@@ -14,6 +14,9 @@ from lottery.models import (
         #model = Entry
 
 admin.site.register(UserProfile)
+admin.site.register(Location)
+admin.site.register(Interview)
+admin.site.register(Photo)
 
 
 
