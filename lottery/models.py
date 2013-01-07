@@ -1,4 +1,8 @@
+
 from django.contrib.gis.db import models
+from django.contrib.auth.models import User
+
+from geese.models import GeeseModel
 
 def get_upload_path(instance, filepath):
     return instance.get_upload_path(filepath)
@@ -6,16 +10,14 @@ def get_upload_path(instance, filepath):
 class UserProfile( models.Model ):
     """This class should store information about a user who uploads interviews.
     """
+    user = models.OneToOneField( User )
     name = models.CharField( max_length=500 )
     def __unicode__(self):
         return self.name
-    class Meta:
-        abstract = True
 
-class Location( models.Model ):
+class Location( GeeseModel ):
     """For storing the locations, of retailers or interviews."""
-    latitude = models.FloatField( null=True, blank=True )
-    longitude = models.FloatField( null=True, blank=True )
+    point = models.PointField( null=True, blank=True )
     address_text = models.TextField( null=True, blank=True )
     street_address = models.CharField( max_length=500, null=True, blank=True )
     city = models.CharField( max_length=100, null=True, blank=True )
@@ -36,41 +38,39 @@ class Retailer( models.Model):
     """
     name = models.CharField( max_length = 500 )
     retailer_id = models.CharField( max_length = 100 )
-    location = models.ForeignKey( 'Location', null=True, blank=True )
+    location = models.ForeignKey( Location, null=True, blank=True )
     def __unicode__(self):
         return '%s: %s' % ( self.retailer_id, self.name )
-    class Meta:
-        abstract = True
 
 class SalesWeek( models.Model):
     """For storing one week of sales at a particular place.
     """
     week = models.DateField()
     amount = models.FloatField()
-    retailer = models.ForeignKey( 'Retailer' )
-    class Meta:
-        abstract = True
+    retailer = models.ForeignKey( Retailer )
+
+    def __unicode__(self):
+        return '%s, %s: $%s' % ( self.retailer.name, self.week, self.amount )
 
 class Win( models.Model ):
     """For storing a winning ticket.
     """
     date = models.DateField()
-    retailer = models.ForeignKey( 'Retailer ')
+    retailer = models.ForeignKey( Retailer )
     amount = models.FloatField()
     game = models.CharField( max_length=300 )
-    class Meta:
-        abstract = True
+    def __unicode__(self):
+        return '%s $%s at %s on %s' % ( self.game, self.amount,
+                self.retailer.name, self.date)
 
 class Interview( models.Model ):
     """A class for storing information about interviews."""
     slug = models.SlugField()
     date_added = models.DateTimeField( auto_now_add=True )
     date_edited = models.DateTimeField( auto_now=True )
-    #creators = models.ManyToManyField( 'UserProfile', null=True, blank=True )
+    creators = models.ManyToManyField( 'UserProfile', null=True, blank=True )
     body = models.TextField( null=True, blank=True )
     location = models.ForeignKey( 'Location', null=True, blank=True )
-
-    #def markup
 
 class Photo( models.Model ):
     """For storing photos related to interviews or users."""
@@ -78,7 +78,7 @@ class Photo( models.Model ):
     creators = models.ManyToManyField( 'UserProfile', null=True, blank=True )
     image = models.ImageField( upload_to = get_upload_path )
     interview = models.ForeignKey( 'Interview', null=True, blank=True )
-    #user = models.ForeignKey( 'UserProfile', null=True, blank=True )
+    location = models.ForeignKey( 'Location', null=True, blank=True )
     caption = models.TextField( null=True, blank=True )
 
     def get_upload_path( self, filename ):
