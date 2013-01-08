@@ -5,6 +5,7 @@ A script for loading data for the lottery application
 """
 import os
 import cPickle as pickle
+import datetime
 
 from django.contrib.gis.geos import Point
 
@@ -267,6 +268,57 @@ def load_winnings():
                 win_obj.save()
                 print 'saved'
 
+def repair_sales():
+    """This function links sales to a retailer with a specific retailer ID.
+        It uses the listed address in the sales data to look up a location.
+        with that location, it finds all the retailers associated with the
+        location. Using the retailer name listed in the sales data, it tries to
+        find a retailer associated with the location.
+        retailer and address combinations that cannot be found (and thus do not
+        match other data supplied by NY Lottery) are written to a separate
+        excel file.
+    """
+    bad_addresses = []
+    bad_names = []
+    for sales_file in sales_files:
+        fields = ('name','street_address','city','zipcode','date','amount')
+        iterator = csv_dictionaries( sales_file, fields )
+        for row in iterator:
+            if int(row['zipcode']) in nyc_zips:
+                # filter street address to match filtered addresses
+                row['street_address'] = filter_address( row['street_address'] )
+                row['amount'] = float(row['amount'])
+                row['state'] = 'NY'
+                # create address key for location lookup
+                key = address_key( row, 'street_address')
+                # search for location
+                loc_results = Location.objects.filter(address_text=key)
+                # if not found, store object in bad_address list
+                if not loc_results or len(loc_results) > 1:
+                    bad_addresses.append( row )
+                else:
+                    location = loc_results[0]
+                    # if found, search location retailers for retailer name
+                    retailers = location.retailer_set.filter(name=row['name'])
+                    # if no retailer found, store in bad_name list
+                    if not retailers or len(retailers) > 1:
+                        bad_names.append(row)
+                    else:
+                        # otherwise, create a sales week object,
+                        saleswk = SalesWeek()
+                        saleswk.retailer = retailers[0]
+                        saleswk.amount = row['amount']
+                        datetext = row['date']
+                        # don't forget to convert the date.
+                        date = datetime.datetime.strptime(datetext, '%Y-%m-%d')
+                        saleswk.week = date
+                        # save it
+                        saleswk.save()
+    # write the failures to excel files
+    xls('sales-bad_address.xls', bad_addresses)
+    xls('sales-bad_names.xls', bad_names)
+
+
 
 def find_dict( val, others, key ):
     """A function to match a dictionary to another out of a list, based on the
@@ -282,8 +334,14 @@ def find_dict( val, others, key ):
 #load_points( )
 #repair_points()
 #add_retailers()
-load_winnings()
-
+#load_winnings()
+repair_sales()
+print "\a"
+print "\a"
+print "\a"
+print "\a"
+print "\a"
+print "\a"
 
 
 
