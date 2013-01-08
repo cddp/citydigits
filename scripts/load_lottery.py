@@ -318,7 +318,6 @@ def repair_sales():
     xls('sales-bad_address.xls', bad_addresses)
     xls('sales-bad_names.xls', bad_names)
 
-
 def find_dict( val, others, key ):
     """A function to match a dictionary to another out of a list, based on the
     value of a particular key.
@@ -356,7 +355,7 @@ def load_photos():
 #repair_points()
 #add_retailers()
 #load_winnings()
-#repair_sales()
+repair_sales()
 #load_interviews()
 #load_photos()
 

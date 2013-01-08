@@ -31,9 +31,6 @@ class Location( GeeseModel ):
         else:
             return self.address_text
 
-    def coord(self):
-        return self.longitude, self.latitude
-
 class Retailer( models.Model):
     """For storing distinct retailer names and retailer IDs
     """
@@ -72,6 +69,9 @@ class Interview( models.Model ):
     creators = models.ManyToManyField( 'UserProfile', null=True, blank=True )
     body = models.TextField( null=True, blank=True )
     location = models.ForeignKey( 'Location', null=True, blank=True )
+
+    def __unicode__(self):
+        return self.slug
 
 class Photo( models.Model ):
     """For storing photos related to interviews or users.
