@@ -74,7 +74,8 @@ class Interview( models.Model ):
     location = models.ForeignKey( 'Location', null=True, blank=True )
 
 class Photo( models.Model ):
-    """For storing photos related to interviews or users."""
+    """For storing photos related to interviews or users.
+    """
     date_added = models.DateTimeField( auto_now_add=True )
     creators = models.ManyToManyField( 'UserProfile', null=True, blank=True )
     image = models.ImageField( upload_to = get_upload_path )

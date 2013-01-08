@@ -14,7 +14,7 @@ from datertots.core import (xls_to_dicts, writeToXls,
             csv_dictionaries, detect_encoding)
 from scripts.nyc_zip import nyc_zips
 
-from lottery.models import Location, Retailer, SalesWeek, Win
+from lottery.models import Location, Retailer, SalesWeek, Win, Interview, Photo
 
 from scripts.load_filters import cutoffs, replacers
 
@@ -319,7 +319,6 @@ def repair_sales():
     xls('sales-bad_names.xls', bad_names)
 
 
-
 def find_dict( val, others, key ):
     """A function to match a dictionary to another out of a list, based on the
     value of a particular key.
@@ -328,6 +327,28 @@ def find_dict( val, others, key ):
         if other[key] == val:
             return other
 
+def load_interviews():
+    """load sample interviews"""
+    folder = 'lottery/sample_data/interviews'
+    interview_files = [f for f in os.listdir( folder ) if f[-4:]=='.txt']
+    for interview_file in interview_files:
+        path = os.path.join(folder, interview_file)
+        text = open(path, 'r').read()
+        interviewer = interview_file.split('_')[0]
+        interview = Interview()
+        interview.slug = os.path.splitext(interview_file)[0]
+        interview.body = text
+        interview.save()
+
+def load_photos():
+    """load sample interview pictures
+    """
+    folder = 'lottery/sample_data/photos'
+    photo_files = [f for f in os.listdir( folder ) if f[-4:]=='.jpg']
+    for photo_file in photo_files:
+        path = os.path.listdir(folder, photo_file)
+
+
 ################# Run things ###################
 #load_locations()
 #load_edited_addresses()
@@ -335,13 +356,9 @@ def find_dict( val, others, key ):
 #repair_points()
 #add_retailers()
 #load_winnings()
-repair_sales()
-print "\a"
-print "\a"
-print "\a"
-print "\a"
-print "\a"
-print "\a"
+#repair_sales()
+#load_interviews()
+#load_photos()
 
-
+#print "\a"
 
