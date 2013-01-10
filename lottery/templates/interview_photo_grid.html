@@ -2,14 +2,37 @@
 {% load static %}
 
 {% block contents %}
-  <p>hey, this is a photo grid</p>
+  {% if interviews %}
+  <ul class="photogrid">
+    {% for interview in interviews %}
+    <a class="photogrid-link" href="/lottery/interviews/{{interview.id}}/">
+      <li class="photogrid-item">
+      <div class="interview-overlay" style="display: none;">
+        {{interview.body|truncatewords:15}}
+      </div>
+      <img class="gridphoto" src="{% get_media_prefix %}{{interview.photo_set.all.0.image}}" /> </li>
+    </a>
+    {% endfor %}
+  </ul>
+  {% endif %}
 {% endblock %}
 
 {% block js %}
     {% include "js/jquery" %}
     {% include "lottery/js/dropdown_js.html" %}
     <script type="text/javascript">
-      console.log("hello photo grid");
+      $(window).load(function(){
+        $('.interview-overlay').each(function(i, elem){
+            w = $(this).siblings('img').width();
+            console.log(w);
+            $(this).width(w - 24);
+            });
+      function toggleText(e){
+        $(this).find('.interview-overlay')
+          .toggle();
+      }
+      $('.photogrid-link').mouseenter(toggleText).mouseleave(toggleText);
+      });
     </script>
 {% endblock %}
 

@@ -1,0 +1,18 @@
+{% extends "lottery/interview_photo_grid.html" %}
+{% load static %}
+{% load markymark %}
+
+{% block contents %}
+  <div class="interview">
+    <img class="interview-photo" src="{% get_media_prefix %}{{interview.photo_set.all.0.image}}" />
+    <div class="interview-text">
+        {% autoescape off %}
+        {{interview.body|markymarkup}}
+        {% endautoescape %}
+    </div>
+  </div>
+{% endblock %}
+
+
+
+

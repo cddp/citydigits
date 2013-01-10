@@ -45,7 +45,7 @@ def public_splash(request):
         "menu":drop_down_menu(),
         'page_title':"Home - CityDigits: Lottery",
         'splash': True,
-        #'interviews':interviews,
+        'interviews':Interview.objects.all(),
     }
     templates = [
         'lottery/interview_map.html',
@@ -70,7 +70,7 @@ def interview_photo_grid(request):
     c = {
         "menu":drop_down_menu(),
         'page_title':"Interviews - CityDigits: Lottery",
-        #'interviews':interviews,
+        'interviews':Interview.objects.all(),
     }
     template = 'lottery/interview_photo_grid.html',
     return render_to_response( template, c )
@@ -79,9 +79,18 @@ def interview_map(request, highlight_id=None):
     c = {
         "menu":drop_down_menu(),
         'page_title':"Interview Map - CityDigits: Lottery",
-        #'interviews':interviews,
+        'interviews':Interview.objects.all(),
     }
     template = 'lottery/interview_map.html',
+    return render_to_response( template, c )
+
+def edit_map(request):
+    c = {
+        "menu":drop_down_menu(),
+        'page_title':"Interview Map - CityDigits: Lottery",
+        'interviews':Interview.objects.all(),
+    }
+    template = 'lottery/interview_map_edit.html',
     return render_to_response( template, c )
 
 def data_explorer(request):
@@ -101,7 +110,14 @@ def user_tutorial(request):
 
 
 def interview_detail(request, interview_id):
-    pass
+    interview = Interview.objects.get(id=interview_id)
+    c = {
+        "menu":drop_down_menu(),
+        'page_title':"Interview %s - CityDigits: Lottery: Lottery" % interview_id,
+        'interview':interview,
+    }
+    template = 'lottery/interview_detail.html',
+    return render_to_response( template, c )
 
 def interview_split(request, interview_id):
     pass

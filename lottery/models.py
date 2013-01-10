@@ -69,6 +69,8 @@ class Interview( models.Model ):
     creators = models.ManyToManyField( 'UserProfile', null=True, blank=True )
     body = models.TextField( null=True, blank=True )
     location = models.ForeignKey( 'Location', null=True, blank=True )
+    process_as = models.CharField( max_length=50, default="markdown",
+            null=True, blank=True)
 
     def __unicode__(self):
         return self.slug
@@ -78,7 +80,7 @@ class Photo( models.Model ):
     """
     date_added = models.DateTimeField( auto_now_add=True )
     creators = models.ManyToManyField( 'UserProfile', null=True, blank=True )
-    image = models.ImageField( upload_to = get_upload_path )
+    image = models.ImageField( upload_to=get_upload_path )
     interview = models.ForeignKey( 'Interview', null=True, blank=True )
     location = models.ForeignKey( 'Location', null=True, blank=True )
     caption = models.TextField( null=True, blank=True )

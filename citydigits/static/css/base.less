@@ -10,6 +10,9 @@
 @import "civicdata_colors.less";
 @import "grids.less";
 
+// URLS
+@static_prefix: "http://localhost/static/citydigits/";
+
 
 // Base Types
 em {
@@ -26,7 +29,7 @@ h1, h2, h3, h4 {
 h1 {
   font-size: 1.2em;
 }
-p {
+p, ul, li {
   .clear;
 }
 ul {
@@ -55,7 +58,7 @@ a {
     color: @link;
   }
   &:hover {
-    color: @hover;
+    color: @magenta;
   }
 }
 
@@ -65,7 +68,8 @@ a {
   background-color: rgba(0,0,0,0.8);
   color: @white;
   width: 100%;
-  position: absolute;
+  position: fixed;
+  top: 0;
   z-index: 3;
   a {
     color: @white;
@@ -73,13 +77,12 @@ a {
       color: @white;
     }
     &:hover {
-      color: @hover;
+      color: @magenta;
     }
   }
 }
 
 #contents {
-  .ypad(1);
   .xpad();
 }
 
@@ -101,7 +104,6 @@ a {
     }
     .col-small {
       margin-left: @col * 4 + @gut * 3;
-      margin-top: -@vu/2; // This is a workaround for a bug
       .cols(2);
     }
   }
@@ -114,7 +116,8 @@ a {
     }
     &:hover {
       svg {
-        fill: @hover;
+        fill: @magenta;
+        opacity: 0.7;
       }
     }
     g.flipped {
@@ -123,4 +126,48 @@ a {
   }
 }
 
+// Photo Grid CSS
+.photogrid {
+  margin-top: 2 * @vu;
+  li {
+    float: left;
+    margin-right: @gut;
+    .interview-overlay {
+      .xpad();
+      color: @text;
+      position: absolute;
+      z-index: 2;
+    }
+    img {
+      filter: url("@{static_prefix}img/filters.svg#grayscale");
+      filter: gray;
+      -webkit-filter: grayscale(1);
+      height: @vu * 8;
+      opacity: 0.8;
+    } 
+  }
+  a:hover {
+    li{img{opacity: 0.5;}}
+  }
+}
+// Interview detail CSS
+.interview {
+  margin: 0 auto;
+  .cols(4);
+  margin-top: 2 * @vu;
+  .xpad();
+  img.interview-photo {
+    .cols(2);
+    float: left;
+    margin-right: @gut + @pad;
+  }
+  .interview-text {
+    p {
+      margin-bottom: @vu / 2;
+    }
+    .punct {
+      color: @magenta;
+    }
+  }
+}
 

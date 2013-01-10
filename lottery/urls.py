@@ -10,6 +10,7 @@ from lottery.views import (
             interview_detail,
             interview_split,
             data_explorer,
+            edit_map,
         )
 
 urlpatterns = patterns('',
@@ -27,6 +28,8 @@ urlpatterns = patterns('',
     url(r'^map/$', interview_map, name="interview_map"),
     # intrview map highlight
     url(r'^map/(\d+)/$', interview_map, name="interview_highlight"),
+    # interview_map
+    url(r'^map/edit/$', edit_map, name="edit_map"),
     # interview_split
     url(r'^map-split/(\d+)/$', interview_split, name="interview_split"),
 
