@@ -1,0 +1,26 @@
+{% extends "lottery/interview_map.html" %}
+{% load static %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% get_static_prefix %}css/base.css" type="text/css"/>
+  <script src='http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.js'></script>
+  <link href='http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.css' rel='stylesheet' />
+{% endblock %}
+
+{% block contents %}
+<div id='map'></div>
+{% endblock %}
+
+{% block js %}
+    {% include "js/jquery" %}
+    {% include "lottery/js/dropdown_js.html" %}
+    {% include "lottery/js/load_map.html" %}
+{% endblock %}
+
+
+
+
+
+
+
+

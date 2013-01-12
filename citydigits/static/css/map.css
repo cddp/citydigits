@@ -1,0 +1,159 @@
+/*
+Font Settings for open sans
+    Open Sans weights (300, 400, 600, 700)
+    an 800 exists but I wouldn't want to use it.
+    
+*/
+em {
+  font-style: italic;
+}
+strong {
+  font-weight: 600;
+}
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 600;
+  font-size: 1em;
+  margin: 0;
+  padding: 0;
+}
+h1 {
+  font-size: 1.2em;
+}
+p,
+ul,
+li {
+  margin: 0;
+  padding: 0;
+}
+ul {
+  list-style-type: none;
+}
+html {
+  margin: 0;
+  padding: 0;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Open Sans", "Helvetica Neue", "Helvetica", "Droid Sans", "Arial", sans-serif;
+  font-size: 20px;
+  line-height: 36px;
+  font-weight: 300;
+  background-color: #fcfcfc;
+  color: #000000;
+}
+a {
+  text-decoration: none;
+  color: #0d2630;
+}
+a:visited {
+  color: #0d2630;
+}
+a:hover {
+  color: #b00951;
+}
+#header {
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fcfcfc;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  z-index: 3;
+}
+#header a {
+  color: #fcfcfc;
+}
+#header a:visited {
+  color: #fcfcfc;
+}
+#header a:hover {
+  color: #b00951;
+}
+#contents {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+#map {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.pull-down-menu {
+  margin: 0 auto;
+  width: 1140px;
+}
+.pull-down-menu .columns {
+  padding-top: 36px;
+}
+.pull-down-menu .columns .col-big {
+  width: 756px;
+  position: absolute;
+}
+.pull-down-menu .columns .col-small {
+  margin-left: 756px;
+  width: 372px;
+}
+.pull-down-menu .pull-handle {
+  text-align: center;
+  cursor: pointer;
+}
+.pull-down-menu .pull-handle svg {
+  fill: #fcfcfc;
+  opacity: 0.2;
+}
+.pull-down-menu .pull-handle:hover svg {
+  fill: #b00951;
+  opacity: 0.7;
+}
+.pull-down-menu .pull-handle g.flipped {
+  transform: rotate(180, 18, 18);
+}
+.photogrid {
+  margin-top: 72px;
+}
+.photogrid li {
+  float: left;
+  margin-right: 12px;
+}
+.photogrid li .interview-overlay {
+  padding-left: 12px;
+  padding-right: 12px;
+  color: #000000;
+  position: absolute;
+  z-index: 2;
+}
+.photogrid li img {
+  filter: url("http://localhost/static/citydigits/img/filters.svg#grayscale");
+  filter: gray;
+  -webkit-filter: grayscale(1);
+  height: 288px;
+  opacity: 0.8;
+}
+.photogrid a:hover li img {
+  opacity: 0.5;
+}
+.interview {
+  margin: 0 auto;
+  width: 756px;
+  margin-top: 72px;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+.interview img.interview-photo {
+  width: 372px;
+  float: left;
+  margin-right: 24px;
+}
+.interview .interview-text p {
+  margin-bottom: 18px;
+}
+.interview .interview-text .punct {
+  color: #b00951;
+}
+#map svg circle {
+  fill: #b00951;
+}

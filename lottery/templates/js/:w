@@ -1,0 +1,107 @@
+{% autoescape off %}
+<script type="text/javascript">
+
+function d3layer(className){
+    // This is an example of a minimal Layer object that can be used with
+    // mapbox.js, and maybe ModestMaps
+    var layer = {}, bounds, feature, collection;
+
+    // setup nodes and parent
+    // this node will be appended to the map div by 
+    // map.addLayer()
+    var div = d3.select(document.body)
+        .append("div")
+        .attr("class", className);
+    var svg = div.append('svg');
+    var g = svg.append('g');
+
+    layer.parent = div.node();
+
+    layer.project = function(x){
+        var point = layer.map.locationPoint({lat:x[0],lon:x[1]});
+        return [point.x, point.y];
+    }
+
+    var first = true; // I have no idea what this is for
+    layer.draw = function(){
+        // this is some redonculous tricky shit
+        first && svg.attr("width", layer.map.dimensions.x)
+            .attr("height", layer.map.dimensions.y)
+            .style("margin-left", "0px")
+            .style("margin-top", "0px") && (first=false);
+        // here is where things need to be handled according to the geometry
+        // type. paths and points would be handled differently
+        // I need to understand this in detail
+        geopath = d3.geo.path().projection(layer.project);
+        // feature is a d3 selection
+        var coords = function(d){ 
+            return layer.project(d.geometry.coordinates);};
+        feature.attr('cy', function(d){ return coords(d)[1];});
+        feature.attr('cx', function(d){ return coords(d)[0];});
+        feature.attr('r', function(d){ return 6; });
+    };
+
+    layer.data = function(geoJsonOrFeatures){
+        // this is called to add data in the way that d3 does
+        // this takes a geojson collection
+        // this should gracefully distinguish between a list of geojson
+        // features and a geojson feature collection
+        if (geoJsonOrFeatures instanceof Array){
+            collection = {"type":"FeatureCollection",
+                "features":geoJsonOrFeatures};
+            } else {
+                collection = geoJsonOrFeatures;
+        }
+        // check to see if we have points or circles
+        var points = false;
+        var min = [d3.min(collection.features, function(f){
+                return f.geometry.coordinates[0]; }),
+               d3.min(collection.features, function(f){
+                return f.geometry.coordinates[1]; })];
+        var max = [d3.max(collection.features, function(f){
+                return f.geometry.coordinates[0]; }),
+              d3.max(collection.features, function(f){
+                return f.geometry.coordinates[1]; })];
+        // this also might need to be changed for circles
+        feature = g.selectAll("circle")
+            .data(collection.features)
+            .enter().append("circle")
+        return layer;
+    };
+
+    layer.extent = function() {
+        // this is called by MM.map I think
+        // I can't find the place where it is used though
+        // this might only be called by the mapbox example, to center the whole
+        // map
+        return new MM.Extent(
+                new MM.Location(bounds[0][1], bounds[0][0]),
+                new MM.Location(bounds[1][1], bounds[1][0])
+                );
+    };
+
+    return layer;
+}
+
+
+$(window).ready(function(){
+    // interview location geojsons
+    var interviews = {{interviews}};
+
+    var basemap = 'sw2279.NewYork';
+    
+    mapbox.auto('map', basemap, function(map){
+        // make the layer
+        interviewLayer = d3layer('d3-vec').data(interviews);
+        // add the layer
+        map.addLayer( interviewLayer );
+        // map.extent( interviewLayer.extent() );
+        console.log(interviewLayer);
+    }); // end mapbox.auto callback
+
+}); // end window ready function
+    
+</script>
+{% endautoescape %}
+
+
