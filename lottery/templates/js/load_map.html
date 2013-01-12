@@ -1,5 +1,104 @@
+{% autoescape off %}
 <script type="text/javascript">
-    mapbox.auto('map', 'sw2279.NewYork');
+
+function d3Layer(className){
+    // This is an example of a minimal Layer object that can be used with
+    // mapbox.js, and maybe ModestMaps
+    var layer = {}, bounds, feature, collection;
+    // I need to see what this looks like
+    console.log( layer );
+
+    // setup nodes and parent
+    // this node will be appended to the map div by 
+    // map.addLayer()
+    var div = d3.select(document.body)
+        .append("div")
+        .attr("class", className);
+    var svg = div.append('svg');
+    var g = svg.append('g');
+
+    layer.parent = div.node();
+
+    layer.project = function(x){
+        var point = layer.map.locationPoint({lat:x[1],lon:x[0]});
+        return [point.x, point.y];
+    }
+
+    var first = true; // I have no idea what this is for
+    layer.draw = function(){
+        first && svg.attr("width", layer.map.dimensions.x)
+            .attr("height", layer.map.dimensions.y)
+            .style("margin-left", "0px")
+            .style("margin-top", "0px") && (first=false);
+        // here is where things need to be handled according to the geometry
+        // type. paths and points would be handled differently
+        // I need to understand this in detail
+        geopath = d3.geo.path().projection(layer.project);
+        console.log( geopath ); // this should be a per-feacture function
+        if (feature.hasAttribute('d'){
+            feature.attr('d', geopath);
+        } else {
+            feature.attr('cx', geopath);
+            feature.attr('cy', geopath);
+        }
+    };
+
+    layer.data = function(geoJsonOrFeatures){
+        // this is called to add data in the way that d3 does
+        // this takes a geojson collection
+        // this should gracefully distinguish between a list of geojson
+        // features and a geojson feature collection
+        if (geoJsonOrFeatures instanceof Array){
+            collection = {"type":"FeatureCollection",
+                "features":geoJsonOrFeatures};
+            } else {
+                collection = geoJsonOrFeatures;
+        }
+        bounds = d3.geo.bounds(collection);
+        // this also might need to be changed for circles
+        feature = g.selectAll("path")
+            .data(collection.features)
+            .enter().append("path");
+        return layer;
+    };
+
+    layer.extent = function() {
+        // this is called by MM.map I think
+        // I can't find the place where it is used though
+        return new MM.Extent(
+                new MM.Location(bounds[0][1], bounds[0][0]),
+                new MM.Location(bounds[1][1], bounds[1][0])
+                );
+    };
+
+    return layer;
+}
+
+
+function getMapSize(){
+    w = $(document).width();
+    console.log(w);
+	header = $('#header').outerHeight();
+	body = $(document).height();
+	// footer = $('#footer').outerHeight();
+	h = body;
+    console.log(h);
+	$('#map').height( h )
+		.width( w );
+}
+
+$(window).ready(function(){
+    // interview location geojsons
+    var interviews = {{interviews}};
+
+    var tiles = 'sw2279.NewYork';
+
+
+    
+
+}); // end window ready function
+    
 </script>
+{% endautoescape %}
 
 
