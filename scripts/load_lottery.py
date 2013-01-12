@@ -8,13 +8,17 @@ import cPickle as pickle
 import datetime
 
 from django.contrib.gis.geos import Point
+from django.contrib.auth.models import User
 
 import xlrd
 from datertots.core import (xls_to_dicts, writeToXls,
             csv_dictionaries, detect_encoding)
 from scripts.nyc_zip import nyc_zips
 
-from lottery.models import Location, Retailer, SalesWeek, Win, Interview, Photo
+from lottery.models import (
+        Location, Retailer, SalesWeek, Win, Interview,
+        Photo, UserProfile
+        )
 
 from scripts.load_filters import cutoffs, replacers
 
@@ -346,6 +350,21 @@ def load_photos():
     photo_files = [f for f in os.listdir( folder ) if f[-4:]=='.jpg']
     for photo_file in photo_files:
         path = os.path.listdir(folder, photo_file)
+
+def load_sample_users():
+    """load the file of sample users.
+    """
+    path = 'lottery/sample_data/users.txt'
+    f = open(path, 'r')
+    for line in f:
+        full_name, email = tuple([t.strip() for t in line.split(',')])
+        password = email.split('@')[0]
+        user = User.objects.create_user(password, email, password)
+        user.save()
+        profile = UserProfile()
+        profile.user = user
+        profile.name = full_name
+        profile.save()
 
 
 ################# Run things ###################
