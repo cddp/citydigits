@@ -1,7 +1,11 @@
 import random # for random choice between splash pages
+import json
+from pprint import pprint
 
 from django.shortcuts import render_to_response, get_object_or_404
-from lottery.models import Interview
+from django.core import serializers
+
+from lottery.models import Interview, Location
 
 # drop down menu contents
 def drop_down_menu():
@@ -76,10 +80,18 @@ def interview_photo_grid(request):
     return render_to_response( template, c )
 
 def interview_map(request, highlight_id=None):
+    # get the interviews
+    interview_fields = (
+            'id',
+            'body',
+            'location_id',
+            )
+    interviews = Interview.objects.all()
+    locations = [n.as_geojson_feature( interview_fields ) for n in interviews]
     c = {
         "menu":drop_down_menu(),
         'page_title':"Interview Map - CityDigits: Lottery",
-        'interviews':Interview.objects.all(),
+        'interviews':json.dumps(locations),
     }
     template = 'lottery/interview_map.html',
     return render_to_response( template, c )

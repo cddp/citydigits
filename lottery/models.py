@@ -1,5 +1,6 @@
 from django.contrib.gis.db import models
 from django.contrib.auth.models import User
+from django.forms.models import model_to_dict
 
 from geese.models import GeeseModel
 
@@ -69,10 +70,26 @@ class Interview( models.Model ):
     body = models.TextField( null=True, blank=True )
     location = models.ForeignKey( 'Location', null=True, blank=True )
     process_as = models.CharField( max_length=50, default="markdown",
-            null=True, blank=True)
+            null=True, blank=True )
 
     def __unicode__(self):
         return self.slug
+
+    def as_geojson_feature(self, fields=None):
+        # get the geojson representation of the feature
+        location = self.location
+        feature = location.as_geojson_feature_dict()
+        feature['properties'] = model_to_dict(self, fields)
+        feature['properties']['location_id'] = location.id
+        if fields == None or 'body' in fields:
+            asciibody = self.body[:200].encode('utf-8')
+            feature['properties']['body'] = asciibody
+        feature['id'] = self.id
+        return feature
+
+
+def interviews_locations():
+    return Interview.objects.select_related()
 
 class Photo( models.Model ):
     """For storing photos related to interviews or users.
