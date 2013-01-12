@@ -91,7 +91,7 @@ def interview_map(request, highlight_id=None):
     c = {
         "menu":drop_down_menu(),
         'page_title':"Interview Map - CityDigits: Lottery",
-        'interviews':json.dumps(locations, indent=2),
+        'interviews':json.dumps(locations),
     }
     template = 'lottery/interview_map.html',
     return render_to_response( template, c )
