@@ -383,6 +383,14 @@ def dump_locations():
     db.layer_to_csv( table, path, exclude=['id'] )
 
 
+def read_locations():
+    folder = 'citydigits/lottery/sample_data/'
+    db = GeeseDB()
+    table = 'lottery_location'
+    path = os.path.join( folder, '%s.csv' % table )
+    db.layer_to_csv( table, path, exclude=['id'] )
+
+
 ################# Run things ###################
 #load_locations()
 #load_edited_addresses()
