@@ -1,11 +1,18 @@
 """
 A script for loading data for the lottery application
 
+For copying data to another database, there are two options: using `pg_dump`
+and using `python manage.py dumpdata`. `pg_dump` does a poor job of handling
+foreignkeys, but `dumpdata` is slow for large amounts of data. None of them can
+do forward referencing foreign keys to data that does not exist. The best
+strategy seems to be to dump anything that has no foreign keys using `pg_dump`
+and then dump the others using `dumpdata`.
 
 """
 import os
 import cPickle as pickle
 import datetime
+from subprocess import call # for pg_dump and command line
 
 from django.contrib.gis.geos import Point
 from django.contrib.auth.models import User
@@ -19,6 +26,7 @@ from lottery.models import (
         Location, Retailer, SalesWeek, Win, Interview,
         Photo, UserProfile
         )
+from geese.db import GeeseDB
 
 from scripts.load_filters import cutoffs, replacers
 
@@ -366,6 +374,13 @@ def load_sample_users():
         profile.name = full_name
         profile.save()
 
+def dump_locations():
+    folder = 'lottery/sample_data/'
+    db = GeeseDB()
+    table = 'lottery_location'
+    path = os.path.join( folder, '%s.csv' % table )
+    db.layer_to_csv( table, path, exclude=['id'] )
+
 
 ################# Run things ###################
 #load_locations()
@@ -374,9 +389,12 @@ def load_sample_users():
 #repair_points()
 #add_retailers()
 #load_winnings()
-repair_sales()
+#repair_sales()
 #load_interviews()
 #load_photos()
 
-#print "\a"
+dump_locations()
+print "\a"
+print "\a"
+print "\a"
 
