@@ -375,10 +375,11 @@ def load_sample_users():
         profile.save()
 
 def dump_locations():
+    home = '/home/bengolder/webapps/citydigits/citydigits/'
     folder = 'lottery/sample_data/'
     db = GeeseDB()
     table = 'lottery_location'
-    path = os.path.join( folder, '%s.csv' % table )
+    path = os.path.join( home, folder, '%s.csv' % table )
     db.layer_to_csv( table, path, exclude=['id'] )
 
 
