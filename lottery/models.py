@@ -15,6 +15,10 @@ class UserProfile( models.Model ):
     def __unicode__(self):
         return self.name
 
+class LocationManager(models.Manager):
+    def get_by_natural_key(self, point):
+        self.get( point=point )
+
 class Location( GeeseModel ):
     """For storing the locations, of retailers or interviews."""
     point = models.PointField( null=True, blank=True )
@@ -25,11 +29,16 @@ class Location( GeeseModel ):
     state = models.CharField( max_length=100, null=True, blank=True )
     zipcode = models.CharField( max_length=100, null=True, blank=True )
 
+    objects = LocationManager()
+
     def __unicode__(self):
         if self.point:
             return 'Location: %s' % str(self.point.coords)
         else:
             return self.address_text
+
+    def natural_key(self):
+        return self.point
 
 class Retailer( models.Model):
     """For storing distinct retailer names and retailer IDs
@@ -61,6 +70,10 @@ class Win( models.Model ):
         return '%s $%s at %s on %s' % ( self.game, self.amount,
                 self.retailer.name, self.date)
 
+class InterviewManager(models.Manager):
+    def get_by_natural_key(self, slug):
+        return self.get(slug=slug)
+
 class Interview( models.Model ):
     """A class for storing information about interviews."""
     slug = models.SlugField()
@@ -72,7 +85,12 @@ class Interview( models.Model ):
     process_as = models.CharField( max_length=50, default="markdown",
             null=True, blank=True )
 
+    objects = InterviewManager()
+
     def __unicode__(self):
+        return self.slug
+
+    def natural_key(self):
         return self.slug
 
     def as_geojson_feature(self, fields=None):

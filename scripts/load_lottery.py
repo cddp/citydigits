@@ -38,7 +38,7 @@ from scripts.load_filters import cutoffs, replacers
 # sales_folder = os.path.join( folder, "Sales Data" )
 # sales_files = [os.path.join( sales_folder,
 #     f) for f in os.listdir( sales_folder ) if '.csv' in f]
-# 
+#
 # winnings_folder = os.path.join( folder, "Winnings Data" )
 # winnings_files = [g for g in os.listdir( winnings_folder ) if ".xlsx" in g]
 # winnings = [os.path.join(winnings_folder, h) for h in winnings_files]
@@ -395,6 +395,13 @@ def read_locations():
     path = os.path.join( home, folder, '%s.csv' % table )
     db.csv_to_layer( table, path )
 
+def dump_interviews():
+    # python manage.py dumpdata --natural lottery.Interview > lottery/sample_data/interview_fixtures.json
+    pass
+
+def dump_photos():
+    # python manage.py dumpdata --natural lottery.Photo > lottery/sample_data/photo_fixtures.json
+    pass
 
 ################# Run things ###################
 #load_locations()
