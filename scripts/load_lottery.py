@@ -395,18 +395,22 @@ def read_locations():
     path = os.path.join( home, folder, '%s.csv' % table )
     db.csv_to_layer( table, path )
 
+def django_file():
+    import django
+    print django.__file__
 
 ################# Run things ###################
 #load_locations()
 #load_edited_addresses()
 #load_points( )
 #repair_points()
-add_retailers()
+#add_retailers()
 #load_winnings()
 #repair_sales()
 #load_interviews()
 #load_photos()
 #read_locations()
+django_file()
 
 print "\a"
 print "\a"
