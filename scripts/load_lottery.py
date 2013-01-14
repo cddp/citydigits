@@ -31,21 +31,21 @@ from geese.db import GeeseDB
 from scripts.load_filters import cutoffs, replacers
 
 
-folder = "/Users/benjamin/Dropbox/CDDP/CityDigits/Lottery/01_DATA/raw_FOIA_data"
-agents = os.path.join( folder, "Changes of Ownership",
-"Foil-12001-019-Agents-unicode.csv" )
-changes = os.path.join( folder, "Changes of Ownership", "Foil-12001-019-Change-of-Ownerships.csv" )
-sales_folder = os.path.join( folder, "Sales Data" )
-sales_files = [os.path.join( sales_folder,
-    f) for f in os.listdir( sales_folder ) if '.csv' in f]
-
-winnings_folder = os.path.join( folder, "Winnings Data" )
-winnings_files = [g for g in os.listdir( winnings_folder ) if ".xlsx" in g]
-winnings = [os.path.join(winnings_folder, h) for h in winnings_files]
-xls_folder = "/Users/benjamin/Dropbox/CDDP/CityDigits/Lottery/01_DATA/spreadsheets"
-sales_xls = os.path.join( xls_folder, "NYC_Sales-Aggregated_by_address.xls")
-corrections_xls = os.path.join( xls_folder, "retailer cleanup tables",
-                                            "notfound_location_corrections.xls")
+# folder = "/Users/benjamin/Dropbox/CDDP/CityDigits/Lottery/01_DATA/raw_FOIA_data"
+# agents = os.path.join( folder, "Changes of Ownership",
+# "Foil-12001-019-Agents-unicode.csv" )
+# changes = os.path.join( folder, "Changes of Ownership", "Foil-12001-019-Change-of-Ownerships.csv" )
+# sales_folder = os.path.join( folder, "Sales Data" )
+# sales_files = [os.path.join( sales_folder,
+#     f) for f in os.listdir( sales_folder ) if '.csv' in f]
+# 
+# winnings_folder = os.path.join( folder, "Winnings Data" )
+# winnings_files = [g for g in os.listdir( winnings_folder ) if ".xlsx" in g]
+# winnings = [os.path.join(winnings_folder, h) for h in winnings_files]
+# xls_folder = "/Users/benjamin/Dropbox/CDDP/CityDigits/Lottery/01_DATA/spreadsheets"
+# sales_xls = os.path.join( xls_folder, "NYC_Sales-Aggregated_by_address.xls")
+# corrections_xls = os.path.join( xls_folder, "retailer cleanup tables",
+#                                             "notfound_location_corrections.xls")
 
 
 def address_key( item, add_key ):
@@ -83,7 +83,8 @@ def write( filename, data ):
     print 'wrote to %s' % filename
 
 def read( filename ):
-    path = os.path.join( os.path.split( folder )[0], "pickles", filename )
+    folder = '/home/bengolder/webapps/citydigits/citydigits/lottery/sample_data/'
+    path = os.path.join( folder, "pickles", filename )
     f = open( path, 'rb' )
     data = pickle.load( f )
     f.close()
@@ -259,6 +260,10 @@ def load_winnings():
         but this will only use the retailer ids and will not load the addresses
         from the winnings
     """
+    root = '/home/bengolder/webapps/citydigits/citydigits/lottery/sample_data/'
+    folder = os.path.join(root, 'xls')
+    winfiles = [n for n in os.listdir(folder) if n[-4:] == '.xls']
+    winnings = [os.path.join(folder, w) for w in winfiles]
     for f in winnings:
         new_wins = xls_to_dicts(f, column_to_datetime='Date Won/Claimed')
         for win in new_wins:
@@ -375,20 +380,20 @@ def load_sample_users():
         profile.save()
 
 def dump_locations():
-    home = '/home/bengolder/webapps/citydigits/citydigits/'
     folder = 'lottery/sample_data/'
-    db = GeeseDB()
-    table = 'lottery_location'
-    path = os.path.join( home, folder, '%s.csv' % table )
-    db.layer_to_csv( table, path, exclude=['id'] )
-
-
-def read_locations():
-    folder = 'citydigits/lottery/sample_data/'
     db = GeeseDB()
     table = 'lottery_location'
     path = os.path.join( folder, '%s.csv' % table )
     db.layer_to_csv( table, path, exclude=['id'] )
+
+
+def read_locations():
+    home = '/home/bengolder/webapps/citydigits/'
+    folder = 'citydigits/lottery/sample_data/'
+    db = GeeseDB()
+    table = 'lottery_location'
+    path = os.path.join( home, folder, '%s.csv' % table )
+    db.csv_to_layer( table, path )
 
 
 ################# Run things ###################
@@ -396,13 +401,13 @@ def read_locations():
 #load_edited_addresses()
 #load_points( )
 #repair_points()
-#add_retailers()
+add_retailers()
 #load_winnings()
 #repair_sales()
 #load_interviews()
 #load_photos()
+#read_locations()
 
-dump_locations()
 print "\a"
 print "\a"
 print "\a"

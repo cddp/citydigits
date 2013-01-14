@@ -11,6 +11,7 @@ from config import (backend, gis_backend,
         TEMPLATE_DIRS,
         TEMPLATE_CONTEXT_PROCESSORS,
         site_name,
+	VENV_LIB,
         )
 
 DEBUG = True
