@@ -2,8 +2,16 @@
 
 
 #map {
+  .d3-vec {
+    position: relative;
+  }
   svg circle {
     fill: @magenta;
+    &:hover {
+      cursor: pointer;
+      stroke: @black;
+      stroke-width: 3;
+    }
   }
 }
 

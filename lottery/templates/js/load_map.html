@@ -104,8 +104,15 @@ $(window).ready(function(){
         // make the layer
         var interviewLayer = d3layer('d3-vec').data(interviews);
         // add the layer
-        map.insertLayerAt(0, interviewLayer );
-        map.extent( interviewLayer.extent() );
+        map.addLayer( interviewLayer );
+
+        // center the map
+        {% if mapcenter %}
+        var center = new MM.Location({{mapcenter.lng}}, {{mapcenter.lat}});
+        map.center( center );
+        map.zoom(14); // zoom in 
+        {% endif %}
+
         console.log( map.layers );
     }); // end mapbox.auto callback
 
