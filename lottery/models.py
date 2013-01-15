@@ -4,11 +4,12 @@ from django.forms.models import model_to_dict
 
 from citydigits.settings import MEDIA_ROOT
 from geese.models import GeeseModel
+from datertots.models import  DataModel
 
 def get_upload_path(instance, filepath):
     return instance.get_upload_path(filepath)
 
-class UserProfile( models.Model ):
+class UserProfile( DataModel ):
     """This class should store information about a user who uploads interviews.
     """
     user = models.OneToOneField( User )
@@ -16,7 +17,11 @@ class UserProfile( models.Model ):
     def __unicode__(self):
         return self.name
 
-class Location( GeeseModel ):
+class LocationManager(models.GeoManager):
+    def get_by_natural_key(self, point):
+        self.get( point=point )
+
+class Location( GeeseModel,  DataModel ):
     """For storing the locations, of retailers or interviews."""
     point = models.PointField( null=True, blank=True )
     address_text = models.TextField( null=True, blank=True )
@@ -26,22 +31,34 @@ class Location( GeeseModel ):
     state = models.CharField( max_length=100, null=True, blank=True )
     zipcode = models.CharField( max_length=100, null=True, blank=True )
 
+    objects = LocationManager()
+
     def __unicode__(self):
         if self.point:
             return 'Location: %s' % str(self.point.coords)
         else:
             return self.address_text
 
-class Retailer( models.Model):
+    def natural_key(self):
+        return self.point
+
+class RetailerManager(models.Manager):
+    def get_by_natural_key(self, retailer_id):
+        self.get( retailer_id=retailer_id )
+
+class Retailer( DataModel):
     """For storing distinct retailer names and retailer IDs
     """
     name = models.CharField( max_length = 500 )
     retailer_id = models.CharField( max_length = 100 )
     location = models.ForeignKey( Location, null=True, blank=True )
+    objects = RetailerManager()
     def __unicode__(self):
         return '%s: %s' % ( self.retailer_id, self.name )
+    def natrual_key(self):
+        return self.retailer_id
 
-class SalesWeek( models.Model):
+class SalesWeek( DataModel):
     """For storing one week of sales at a particular place.
     """
     week = models.DateField()
@@ -51,7 +68,7 @@ class SalesWeek( models.Model):
     def __unicode__(self):
         return '%s, %s: $%s' % ( self.retailer.name, self.week, self.amount )
 
-class Win( models.Model ):
+class Win( DataModel ):
     """For storing a winning ticket.
     """
     date = models.DateField()
@@ -62,7 +79,11 @@ class Win( models.Model ):
         return '%s $%s at %s on %s' % ( self.game, self.amount,
                 self.retailer.name, self.date)
 
-class Interview( models.Model ):
+class InterviewManager(models.Manager):
+    def get_by_natural_key(self, slug):
+        return self.get(slug=slug)
+
+class Interview( DataModel ):
     """A class for storing information about interviews."""
     slug = models.SlugField()
     date_added = models.DateTimeField( auto_now_add=True )
@@ -73,7 +94,12 @@ class Interview( models.Model ):
     process_as = models.CharField( max_length=50, default="markdown",
             null=True, blank=True )
 
+    objects = InterviewManager()
+
     def __unicode__(self):
+        return self.slug
+
+    def natural_key(self):
         return self.slug
 
     def as_geojson_feature(self, fields=None):
@@ -88,11 +114,10 @@ class Interview( models.Model ):
         feature['id'] = self.id
         return feature
 
-
 def interviews_locations():
     return Interview.objects.select_related()
 
-class Photo( models.Model ):
+class Photo( DataModel ):
     """For storing photos related to interviews or users.
     """
     date_added = models.DateTimeField( auto_now_add=True )
@@ -105,25 +130,25 @@ class Photo( models.Model ):
     def get_upload_path( self, filename ):
         return 'lottery/photos/%s' % filename
 
-class AudioFile( models.Model ):
+class AudioFile( DataModel ):
     """for storing audio interviews"""
     pass
     class Meta:
         abstract=True
 
-class Borough( models.Model ):
+class Borough( DataModel ):
     """For storing the 5 boroughs"""
     pass
     class Meta:
         abstract=True
 
-class Neighborhood( models.Model ):
+class Neighborhood( DataModel ):
     """For storing the different neighborhoods"""
     pass
     class Meta:
         abstract = True
 
-class BlockGroup( models.Model ):
+class BlockGroup( DataModel ):
     """For storing block group data """
     pass
     class Meta:
