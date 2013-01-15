@@ -13,9 +13,19 @@ import os
 import cPickle as pickle
 import datetime
 from subprocess import call # for pg_dump and command line
+import csv
+import json
 
-from django.contrib.gis.geos import Point
+from django.forms.models import model_to_dict
+from django.db.models import ForeignKey
 from django.contrib.auth.models import User
+
+from django.contrib.gis.geos import (
+        GEOSGeometry,
+        fromstr,
+        Point
+        )
+from django.contrib.gis.measure import D
 
 import xlrd
 from datertots.core import (xls_to_dicts, writeToXls,
@@ -397,11 +407,57 @@ def read_locations():
 
 def dump_interviews():
     # python manage.py dumpdata --natural lottery.Interview > lottery/sample_data/interview_fixtures.json
-    pass
+    path = 'lottery/sample_data/lottery_interviews.json'
+    interviews = Interview.objects.all()
+    exclude = ['id','date_added','date_edited']
+    with open(path, 'w') as outfile:
+        for interview in interviews:
+            d = interview.to_json_format( natural=True, exclude=exclude)
+            outfile.write( json.dumps(d) + '\n' )
+
+def load_interviews():
+    home = '/home/bengolder/webapps/citydigits/citydigits'
+    data = 'lottery/sample_data/lottery_interviews.json'
+    #path = os.path.join(home, data)
+    path = os.path.join(data)
+    #items = json.loads(open(path, 'r').read()) # read the whole thing
+    with open(data, 'r') as f:
+        for line in f:
+            obj = json.loads(line)
+            pnt = fromstr(obj['location'])
+            d = D(ft=50)
+            locs = Location.objects.filter(point__distance_lte=(pnt, d))
+            print locs
+            #obj['location'] = Location.objects.get_by_natural_key(pt)
+            #new = Interview(**obj)
+            #print new.clean()
+            #new.save()
 
 def dump_photos():
     # python manage.py dumpdata --natural lottery.Photo > lottery/sample_data/photo_fixtures.json
-    pass
+    path = 'lottery/sample_data/lottery_photos.json'
+    photos = Photo.objects.all()
+    exclude = ['id','date_added','creators']
+    with open(path, 'w') as outfile:
+        for photo in photos:
+            d = photo.to_json_format( natural=True, exclude=exclude)
+            outfile.write( json.dumps(d) + '\n' )
+
+def load_photos():
+    home = '/home/bengolder/webapps/citydigits/citydigits'
+    data = 'lottery/sample_data/lottery_photos.json'
+    #path = os.path.join(home, data)
+    path = os.path.join(home, data)
+    #items = json.loads(open(data, 'r').read()) # read the whole thing
+    string = open(data, 'r').read()
+    print type(string)
+    print string[:200]
+    items = json.loads(open(data, 'r').read()) # read the whole thing
+    for obj in items:
+        obj['interview'] = Interview.objects.get(slug=slug)
+        new = Photo(**obj)
+        print new.clean()
+
 
 def django_file():
     import django
@@ -418,9 +474,13 @@ def django_file():
 #load_interviews()
 #load_photos()
 #read_locations()
-django_file()
+#django_file()
+#dump_interviews()
+#dump_photos()
+load_interviews()
+load_photos()
 
-print "\a"
-print "\a"
-print "\a"
+#print "\a"
+#print "\a"
+#print "\a"
 
