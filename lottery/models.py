@@ -2,6 +2,7 @@ from django.contrib.gis.db import models
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
 
+from citydigits.settings import MEDIA_ROOT
 from geese.models import GeeseModel
 
 def get_upload_path(instance, filepath):
