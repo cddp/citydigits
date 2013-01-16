@@ -106,8 +106,8 @@ $(window).ready(function(){
         // add the layer
         map.addLayer( interviewLayer );
 
-        // center the map
         {% if mapcenter %}
+        // center the map
         var center = new MM.Location({{mapcenter.lng}}, {{mapcenter.lat}});
         map.center( center );
         map.zoom(14); // zoom in 
