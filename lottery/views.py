@@ -91,7 +91,7 @@ def interview_map(request, highlight_id=None):
     interviews = Interview.objects.all()
     # get the center of the map
     multipoint = MultiPoint([i.location.geom() for i in interviews])
-    print multipoint
+    testdata = multipoint.centroid
 
     # turn the interviews into geojson features
     locations = [n.as_geojson_feature( interview_fields ) for n in interviews]
@@ -99,7 +99,7 @@ def interview_map(request, highlight_id=None):
         "menu":drop_down_menu(),
         'page_title':"Interview Map - CityDigits: Lottery",
         'interviews':json.dumps(locations),
-
+	'testdata':testdata,
     }
     template = 'lottery/interview_map.html',
     return render_to_response( template, c )

@@ -105,7 +105,7 @@ $(window).ready(function(){
         var interviewLayer = d3layer('d3-vec').data(interviews);
         // add the layer
         map.addLayer( interviewLayer );
-
+	var testdata = "{{testdata}}";
         {% if mapcenter %}
         // center the map
         var center = new MM.Location({{mapcenter.lng}}, {{mapcenter.lat}});
