@@ -23,7 +23,8 @@ from django.contrib.auth.models import User
 from django.contrib.gis.geos import (
         GEOSGeometry,
         fromstr,
-        Point
+        Point,
+        MultiPoint,
         )
 from django.contrib.gis.measure import D
 
@@ -458,6 +459,11 @@ def load_photos():
         new = Photo(**obj)
         print new.clean()
 
+def test_geos():
+    locations = Location.objects.all()[:5]
+    points = [l.geom() for l in locations]
+    multipoint = MultiPoint( points )
+    print multipoint.centroid
 
 def django_file():
     import django
@@ -477,8 +483,9 @@ def django_file():
 #django_file()
 #dump_interviews()
 #dump_photos()
-load_interviews()
-load_photos()
+#load_interviews()
+#load_photos()
+#test_geos()
 
 #print "\a"
 #print "\a"
