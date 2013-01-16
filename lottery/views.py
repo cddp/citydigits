@@ -5,6 +5,8 @@ from pprint import pprint
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core import serializers
 
+from django.contrib.gis.geos import *
+
 from lottery.models import Interview, Location
 
 # drop down menu contents
@@ -87,11 +89,17 @@ def interview_map(request, highlight_id=None):
             'location_id',
             )
     interviews = Interview.objects.all()
+    # get the center of the map
+    multipoint = MultiPoint([i.location.geom() for i in interviews])
+    print multipoint
+
+    # turn the interviews into geojson features
     locations = [n.as_geojson_feature( interview_fields ) for n in interviews]
     c = {
         "menu":drop_down_menu(),
         'page_title':"Interview Map - CityDigits: Lottery",
         'interviews':json.dumps(locations),
+
     }
     template = 'lottery/interview_map.html',
     return render_to_response( template, c )
