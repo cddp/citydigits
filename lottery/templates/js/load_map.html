@@ -108,9 +108,9 @@ $(window).ready(function(){
 	var testdata = "{{testdata}}";
         {% if mapcenter %}
         // center the map
-        var center = new MM.Location({{mapcenter.lng}}, {{mapcenter.lat}});
+        var center = new MM.Location({{mapcenter.1}}, {{mapcenter.0}});
         map.center( center );
-        map.zoom(14); // zoom in 
+        map.zoom(17); // zoom in 
         {% endif %}
 
         console.log( map.layers );
