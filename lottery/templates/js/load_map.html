@@ -56,12 +56,16 @@ function d3GeoJsonLayer(className){
             .style("margin-left", "0px")
             .style("margin-top", "0px");
         // if these are points, draw circles
-        if (layer.featureType == 'Point'){
-            // default radius is 7
-            layer.drawPoints(7);
+        if (layer.customDrawFunction == null){ // no special drawing function
+            if (layer.featureType == 'Point'){
+                // default radius is 7
+                layer.drawPoints(7);
+            } else {
+                // but if they are not points, draw paths
+                layer.drawPaths();
+            }
         } else {
-            // but if they are not points, draw paths
-            layer.drawPaths();
+            layer.customDrawFunction(layer.features);
         }
     }; // end draw method
 
@@ -131,7 +135,6 @@ function d3GeoJsonLayer(className){
         /* this method allows for setting a custom draw function
            the draw function must take the svg g element, and the geoJson
            collection for this layer
-           as an argument and must return a d3 selection
         */
         layer.customDrawFunction = drawFunction;
     };
@@ -162,6 +165,25 @@ function moveToDot(e){
     map.center( {lat:coords[1], lon:coords[0]}, true );
 }
 
+function interviewMarkerData(g, collection){
+	var features = g.selectAll("g")
+		.data(collection.features)
+		.enter()
+		.append("g");
+	features.append("polygon")
+		.attr("class", "interview-marker")
+		.attr("points", 
+				"26,0 0,0 0,26 10,26 10,36 14,26 26,26 ");
+    return features;
+}
+function interviewMarkerDraw( features ){
+	features.attr("transform",function(d){
+		var x = geoJsonProject(d)[0] - 10;
+		var y = geoJsonProject(d)[1] - 36;
+		return "translate("+x+","+y+")";
+		});
+}
+
 $(window).ready(function(){
     // interview location geojsons
     var interviews = {{interviews}};
@@ -173,6 +195,8 @@ $(window).ready(function(){
         // make the layer
         var interviewLayer = d3GeoJsonLayer('d3-vec')
         // edit draw and data functions
+		interviewLayer.customData( interviewMarkerData )
+		interviewLayer.customDraw( interviewMarkerDraw )
         // add data
         interviewLayer.data(interviews);
         // add listeners
