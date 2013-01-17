@@ -91,9 +91,12 @@ def interview_map(request, highlight_id=None):
     interviews = Interview.objects.all()
 
     if highlight_id:
-        interview = [i for i in interviews if i.id == highlight_id][0]
-        # use this point as the center
-        center = interview.location.geom()
+        for i in interviews:
+            print i.id
+            if str(i.id) == highlight_id:
+                interview = i
+                # use this point as the center
+                center = interview.location.geom()
     else:
         interview = None
         # center on the centroid of all the points
@@ -104,7 +107,7 @@ def interview_map(request, highlight_id=None):
     c = {
         "menu":drop_down_menu(),
         'page_title':"Interview Map - CityDigits: Lottery",
-        'interview': interview,
+        'selected_interview': highlight_id,
         'interviews':json.dumps(locations),
         'mapcenter':center.coords,
     }

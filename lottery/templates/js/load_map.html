@@ -3,6 +3,7 @@
 
 // global variables
 var map;
+var selectedInterview;
 
 function projectGeoToMap(coords){
     // this function projects a pair of geographic coords to 
@@ -170,23 +171,43 @@ function interviewMarkerData(g, collection){
 		.data(collection.features)
 		.enter()
 		.append("g");
-	features.append("polygon")
+	features.append("a")
+		.attr("xlink:href", function(d){
+			// add links for now, this will change later
+			if (d.id == selectedInterview){
+				return "/lottery/map-split/"+d.id+"/";
+			} else {
+				return "/lottery/map/"+d.id+"/";
+			}}).append("polygon")
 		.attr("class", "interview-marker")
-		.attr("points", 
-				"26,0 0,0 0,26 10,26 10,36 14,26 26,26 ");
+		.attr("points", function(d){
+			if (d.id == selectedInterview){
+				return "204,0 0,0 0,98 94,98 94,108 98,98 204,98 ";
+			} else {
+				return "26,0 0,0 0,26 10,26 10,36 14,26 26,26 ";
+			}});
     return features;
 }
 function interviewMarkerDraw( features ){
 	features.attr("transform",function(d){
-		var x = geoJsonProject(d)[0] - 10;
-		var y = geoJsonProject(d)[1] - 36;
+			if (d.id == selectedInterview){
+				var x = geoJsonProject(d)[0] - 94;
+				var y = geoJsonProject(d)[1] - 108;
+			} else {
+				var x = geoJsonProject(d)[0] - 10;
+				var y = geoJsonProject(d)[1] - 36;
+			}
 		return "translate("+x+","+y+")";
 		});
+
 }
 
 $(window).ready(function(){
     // interview location geojsons
     var interviews = {{interviews}};
+	{% if selected_interview %}
+	selectedInterview = {{selected_interview}};
+	{% endif %}
 
     var basemap = 'sw2279.NewYork';
     
