@@ -1,6 +1,9 @@
 {% autoescape off %}
 <script type="text/javascript">
 
+// global variables
+var map;
+
 function d3layer(className){
     // this demonstrates an important hook for creating layer types for Modest
     // Maps. It has a draw function
@@ -19,6 +22,7 @@ function d3layer(className){
     var g = svg.append('g');
 
     layer.parent = div.node();
+    layer.map = map;
 
     layer.project = function(x){
         var point = layer.map.locationPoint({lat:x[1],lon:x[0]});
@@ -74,7 +78,7 @@ function d3layer(className){
         // this also might need to be changed for circles
         feature = g.selectAll("circle")
             .data(collection.features)
-            .enter().append("circle")
+            .enter().append("circle").on('click', moveToDot);
         return layer;
     };
 
@@ -87,12 +91,17 @@ function d3layer(className){
                 new MM.Location(bounds[0][1], bounds[0][0]),
                 new MM.Location(bounds[1][1], bounds[1][0])
                 );
-        console.log( ext );
     };
 
     return layer;
 }
 
+function moveToDot(e){
+    // When something is clicked, we want to move the map
+    var coords = this.__data__.geometry.coordinates;
+    // get the point.
+    map.center( {lat:coords[1], lon:coords[0]}, true );
+}
 
 $(window).ready(function(){
     // interview location geojsons
@@ -100,12 +109,15 @@ $(window).ready(function(){
 
     var basemap = 'sw2279.NewYork';
     
-    mapbox.auto('map', basemap, function(map){
+    mapbox.auto('map', basemap, function(obj){
+        map = obj;
         // make the layer
         var interviewLayer = d3layer('d3-vec').data(interviews);
         // add the layer
         map.addLayer( interviewLayer );
-	var testdata = "{{testdata}}";
+
+        var testdata = "{{testdata}}";
+
         {% if mapcenter %}
         // center the map
         var center = new MM.Location({{mapcenter.1}}, {{mapcenter.0}});
@@ -113,7 +125,6 @@ $(window).ready(function(){
         map.zoom(17); // zoom in 
         {% endif %}
 
-        console.log( map.layers );
     }); // end mapbox.auto callback
 
 }); // end window ready function
