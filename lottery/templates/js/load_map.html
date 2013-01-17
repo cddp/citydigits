@@ -4,6 +4,27 @@
 // global variables
 var map;
 
+function d3mapObj(){
+    var obj = {};
+    obj.draw = function(){
+    // this will be called when the map is moved
+    // this is for redrawing
+        console.log('drawing', obj);
+    }
+    obj.data = function(data){
+        // this is an init function
+        console.log( data );
+    }
+}
+
+function projectGeoToMap(coords){
+    var point = map.locationPoint({lat:coords[1],lon:coords[0]});
+    return [point.x, point.y];
+}
+function geoJsonProject(geoJson){
+    return projectGeoToMap(geoJson.geometry.coordinates);
+}
+
 function d3layer(className){
     // this demonstrates an important hook for creating layer types for Modest
     // Maps. It has a draw function
@@ -24,10 +45,7 @@ function d3layer(className){
     layer.parent = div.node();
     layer.map = map;
 
-    layer.project = function(x){
-        var point = layer.map.locationPoint({lat:x[1],lon:x[0]});
-        return [point.x, point.y];
-    }
+    layer.project = projectGeoToMap;
 
     var first = true; // I have no idea what this is for
     layer.draw = function(){
@@ -43,8 +61,9 @@ function d3layer(className){
         // feature is a d3 selection
         var coords = function(d){ 
             return layer.project(d.geometry.coordinates);};
-        feature.attr('cy', function(d){ return coords(d)[1];});
-        feature.attr('cx', function(d){ return coords(d)[0];});
+
+        feature.attr('cy', function(d){ return geoJsonProject(d)[1];});
+        feature.attr('cx', function(d){ return geoJsonProject(d)[0];});
         feature.attr('r', function(d){ return 6; });
     };
 
@@ -98,6 +117,8 @@ function d3layer(className){
 
 function moveToDot(e){
     // When something is clicked, we want to move the map
+    // this.__data__ accesses the data associated by d3
+    // here, this.__data__ is a geojson
     var coords = this.__data__.geometry.coordinates;
     // get the point.
     map.center( {lat:coords[1], lon:coords[0]}, true );

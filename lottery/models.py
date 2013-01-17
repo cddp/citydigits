@@ -109,7 +109,7 @@ class Interview( DataModel ):
         feature['properties'] = model_to_dict(self, fields)
         feature['properties']['location_id'] = location.id
         if fields == None or 'body' in fields:
-            asciibody = self.body[:200].encode('utf-8')
+            asciibody = self.body.encode('utf-8')
             feature['properties']['body'] = asciibody
         feature['id'] = self.id
         return feature
