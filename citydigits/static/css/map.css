@@ -157,11 +157,12 @@ a:hover {
 #map .d3-vec {
   position: relative;
 }
-#map svg circle {
+#map polygon.interview-marker {
   fill: #b00951;
+  opacity: 0.8;
 }
-#map svg circle:hover {
+#map polygon.interview-marker:hover {
   cursor: pointer;
   stroke: #000000;
-  stroke-width: 3;
+  stroke-width: 2;
 }
