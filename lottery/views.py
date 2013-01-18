@@ -58,6 +58,8 @@ def public_splash(request):
         'lottery/interview_photo_grid.html',
             ]
     template = random.choice( templates )
+    if 'map' not in template:
+        c['interviews'] = Interview.objects.all()
     return render_to_response( template, c )
 
 def user_home(request):
