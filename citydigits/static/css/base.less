@@ -82,6 +82,16 @@ a {
   }
 }
 
+.column {
+  padding-top: 2 * @vu;
+  .cols(4);
+  p {
+    .xpad();
+    margin-bottom: @vu;
+  }
+}
+
+
 #contents {
   .xpad();
 }
@@ -150,7 +160,6 @@ a {
     li{img{opacity: 0.5;}}
   }
 }
-
 // Interview detail CSS
 .interview {
   margin: 0 auto;

@@ -72,6 +72,15 @@ a:hover {
 #header a:hover {
   color: #b00951;
 }
+.column {
+  padding-top: 72px;
+  width: 756px;
+}
+.column p {
+  padding-left: 12px;
+  padding-right: 12px;
+  margin-bottom: 36px;
+}
 #contents {
   padding-left: 12px;
   padding-right: 12px;
