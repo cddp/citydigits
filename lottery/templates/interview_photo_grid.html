@@ -5,7 +5,7 @@
   {% if interviews %}
   <ul class="photogrid">
     {% for interview in interviews %}
-    <a class="photogrid-link" href="/lottery/interviews/{{interview.id}}/">
+    <a class="photogrid-link" href="/lottery/map-split/{{interview.id}}/">
       <li class="photogrid-item">
       <div class="interview-overlay" style="display: none;">
         {{interview.body|truncatewords:15}}
