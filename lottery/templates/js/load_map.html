@@ -207,10 +207,12 @@ function interviewMarkerDraw( features ){
 function setMapSize(){
     w = $(document).width();
     h = $(window).height();
+    console.log(h);
     $('#map').height(h);
 }
 
 $(window).ready(function(){
+    setMapSize();
     // interview location geojsons
     var interviews = {{interviews}};
 	{% if selected_interview %}
@@ -221,7 +223,6 @@ $(window).ready(function(){
     
     mapbox.auto('map', basemap, function(obj){
         map = obj;
-        setMapSize();
         // make the layer
         var interviewLayer = d3GeoJsonLayer('d3-vec')
         // edit draw and data functions
