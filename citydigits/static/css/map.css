@@ -158,11 +158,10 @@ a:hover {
   position: relative;
 }
 #map polygon.interview-marker {
-  fill: #b00951;
-  opacity: 0.8;
+  fill: #000000;
+  opacity: 0.5;
 }
 #map polygon.interview-marker:hover {
   cursor: pointer;
-  stroke: #000000;
-  stroke-width: 2;
+  opacity: 1.0;
 }

@@ -51,8 +51,8 @@ def public_splash(request):
         "menu":drop_down_menu(),
         'page_title':"Home - CityDigits: Lottery",
         'splash': True,
-        'interviews':Interview.objects.all(),
     }
+    c.update( map_context(choose_random=True) )
     templates = [
         'lottery/interview_map.html',
         'lottery/interview_photo_grid.html',
@@ -81,37 +81,67 @@ def interview_photo_grid(request):
     template = 'lottery/interview_photo_grid.html',
     return render_to_response( template, c )
 
-def interview_map(request, highlight_id=None):
+def map_context(highlight_id=None, choose_random=False):
     # get the interviews
     interview_fields = (
             'id',
-            'body',
             'location_id',
             )
     interviews = Interview.objects.all()
-
+    photos = [i.photo_set.all()[0] for i in interviews]
     if highlight_id:
-        for i in interviews:
-            print i.id
-            if str(i.id) == highlight_id:
-                interview = i
-                # use this point as the center
-                center = interview.location.geom()
+        # find the correct interview
+        interview = [i for i in interviews if str(i.id)==highlight_id][0]
+        # use this point as the center
+        center = interview.location.geom()
+    elif choose_random:
+        # random highlight for splash page
+        interview = random.choice(interviews)
+        center = interview.location.geom()
+        highlight_id = interview.id
     else:
+        # no highlighted interview
         interview = None
         # center on the centroid of all the points
         center = MultiPoint([i.location.geom() for i in interviews]).centroid
-
     # turn the interviews into geojson features
     locations = [n.as_geojson_feature( interview_fields ) for n in interviews]
-    c = {
-        "menu":drop_down_menu(),
-        'page_title':"Interview Map - CityDigits: Lottery",
+    # add the photos
+    for i, loc in enumerate(locations):
+        loc['properties']['photo'] = str(photos[i].image)
+    # return a context deictionary
+    return {
         'selected_interview': highlight_id,
         'interviews':json.dumps(locations),
         'mapcenter':center.coords,
+        }
+
+def interview_map(request, highlight_id=None):
+    c = {
+        "menu":drop_down_menu(),
+        'page_title':"Interview Map - CityDigits: Lottery",
     }
+    c.update( map_context( highlight_id ) )
     template = 'lottery/interview_map.html',
+    return render_to_response( template, c )
+
+def interview_split(request, interview_id):
+    c = {
+        "menu":drop_down_menu(),
+        'page_title':"Interview Map Detail - CityDigits: Lottery",
+    }
+    c.update( map_context( interview_id ) )
+    template = 'lottery/interview_split.html',
+    return render_to_response( template, c )
+
+def interview_detail(request, interview_id):
+    interview = Interview.objects.get(id=interview_id)
+    c = {
+        "menu":drop_down_menu(),
+        'page_title':"Interview %s - CityDigits: Lottery: Lottery" % interview_id,
+        'interview':interview,
+    }
+    template = 'lottery/interview_detail.html',
     return render_to_response( template, c )
 
 def edit_map(request):
@@ -136,20 +166,6 @@ def public_tutorial(request):
     pass
 
 def user_tutorial(request):
-    pass
-
-
-def interview_detail(request, interview_id):
-    interview = Interview.objects.get(id=interview_id)
-    c = {
-        "menu":drop_down_menu(),
-        'page_title':"Interview %s - CityDigits: Lottery: Lottery" % interview_id,
-        'interview':interview,
-    }
-    template = 'lottery/interview_detail.html',
-    return render_to_response( template, c )
-
-def interview_split(request, interview_id):
     pass
 
 def interview_map_detail(request, interview_id):

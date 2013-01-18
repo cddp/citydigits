@@ -182,8 +182,10 @@ function interviewMarkerData(g, collection){
 		.attr("class", "interview-marker")
 		.attr("points", function(d){
 			if (d.id == selectedInterview){
+				// big marker
 				return "204,0 0,0 0,98 94,98 94,108 98,98 204,98 ";
 			} else {
+				// little marker
 				return "26,0 0,0 0,26 10,26 10,36 14,26 26,26 ";
 			}});
     return features;
