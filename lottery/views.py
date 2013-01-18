@@ -8,6 +8,7 @@ from django.core import serializers
 from django.contrib.gis.geos import *
 
 from lottery.models import Interview, Location
+from lottery.sample_data import sample_interview
 
 # drop down menu contents
 def drop_down_menu():
@@ -59,7 +60,7 @@ def public_splash(request):
             ]
     template = random.choice( templates )
     if 'map' not in template:
-        c['interviews'] = Interview.objects.all()
+        c['interviews'] = list(Interview.objects.all())
         random.shuffle(c['interviews'])
     return render_to_response( template, c )
 
@@ -81,9 +82,13 @@ def interview_photo_grid(request):
         'page_title':"Interviews - CityDigits: Lottery",
         'interviews':Interview.objects.all(),
     }
-    random.shuffle(c['interviews'])
+    random.shuffle(list(c['interviews']))
     template = 'lottery/interview_photo_grid.html',
     return render_to_response( template, c )
+
+def interview_detail_context(int_id):
+    return {'interview':sample_interview}
+
 
 def map_context(highlight_id=None, choose_random=False):
     # get the interviews
@@ -113,11 +118,12 @@ def map_context(highlight_id=None, choose_random=False):
     # add the photos
     for i, loc in enumerate(locations):
         loc['properties']['photo'] = str(photos[i].image)
-    # return a context deictionary
+    # return a context dictionary
     return {
         'selected_interview': highlight_id,
         'interviews':json.dumps(locations),
         'mapcenter':center.coords,
+        'interview':interview,
         }
 
 def interview_map(request, highlight_id=None):
@@ -135,16 +141,17 @@ def interview_split(request, interview_id):
         'page_title':"Interview Map Detail - CityDigits: Lottery",
     }
     c.update( map_context( interview_id ) )
+    c.update( interview_detail_context( interview_id ) )
     template = 'lottery/interview_split.html',
     return render_to_response( template, c )
 
 def interview_detail(request, interview_id):
-    interview = Interview.objects.get(id=interview_id)
+    interview = sample_interview
     c = {
         "menu":drop_down_menu(),
         'page_title':"Interview %s - CityDigits: Lottery: Lottery" % interview_id,
-        'interview':interview,
     }
+    c.update( interview_detail_context( interview_id ) )
     template = 'lottery/interview_detail.html',
     return render_to_response( template, c )
 

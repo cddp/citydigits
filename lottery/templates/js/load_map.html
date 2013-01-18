@@ -2,8 +2,9 @@
 <script type="text/javascript">
 
 // global variables
-var map;
-var selectedInterview;
+var map,
+    w, h,
+    selectedInterview;
 
 function projectGeoToMap(coords){
     // this function projects a pair of geographic coords to 
@@ -24,7 +25,6 @@ function d3GeoJsonLayer(className){
     */
     var layer = {}, 
         collection; 
-
     // setup nodes and parent
     // this node will be appended to the map div by 
     // map.addLayer()
@@ -50,6 +50,7 @@ function d3GeoJsonLayer(className){
         var path = d3.geo.path().projection( projectGeoToMap );
         layer.features.attr("d", path);
     };
+
     layer.draw = function(){
         // adjust the svg to the layer
         svg.attr("width", layer.map.dimensions.x)
@@ -201,7 +202,12 @@ function interviewMarkerDraw( features ){
 			}
 		return "translate("+x+","+y+")";
 		});
+}
 
+function setMapSize(){
+    w = $(document).width();
+    h = $(window).height();
+    $('#map').height(h);
 }
 
 $(window).ready(function(){
@@ -215,6 +221,7 @@ $(window).ready(function(){
     
     mapbox.auto('map', basemap, function(obj){
         map = obj;
+        setMapSize();
         // make the layer
         var interviewLayer = d3GeoJsonLayer('d3-vec')
         // edit draw and data functions

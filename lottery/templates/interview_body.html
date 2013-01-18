@@ -1,9 +1,26 @@
 {% load static %}
 {% load markymark %}
 
-<img class="interview-photo" src="{% get_media_prefix %}{{interview.photo_set.all.0.image}}" />
-<div class="interview-text">
-    {% autoescape off %}
-    {{interview.body|markymarkup}}
-    {% endautoescape %}
+<div class="interview-column">
+    <img class="interview-photo" src="http://localhost/media/citydigits/lottery/photos/Dennis-Potter-005.jpg">
+    <div class="interview-description">
+        {{interview.description}}
+    </div>
+    {% for question, answers in interview.questions.items %}
+    <div class="questionblock">
+        <div class="question">
+            {{question}}
+        </div>
+        <div class="answer_audio">
+            <img class="audio-example" src="http://localhost/static/citydigits/img/audio-inverse.png" />
+        </div>
+        <div class="quotes">
+        {% for answer in answers %}
+            <div class="answer-quote">
+            <span class="qm">“</span>{{answer}}<span class="qm">”</span>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
 </div>
