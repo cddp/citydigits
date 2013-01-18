@@ -60,6 +60,7 @@ def public_splash(request):
     template = random.choice( templates )
     if 'map' not in template:
         c['interviews'] = Interview.objects.all()
+        random.shuffle(c['interviews'])
     return render_to_response( template, c )
 
 def user_home(request):
@@ -80,6 +81,7 @@ def interview_photo_grid(request):
         'page_title':"Interviews - CityDigits: Lottery",
         'interviews':Interview.objects.all(),
     }
+    random.shuffle(c['interviews'])
     template = 'lottery/interview_photo_grid.html',
     return render_to_response( template, c )
 
