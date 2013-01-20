@@ -21,6 +21,14 @@
     </div>
     <div class="pull-handle">
         {% include "lottery/svg/chevron" %}
+        {% if is_authenticated %}
+        <div class="usercontrols">
+            {% include "lottery/svg/add_marker.svg" %}
+            {% include "lottery/svg/document.svg" %}
+            {% include "lottery/svg/microphone.svg" %}
+            {% include "lottery/svg/camera_simple.svg" %}
+        </div>
+        {% endif %}
     </div>
 </div>
 

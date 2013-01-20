@@ -43,6 +43,11 @@ def user_menu():
             }
     return d
 
+def auth(request):
+    return {
+            'is_authenticated':True,
+            }
+
 def public_splash(request):
     # if authenticated, go to user home
     #if request.user.is_authenticated:
@@ -54,6 +59,7 @@ def public_splash(request):
         'splash': True,
     }
     c.update( map_context(choose_random=True) )
+    c.update( auth( request ) )
     templates = [
         'lottery/interview_map.html',
         'lottery/interview_photo_grid.html',
@@ -63,9 +69,6 @@ def public_splash(request):
         c['interviews'] = list(Interview.objects.all())
         random.shuffle(c['interviews'])
     return render_to_response( template, c )
-
-def user_home(request):
-    pass
 
 def about(request):
     c = {
@@ -82,6 +85,7 @@ def interview_photo_grid(request):
         'page_title':"Interviews - CityDigits: Lottery",
         'interviews':Interview.objects.all(),
     }
+    c.update( auth( request ) )
     random.shuffle(list(c['interviews']))
     template = 'lottery/interview_photo_grid.html',
     return render_to_response( template, c )
@@ -132,6 +136,7 @@ def interview_map(request, highlight_id=None):
         'page_title':"Interview Map - CityDigits: Lottery",
     }
     c.update( map_context( highlight_id ) )
+    c.update( auth( request ) )
     template = 'lottery/interview_map.html',
     return render_to_response( template, c )
 
@@ -142,6 +147,7 @@ def interview_split(request, interview_id):
     }
     c.update( map_context( interview_id ) )
     c.update( interview_detail_context( interview_id ) )
+    c.update( auth( request ) )
     template = 'lottery/interview_split.html',
     return render_to_response( template, c )
 
