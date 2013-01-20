@@ -110,11 +110,31 @@ a:hover {
   text-align: center;
   cursor: pointer;
 }
+.pull-down-menu .pull-handle div.user_controls {
+  position: absolute;
+  margin-left: 0;
+  padding-left: 12px;
+}
+.pull-down-menu .pull-handle div.user_controls .control-button {
+  float: left;
+  height: 36px;
+  width: 36px;
+  padding-top: 8px;
+  margin-right: 12px;
+}
+.pull-down-menu .pull-handle div.user_controls .control-button svg {
+  fill: #fcfcfc;
+  opacity: 0.7;
+}
+.pull-down-menu .pull-handle div.user_controls .control-button:hover svg {
+  fill: #b00951;
+  opacity: 1.2;
+}
 .pull-down-menu .pull-handle svg.chevron {
   fill: #fcfcfc;
   opacity: 0.2;
 }
-.pull-down-menu .pull-handle:hover svg {
+.pull-down-menu .pull-handle:hover svg.chevron {
   fill: #b00951;
   opacity: 0.7;
 }
