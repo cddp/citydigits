@@ -110,7 +110,7 @@ a:hover {
   text-align: center;
   cursor: pointer;
 }
-.pull-down-menu .pull-handle svg {
+.pull-down-menu .pull-handle svg.chevron {
   fill: #fcfcfc;
   opacity: 0.2;
 }

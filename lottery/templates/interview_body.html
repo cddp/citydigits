@@ -6,11 +6,14 @@
     <div class="interview-description">
         {{interview.description}}
     </div>
+    <!--to every question, add a way to add a recording-->
     {% for question, answers in interview.questions.items %}
     <div class="questionblock">
         <div class="question">
             {{question}}
         </div>
+        {% if is_authenticated %}
+        {% endif %}
         <div class="answer_audio">
             <img class="audio-example" src="http://localhost/static/citydigits/img/audio-inverse.png" />
         </div>

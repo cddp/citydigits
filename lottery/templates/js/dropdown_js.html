@@ -4,8 +4,10 @@ function slideMenu(e, speed){
     // slide-collapse the menu columns, leaving only the handle
     $(".pull-down-menu .columns").slideToggle( speed||170 );
     // flip the little arrow thing
-    var chev = $("g.chevron");
+    var chev = $("svg.chevron g");
+    console.log( chev.length );
     var t = chev.attr("transform");
+    console.log( t);
     if (t===undefined||t==="rotate(0)"){
         chev.attr("transform", "rotate(180, 18, 21)");
     } else {
@@ -14,6 +16,7 @@ function slideMenu(e, speed){
 }
 
 $(".pull-handle").click(slideMenu);
+$(".control-button g").attr("transform", "scale(0.8, 0.8)");
 
 {% if not splash %}
 

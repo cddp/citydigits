@@ -85,10 +85,6 @@ a:hover {
   font-size: 0.7em;
   line-height: 20px;
 }
-#contents {
-  padding-left: 12px;
-  padding-right: 12px;
-}
 #map {
   position: absolute;
   left: 0;
@@ -114,7 +110,7 @@ a:hover {
   text-align: center;
   cursor: pointer;
 }
-.pull-down-menu .pull-handle svg {
+.pull-down-menu .pull-handle svg.chevron {
   fill: #fcfcfc;
   opacity: 0.2;
 }
@@ -126,6 +122,8 @@ a:hover {
   transform: rotate(180, 18, 18);
 }
 .photogrid {
+  padding-left: 12px;
+  padding-right: 12px;
   margin-top: 72px;
 }
 .photogrid li {
