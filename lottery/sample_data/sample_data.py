@@ -1,3 +1,17 @@
+descriptions = [
+        "Cordelia Turnbough, retailer at Haris News",
+        "Aileen Crean, retailer at Gazali Deli",
+        "Warren Standard, retailer at Wing Hing Loon Grocery Store",
+        "Zana Nason, retailer at Diaz Grocery",
+        "Reyes Rote, retailer at Y S Bay Pantry",
+        "Darla Kile, retailer at Unionport Stationery",
+        "Lai Sorg, retailer at Saqib Luncheonette",
+        "Erwin Mier, retailer at Fine Foods",
+        "Morton Phillippi, retailer at 7-ELEVEN",
+        "Lawrence Valasquez, retailer at Gene's Luncheonette",
+        "Kirk Spade, retailer at Bolla Corp",
+        "Carmela Worthley, retailer at Orlino's Deli",
+        ]
 
 questions = [
 "How many NY Lotto tickets do you sell each week?",
@@ -20,17 +34,17 @@ quotes = [
         ]
 
 audios = [
-    "/lottery/audio/17.mp3",
-    "/lottery/audio/178.mp3",
-    "/lottery/audio/2226.mp3",
-    "/lottery/audio/2228.mp3",
-    "/lottery/audio/2514.mp3",
-    "/lottery/audio/29.mp3",
-    "/lottery/audio/2958.mp3",
-    "/lottery/audio/37.mp3",
-    "/lottery/audio/47.mp3",
-    "/lottery/audio/55.mp3",
-    "/lottery/audio/61.mp3",
-    "/lottery/audio/71.mp3",
-    "/lottery/audio/95.mp3",
+    "lottery/audio/17.mp3",
+    "lottery/audio/178.mp3",
+    "lottery/audio/2226.mp3",
+    "lottery/audio/2228.mp3",
+    "lottery/audio/2514.mp3",
+    "lottery/audio/29.mp3",
+    "lottery/audio/2958.mp3",
+    "lottery/audio/37.mp3",
+    "lottery/audio/47.mp3",
+    "lottery/audio/55.mp3",
+    "lottery/audio/61.mp3",
+    "lottery/audio/71.mp3",
+    "lottery/audio/95.mp3",
     ]

@@ -130,6 +130,9 @@ class Photo( DataModel ):
     def get_upload_path( self, filename ):
         return 'lottery/photos/%s' % filename
 
+    def natural_key(self):
+        return self.image.url
+
 class AudioFile( DataModel ):
     """for storing audio interviews"""
     pass

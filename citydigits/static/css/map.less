@@ -5,13 +5,20 @@
   .d3-vec {
     position: relative;
   }
+  circle.marker-base {
+    fill: @magenta;
+    opacity: 0.2;
+    &:hover {
+      cursor: pointer;
+      opacity: 1.0;
+    }
+  }
   polygon.interview-marker {
     fill: @black;
     opacity: 0.5;
     &:hover {
       cursor: pointer;
       opacity: 1.0;
-      // fill: lighten(@black, 25%);
     }
   }
 }

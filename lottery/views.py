@@ -7,8 +7,11 @@ from django.core import serializers
 
 from django.contrib.gis.geos import *
 
-from lottery.models import Interview, Location
+from lottery.models import Interview, Location, Photo
+
+from django.forms.models import model_to_dict
 from lottery.sample_data import sample_data as sample
+from lottery.sample_data import sample_interview
 
 # drop down menu contents
 def drop_down_menu():
@@ -44,23 +47,52 @@ def user_menu():
     return d
 
 def auth(request):
-    return {
-            'is_authenticated':True,
-            }
+    return { 'is_authenticated':True, }
+
+def pick_a_few(things):
+    selected = []
+    amounts = [1, 1, 0, random.randint(0,3)]
+    amount = random.choice(amounts)
+    for i in range(amount):
+        selected.append( random.choice(things) )
+    return selected
+
+def is_complete_interview(interview):
+    if not interview.photos:
+        return False
 
 def interview_test_data():
     d = {}
     interviews = Interview.objects.all()
+    interview_dicts = [i.to_dict( exclude=['body']) for i in interviews]
+    locations = []
+    for i in interviews:
+        location = i.location.to_dict()
+        locations.append(location)
     photos = Photo.objects.all()
+    photos = [p.to_dict(True, exclude=['date_added']) for p in photos]
+    descriptions = sample.descriptions
     audios = sample.audios
     questions = sample.questions
     quotes = sample.quotes
     # make sure we have interview jsons
     # tie the photos together
-    # tie the audios together
-    # tie the quotes together
-    d['interviews'] = interviews
-    d['questions'] = questions
+    for i in interview_dicts:
+        i['description'] = random.choice([random.choice(descriptions), ""])
+        i['photos'] = pick_a_few(photos)
+        i['questions'] = []
+        for n, q in enumerate(questions):
+            question = {'id':n,'text':q,'audios':[]}
+            these_mp3s = pick_a_few(audios)
+            for a in these_mp3s:
+                obj = {}
+                obj['url'] = a
+                obj['quotes'] = pick_a_few(quotes)
+                question['audios'].append(obj)
+            i['questions'].append(question)
+    d['interviews'] = interview_dicts
+    d['interviewJsons'] = json.dumps(interview_dicts)
+    d['questionJsons'] = json.dumps(questions)
     return d
 
 def public_splash(request):
@@ -105,8 +137,10 @@ def interview_photo_grid(request):
     template = 'lottery/interview_photo_grid.html',
     return render_to_response( template, c )
 
-def interview_detail_context(int_id):
-    return {'interview':sample_interview}
+def interview_detail_context(c):
+    return {
+            'interview':random.choice(c['interviews'])
+                }
 
 
 def map_context(highlight_id=None, choose_random=False):
@@ -136,11 +170,11 @@ def map_context(highlight_id=None, choose_random=False):
     locations = [n.as_geojson_feature( interview_fields ) for n in interviews]
     # add the photos
     for i, loc in enumerate(locations):
-        loc['properties']['photo'] = str(photos[i].image)
+        loc['properties']['photo'] = photos[i].image.url
     # return a context dictionary
     return {
         'selected_interview': highlight_id,
-        'interviews':json.dumps(locations),
+        'interviewGeoJsons':json.dumps(locations),
         'mapcenter':center.coords,
         'interview':interview,
         }
@@ -150,6 +184,7 @@ def interview_map(request, highlight_id=None):
         "menu":drop_down_menu(),
         'page_title':"Interview Map - CityDigits: Lottery",
     }
+    c.update( interview_test_data() )
     c.update( map_context( highlight_id ) )
     c.update( auth( request ) )
     template = 'lottery/interview_map.html',
@@ -161,7 +196,8 @@ def interview_split(request, interview_id):
         'page_title':"Interview Map Detail - CityDigits: Lottery",
     }
     c.update( map_context( interview_id ) )
-    c.update( interview_detail_context( interview_id ) )
+    c.update( interview_test_data() )
+    c.update( interview_detail_context( c ) )
     c.update( auth( request ) )
     template = 'lottery/interview_split.html',
     return render_to_response( template, c )

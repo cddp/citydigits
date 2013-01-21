@@ -2,28 +2,65 @@
 {% load markymark %}
 
 <div class="interview-column">
-    <img class="interview-photo" src="{% get_media_prefix %}lottery/photos/Dennis-Potter-005.jpg">
-    <div class="interview-description">
-        {{interview.description}}
-    </div>
-    <!--to every question, add a way to add a recording-->
-    {% for question, answers in interview.questions.items %}
-    <div class="questionblock">
-        <div class="question">
-            {{question}}
+    {% if interview.photos %}
+        <div class="interview-photo-wrapper">
+            <!--show the first image-->
+            <img class="interview-photo" src="{{interview.photos.0.image}}">
         </div>
+    {% else %}
         {% if is_authenticated %}
-        {% endif %}
-        <div class="answer_audio">
-            <img class="audio-example" src="{% get_static_prefix %}img/audio-inverse.png" />
-        </div>
-        <div class="quotes">
-        {% for answer in answers %}
-            <div class="answer-quote">
-            <span class="qm">“</span>{{answer}}<span class="qm">”</span>
+        <!--or show an empty photo input-->
+        <div class="interview-photo-input">
+            <div class="bigicon">
+                {% include "lottery/svg/camera_simple.svg" %}
             </div>
-        {% endfor %}
         </div>
+        {% endif %}
+    {% endif %}
+    <div class="interview-description">
+        {% if interview.description %}
+            {{interview.description}}
+        {% else %}
+        <input class="interview-description-input" type="text" name="interview-description">
+        {% endif %}
     </div>
+    {% for question in interview.questions %}
+    <div class="questionblock">
+        {% if is_authenticated %}
+        <div class="record-button">
+            {% include "lottery/svg/microphone.svg" %}
+        </div>
+        {% endif %}
+        <div class="question">
+            {{question.text}}
+        </div>
+        {% if question.audios %}
+            {% for audio in question.audios %}
+            <div class="answer_audio">
+                {% if is_authenticated %}
+                <div class="audio-delete">
+                    {% include "lottery/svg/x.svg" %}
+                </div>
+                {% endif %}
+                <audio class="audio-player" controls>
+                <source src="{% get_media_prefix %}{{audio.url}}" type="audio/mpeg">
+                </audio>
+            </div>
+            <!--end of audio-->
+                <div class="quotes">
+                {% for quote in audio.quotes %}
+                    <div class="answer-quote">
+                    <span class="qm">“</span>{{quote}}<span class="qm">”</span>
+                    </div>
+                {% endfor %}
+                    <div class="answer-quote">
+                        <span class="qm">“</span><input class="answer-quote-input" type="text" name="answer-quote"><span class="qm">”</span>
+                    </div>
+                </div>
+                <!--end of quotes-->
+            {% endfor %}
+        {% endif %}
+    </div>
+    <!--end of question block-->
     {% endfor %}
 </div>

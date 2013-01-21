@@ -4,7 +4,20 @@
 // global variables
 var map,
     w, h,
-    selectedInterview;
+    splitPage,
+    markers,
+    selectedInterviewId;
+
+// marker variables
+var mh = 26;
+var mw = 26;
+var sh = 10;
+var sw = 4;
+var bmh = 200;
+var bmw = 200;
+var bsh = 10;
+var bsw = 4;
+var baseRadius = 7;
 
 function projectGeoToMap(coords){
     // this function projects a pair of geographic coords to 
@@ -172,33 +185,65 @@ function interviewMarkerData(g, collection){
 		.data(collection.features)
 		.enter()
 		.append("g");
-	features.append("a")
+  features.append("circle")
+    .attr("class", "marker-base")
+    .attr("r", baseRadius);
+  markers = features.append("a")
 		.attr("xlink:href", function(d){
 			// add links for now, this will change later
-			if (d.id == selectedInterview){
+      if (splitPage){
+        // we are on a split page
 				return "/lottery/map-split/"+d.id+"/";
-			} else {
-				return "/lottery/map/"+d.id+"/";
-			}}).append("polygon")
+      } else { // we are on map highlight page
+          if (d.id == selectedInterviewId){
+            return "/lottery/map-split/"+d.id+"/";
+        } else { 
+          return "/lottery/map/"+d.id+"/";
+          }}}).append("g")
+    .attr("class","marker-links");
+  markers.append("polygon")
 		.attr("class", "interview-marker")
 		.attr("points", function(d){
-			if (d.id == selectedInterview){
+			if (d.id == selectedInterviewId){
 				// big marker
-				return "204,0 0,0 0,98 94,98 94,108 98,98 204,98 ";
+				return bmw+",0 0,0 0,"+bmh+" "+((bmw/2)-bsw)+","+bmh+" "+((bmw/2)-bsw)+","+(bmh+bsh)+" "+(bmw/2)+","+bmh+" "+bmw+","+bmh+" ";
 			} else {
 				// little marker
-				return "26,0 0,0 0,26 10,26 10,36 14,26 26,26 ";
-			}});
+				return mw+",0 0,0 0,"+mh+" "+((mw/2)-sw)+","+mh+" "+((mw/2)-sw)+","+(mh+sh)+" "+(mw/2)+","+mh+" "+mw+","+mh+" ";
+        }})
+  markers.append("image")
+    .attr("xlink:href", function(d){
+        if (d.id == selectedInterviewId){
+          return d.properties.photo;
+        } else {
+          return "";
+        }}).attr('width', function(d){
+          if (d.id == selectedInterviewId){
+            return bmw - 12;
+          } else {
+            return 0;
+        }}).attr('height', function(d){
+          if (d.id == selectedInterviewId){
+            return bmh - 12;
+          } else {
+            return 0;
+        }});
     return features;
 }
+
 function interviewMarkerDraw( features ){
-	features.attr("transform",function(d){
-			if (d.id == selectedInterview){
-				var x = geoJsonProject(d)[0] - 94;
-				var y = geoJsonProject(d)[1] - 108;
+  features.attr("transform",function(d){
+        var x = geoJsonProject(d)[0];
+        var y = geoJsonProject(d)[1];
+        return "translate("+x+","+y+")";
+      });
+	markers.attr("transform",function(d){
+			if (d.id == selectedInterviewId){
+				var x = -bmw/2 + bsw;
+				var y = -(bmh+bsh);
 			} else {
-				var x = geoJsonProject(d)[0] - 10;
-				var y = geoJsonProject(d)[1] - 36;
+				var x = -mw/2 + sw;
+				var y = -(mh+sh);
 			}
 		return "translate("+x+","+y+")";
 		});
@@ -207,18 +252,27 @@ function interviewMarkerDraw( features ){
 function setMapSize(){
     w = $(document).width();
     h = $(window).height();
-    console.log(h);
     $('#map').height(h);
+}
+
+function splitStyles(){
+  $('.bigicon svg g').attr('transform',
+      'scale(5,5)');
 }
 
 $(window).ready(function(){
     setMapSize();
+    splitStyles();
     // interview location geojsons
-    {% include lottery/interview_data.js %}
-    var interviews = {{interviews}};
+	interviewGeoJsons = {{interviewGeoJsons}};
+    {% include "lottery/js/interview_data.js" %}
+    {% include "lottery/js/input_controller.js" %}
 	{% if selected_interview %}
-	selectedInterview = {{selected_interview}};
+	selectedInterviewId = {{selected_interview}};
 	{% endif %}
+
+    var path = window.location.pathname;
+    splitPage = (path.indexOf("split") !== -1);
 
     var basemap = 'sw2279.NewYork';
     
@@ -227,10 +281,10 @@ $(window).ready(function(){
         // make the layer
         var interviewLayer = d3GeoJsonLayer('d3-vec')
         // edit draw and data functions
-		interviewLayer.customData( interviewMarkerData )
-		interviewLayer.customDraw( interviewMarkerDraw )
+        interviewLayer.customData( interviewMarkerData )
+        interviewLayer.customDraw( interviewMarkerDraw )
         // add data
-        interviewLayer.data(interviews);
+        interviewLayer.data(interviewGeoJsons);
         // add listeners
         interviewLayer.on('click', moveToDot);
         // add the layer

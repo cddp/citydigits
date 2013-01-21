@@ -13,19 +13,61 @@
     margin: 0 auto;
     text-align: left;
     .cols(3);
-    .interview-photo {
+    .interview-photo-wrapper {
+      height: @vu * 10;
+      overflow: hidden;
+      .interview-photo {
+        .cols(3);
+      }
+    }
+    .interview-photo-input {
       .cols(3);
+      background-color: lighten(@text, 80%);
+      height: @vu * 10;
+      text-align: center;
+      position: relative;
+      .bigicon {
+        cursor: pointer;
+        .icon( @white, 0.9);
+        margin: 0 auto;
+        height: @vu * 5;
+        width: @vu * 5;
+        padding-top: 0;
+        svg {
+          margin-top: @vu * 2;
+        }
+      }
     }
     .interview-description {
+      margin-top: @vu;
       .cols(3);
       font-size: 1.5em;
       font-weight: bold;
+      input.interview-description-input {
+        .clear();
+        font-size: 1.5em;
+        font-weight: bold;
+        font-family: @sans;
+        .cols(3);
+        border: 1px solid @text;
+      }
     }
     .questionblock {
       border-top: 1px solid lighten(@black, 50%);
       .cols(3);
       margin-bottom: @vu / 2;
       margin-top: @vu / 2;
+      .record-button {
+        position: absolute;
+        margin-left: -@gut;
+        padding-top: @pad;
+        cursor: pointer;
+        &:hover {
+          svg {
+            fill: @magenta;
+          }
+        }
+      }
       .question {
         margin-top: @vu/4;
         .xpad();
@@ -37,11 +79,14 @@
         margin-top: @vu/4;
         .xpad();
         padding-left: @vu + @pad;
-        img {
-          // opacity: 0.5;
-          width: @col * 2 - @vu;
+        .audio-delete {
+          position: absolute;
+          margin-left: @col * 2;
+          cursor: pointer;
           &:hover {
-            cursor: pointer;
+            svg {
+              fill: @magenta;
+            }
           }
         }
       }
@@ -51,6 +96,16 @@
           border-top: 1px solid lighten(@black, 80%);
           margin-left: @vu;
           font-style: italic;
+          .answer-quote-input {
+            .clear();
+            font-family: @sans;
+            border: 0;
+            border: 1px solid @text;
+            font-size: @char;
+            font-style: italic;
+            width: @col * 3 - @gut * 5;
+            font-weight: 200;
+          }
           .qm {
             color: lighten( @black, 60% );
             font-weight: bold;

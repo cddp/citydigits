@@ -188,6 +188,14 @@ a:hover {
 #map .d3-vec {
   position: relative;
 }
+#map circle.marker-base {
+  fill: #b00951;
+  opacity: 0.2;
+}
+#map circle.marker-base:hover {
+  cursor: pointer;
+  opacity: 1.0;
+}
 #map polygon.interview-marker {
   fill: #000000;
   opacity: 0.5;
