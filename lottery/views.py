@@ -8,7 +8,7 @@ from django.core import serializers
 from django.contrib.gis.geos import *
 
 from lottery.models import Interview, Location
-from lottery.sample_data import sample_interview
+from lottery.sample_data import sample_data as sample
 
 # drop down menu contents
 def drop_down_menu():
@@ -48,9 +48,24 @@ def auth(request):
             'is_authenticated':True,
             }
 
+def interview_test_data():
+    d = {}
+    interviews = Interview.objects.all()
+    photos = Photo.objects.all()
+    audios = sample.audios
+    questions = sample.questions
+    quotes = sample.quotes
+    # make sure we have interview jsons
+    # tie the photos together
+    # tie the audios together
+    # tie the quotes together
+    d['interviews'] = interviews
+    d['questions'] = questions
+    return d
+
 def public_splash(request):
     # if authenticated, go to user home
-    #if request.user.is_authenticated:
+    # if request.user.is_authenticated:
         #return user_home( request )
     # this should also highlight a particular interview
     c = {

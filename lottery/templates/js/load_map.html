@@ -214,6 +214,7 @@ function setMapSize(){
 $(window).ready(function(){
     setMapSize();
     // interview location geojsons
+    {% include lottery/interview_data.js %}
     var interviews = {{interviews}};
 	{% if selected_interview %}
 	selectedInterview = {{selected_interview}};
@@ -234,8 +235,6 @@ $(window).ready(function(){
         interviewLayer.on('click', moveToDot);
         // add the layer
         map.addLayer( interviewLayer );
-
-        var testdata = "{{testdata}}";
 
         {% if mapcenter %}
         // center the map
