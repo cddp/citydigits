@@ -5,6 +5,7 @@
   width: 50%;
   float: left;
 }
+
 #interview {
   text-align: center;
   width: 50%;
@@ -20,14 +21,20 @@
         .cols(3);
       }
     }
+
     .interview-photo-input {
       .cols(3);
       background-color: lighten(@text, 80%);
       height: @vu * 10;
       text-align: center;
       position: relative;
+      cursor: pointer;
+      &:hover {
+        path {
+          fill: @magenta;
+        }
+      }
       .bigicon {
-        cursor: pointer;
         .icon( @white, 0.9);
         margin: 0 auto;
         height: @vu * 5;
@@ -37,21 +44,27 @@
           margin-top: @vu * 2;
         }
       }
+      .prompt {
+        margin-top: 2 * @vu;
+      }
     }
+
     .interview-description {
       margin-top: @vu;
       .cols(3);
       font-size: 1.5em;
+      line-height: 1.5em;
       font-weight: bold;
       input.interview-description-input {
         .clear();
-        font-size: 1.5em;
+        font-size: 1em;
         font-weight: bold;
         font-family: @sans;
         .cols(3);
         border: 1px solid @text;
       }
     }
+
     .questionblock {
       border-top: 1px solid lighten(@black, 50%);
       .cols(3);
@@ -68,13 +81,30 @@
           }
         }
       }
+
       .question {
         margin-top: @vu/4;
         .xpad();
         font-weight: bold;
         font-style: italic;
         color: lighten( @black, 60% );
+        .audio-play {
+          position: absolute;
+          margin-left: @col * 3 - @gut * 3;
+          cursor: pointer;
+          padding-top: @gut/3;
+          svg {
+            height: 36px;
+            width: 36px;
+          }
+          &:hover {
+            svg {
+              fill: @magenta;
+            }
+          }
+        }
       }
+
       .answer_audio {
         margin-top: @vu/4;
         .xpad();
@@ -83,6 +113,10 @@
           position: absolute;
           margin-left: @col * 2;
           cursor: pointer;
+          svg {
+            height: 36px;
+            width: 36px;
+          }
           &:hover {
             svg {
               fill: @magenta;
@@ -90,9 +124,22 @@
           }
         }
       }
+
       .quotes {
         .xpad();
         .answer-quote {
+          .quote-delete {
+            svg { 
+              width: @char;
+              height: @char;
+            }
+            cursor: pointer;
+            &:hover {
+              svg {
+                fill: @magenta;
+              }
+            }
+          }
           border-top: 1px solid lighten(@black, 80%);
           margin-left: @vu;
           font-style: italic;

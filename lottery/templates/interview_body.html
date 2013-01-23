@@ -8,54 +8,73 @@
             <img class="interview-photo" src="{{interview.photos.0.image}}">
         </div>
     {% else %}
-        {% if is_authenticated %}
         <!--or show an empty photo input-->
         <div class="interview-photo-input">
             <div class="bigicon">
                 {% include "lottery/svg/camera_simple.svg" %}
             </div>
+            {% if is_authenticated and edit_mode %}
+            <div class="prompt photo-input">Click here to take a photo</div>
+            {% else %}
+            <div class="prompt photo-input">No photos for this interview</div>
+            {% endif %}
         </div>
-        {% endif %}
     {% endif %}
     <div class="interview-description">
         {% if interview.description %}
             {{interview.description}}
         {% else %}
-        <input class="interview-description-input" type="text" name="interview-description">
+            {% if is_authenticated and edit_mode %}
+            <input class="interview-description-input" type="text" name="interview-description" placeholder=" Name, Retailer or Player, Place">
+            {% else %}
+            Untitled Interview
+            {% endif %}
         {% endif %}
     </div>
     {% for question in interview.questions %}
     <div class="questionblock">
-        {% if is_authenticated %}
+        {% if is_authenticated and edit_mode %}
         <div class="record-button">
             {% include "lottery/svg/microphone.svg" %}
         </div>
         {% endif %}
         <div class="question">
+            {% if not edit_mode %}
+            <div class="audio-play">
+                {% include "lottery/svg/speaker.svg" %}
+            </div>
+            {% endif %}
             {{question.text}}
         </div>
         {% if question.audios %}
             {% for audio in question.audios %}
             <div class="answer_audio">
-                {% if is_authenticated %}
+                {% if is_authenticated and edit_mode %}
                 <div class="audio-delete">
                     {% include "lottery/svg/x.svg" %}
                 </div>
-                {% endif %}
                 <audio class="audio-player" controls>
                 <source src="{% get_media_prefix %}{{audio.url}}" type="audio/mpeg">
                 </audio>
+                {% endif %}
             </div>
             <!--end of audio-->
                 <div class="quotes">
                 {% for quote in audio.quotes %}
                     <div class="answer-quote">
-                    <span class="qm">“</span>{{quote}}<span class="qm">”</span>
+                        <span class="qm">“</span>{{quote}}<span class="qm">”</span>
+                    {% if is_authenticated and edit_mode %}
+                        <span class="quote-delete">
+                        {% include "lottery/svg/x.svg" %}
+                        </span>
+                    {% endif %}
                     </div>
                 {% endfor %}
+                    {% if is_authenticated and edit_mode %}
                     <div class="answer-quote">
-                        <span class="qm">“</span><input class="answer-quote-input" type="text" name="answer-quote"><span class="qm">”</span>
+                        <span class="qm">“</span><input class="answer-quote-input" type="text" name="answer-quote" placeholder=" add a quote from the audio track" ><span class="qm" >”</span>
                     </div>
+                    {% endif %}
                 </div>
                 <!--end of quotes-->
             {% endfor %}

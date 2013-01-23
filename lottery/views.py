@@ -47,7 +47,9 @@ def user_menu():
     return d
 
 def auth(request):
-    return { 'is_authenticated':True, }
+    return { 'is_authenticated':True,
+             'edit_mode':True,
+            }
 
 def pick_a_few(things):
     selected = []

@@ -136,9 +136,11 @@ a {
       .cols(2);
     }
   }
+ 
   .pull-handle {
     text-align: center;
     cursor: pointer;
+
     div.user_controls {
       position: absolute;
       margin-left: 0;
@@ -148,19 +150,44 @@ a {
         .icon( @white, 0.7);
         margin-right: @gut;
       }
+      .control-prompt {
+        font-style: italic;
+        padding-top: @pad/2;
+        .cols(2);
+      }
+      &:hover {
+        color: @magenta;
+        svg {
+          fill: @magenta;
+        }
+      }
+    }
+
+    div.pull-switch {
+      margin: 0 auto;
+      width: @col;
+      text-align: center;
+      &:hover {
+        svg {
+          fill: @magenta;
+          opacity: 0.7;
+        }
+      }
     }
     svg.chevron {
       fill: @white;
       opacity: 0.2;
     }
-    &:hover {
-      svg.chevron {
-        fill: @magenta;
-        opacity: 0.7;
-      }
-    }
     g.flipped {
       transform: rotate(180, 18, 18);
+    }
+    .edit-mode-link {
+      position: absolute;
+      margin-left: @col * 4 + @gut * 3;
+      padding-top: @pad/2;
+      &:hover {
+        color: @magenta;
+      }
     }
   }
 }

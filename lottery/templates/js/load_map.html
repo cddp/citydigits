@@ -6,6 +6,8 @@ var map,
     w, h,
     splitPage,
     markers,
+    isAuth,
+    isEdit,
     selectedInterviewId;
 
 // marker variables
@@ -185,9 +187,11 @@ function interviewMarkerData(g, collection){
 		.data(collection.features)
 		.enter()
 		.append("g");
+  if (isEdit){
   features.append("circle")
     .attr("class", "marker-base")
     .attr("r", baseRadius);
+  }
   markers = features.append("a")
 		.attr("xlink:href", function(d){
 			// add links for now, this will change later
@@ -258,9 +262,15 @@ function setMapSize(){
 function splitStyles(){
   $('.bigicon svg g').attr('transform',
       'scale(5,5)');
+  $('.quote-delete svg.x g').attr('transform',
+      'scale(0.7,0.7)');
+  $('.audio-play svg.speaker g').attr('transform',
+      'scale(0.7,0.7)');
 }
 
 $(window).ready(function(){
+    isAuth = {%if is_authenticated%}true{%else%}false{%endif%};
+    isEdit = {%if edit_mode%}true{%else%}false{%endif%};
     setMapSize();
     splitStyles();
     // interview location geojsons

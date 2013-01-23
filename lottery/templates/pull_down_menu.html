@@ -20,14 +20,28 @@
         </div>
     </div>
     <div class="pull-handle">
-        {% if is_authenticated %}
+            {% if is_authenticated and edit_mode %}
             <div class="user_controls">
                 <div class="control-button">
                     {% include "lottery/svg/add_marker.svg" %}
                 </div>
+                <div class="control-prompt">
+                    Add a new interview to the map
+                </div>
             </div>
-            {% include "lottery/svg/chevron" %}
-        {% endif %}
+            {% endif %}
+            {% if is_authenticated %}
+            <div class="edit-mode-link">
+                {% if edit_mode %}
+                    Stop editing interviews
+                {% else %}
+                    Start editing interviews
+                {% endif %}
+            </div>
+            {% endif %}
+            <div class="pull-switch">
+                {% include "lottery/svg/chevron" %}
+            </div>
     </div>
 </div>
 

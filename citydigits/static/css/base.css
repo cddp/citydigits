@@ -130,16 +130,40 @@ a:hover {
   fill: #b00951;
   opacity: 1.2;
 }
+.pull-down-menu .pull-handle div.user_controls .control-prompt {
+  font-style: italic;
+  padding-top: 6px;
+  width: 372px;
+}
+.pull-down-menu .pull-handle div.user_controls:hover {
+  color: #b00951;
+}
+.pull-down-menu .pull-handle div.user_controls:hover svg {
+  fill: #b00951;
+}
+.pull-down-menu .pull-handle div.pull-switch {
+  margin: 0 auto;
+  width: 180px;
+  text-align: center;
+}
+.pull-down-menu .pull-handle div.pull-switch:hover svg {
+  fill: #b00951;
+  opacity: 0.7;
+}
 .pull-down-menu .pull-handle svg.chevron {
   fill: #fcfcfc;
   opacity: 0.2;
 }
-.pull-down-menu .pull-handle:hover svg.chevron {
-  fill: #b00951;
-  opacity: 0.7;
-}
 .pull-down-menu .pull-handle g.flipped {
   transform: rotate(180, 18, 18);
+}
+.pull-down-menu .pull-handle .edit-mode-link {
+  position: absolute;
+  margin-left: 756px;
+  padding-top: 6px;
+}
+.pull-down-menu .pull-handle .edit-mode-link:hover {
+  color: #b00951;
 }
 .photogrid {
   padding-left: 12px;
