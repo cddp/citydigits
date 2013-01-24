@@ -202,12 +202,23 @@ a {
         ul.layerlist {
           display: none;
           padding-top: @vu/4 + 2;
-          li.maplayer {
-            .translucent();
+          li {
             .xpad();
             .hovercolor();
             margin-top: 1px;
             //border-top: 1px solid @white;
+            .maplayerstatus {
+              position: absolute;
+              right: @pad;
+              font-size: 0.7em;
+              font-weight: bold;
+            }
+          }
+          li.maplayer.on {
+            background-color: @black;
+          }
+          li.maplayer.off {
+            .translucent();
           }
         }
       }

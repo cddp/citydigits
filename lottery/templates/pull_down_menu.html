@@ -50,9 +50,14 @@
                             Change Map Layers
                         </div>
                         <ul class="layerlist">
-                        {% for layer in maplayers %}
-                            <li class="maplayer">
-                                {{layer}}
+                        {% for layer, status in maplayers.items %}
+                            {% if status == "ON" %}
+                            <li class="maplayer on">
+                            {% else %}
+                            <li class="maplayer off">
+                            {% endif %}
+                            <span class="maplayername">{{layer}}</span>
+                            <span class="maplayerstatus">{{status}}</span>
                             </li>
                         {% endfor %}
                         </ul>

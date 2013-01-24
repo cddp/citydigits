@@ -50,8 +50,16 @@ def auth(request):
     # randomly select auth and edit settings
     isAuth = bool(random.randint(0,1))
     isEdit = bool(random.randint(0,1))
-    return { 'is_authenticated':isAuth,
+    layers = {
+            "Interviews":"OFF",
+            "Lottery Sales":"ON",
+            "Population":"OFF",
+            "Commercial Areas":"ON",
+            }
+    return {
+            'is_authenticated':isAuth,
             'edit_mode':isEdit,
+            'maplayers': layers,
             }
 
 def pick_a_few(things):
