@@ -56,8 +56,6 @@ a:hover {
   color: #b00951;
 }
 #header {
-  background-color: rgba(0, 0, 0, 0.8);
-  color: #fcfcfc;
   width: 100%;
   position: fixed;
   top: 0;
@@ -92,80 +90,122 @@ a:hover {
   height: 100%;
 }
 .pull-down-menu {
+  background-color: rgba(0, 0, 0, 0.82);
+  color: #fcfcfc;
+}
+.pull-down-menu .menu-wrapper {
+  position: relative;
+  border-bottom: 1px solid #fcfcfc;
+  width: 100%;
+  padding-bottom: 9px;
+}
+.pull-down-menu .menu-wrapper .columns {
   margin: 0 auto;
   width: 1140px;
-}
-.pull-down-menu .columns {
   padding-top: 36px;
-  border-bottom: 1px solid #fcfcfc;
 }
-.pull-down-menu .columns .col-big {
+.pull-down-menu .menu-wrapper .columns .col-big {
+  padding-left: 12px;
+  padding-right: 12px;
   width: 756px;
   position: absolute;
 }
-.pull-down-menu .columns .col-small {
+.pull-down-menu .menu-wrapper .columns .col-small {
   margin-left: 756px;
+  padding-left: 12px;
+  padding-right: 12px;
   width: 372px;
 }
-.pull-down-menu .pull-handle {
+.pull-down-menu .handle-wrapper {
   text-align: center;
-  cursor: pointer;
+  width: 100%;
   background-color: #000000;
   opacity: 1.0;
+  padding-top: 9px;
 }
-.pull-down-menu .pull-handle div.user_controls {
+.pull-down-menu .handle-wrapper .pull-handle {
+  margin: 0 auto;
+  width: 1140px;
+}
+.pull-down-menu .handle-wrapper .pull-handle div.user_controls {
+  cursor: pointer;
   position: absolute;
-  margin-left: 0;
+  margin-left: 756px;
   padding-left: 12px;
 }
-.pull-down-menu .pull-handle div.user_controls .control-button {
+.pull-down-menu .handle-wrapper .pull-handle div.user_controls .control-button {
   float: left;
+  margin-left: 12px;
   height: 36px;
   width: 36px;
   padding-top: 8px;
-  margin-right: 12px;
 }
-.pull-down-menu .pull-handle div.user_controls .control-button svg {
+.pull-down-menu .handle-wrapper .pull-handle div.user_controls .control-button svg {
   fill: #fcfcfc;
   opacity: 0.7;
 }
-.pull-down-menu .pull-handle div.user_controls .control-button:hover svg {
+.pull-down-menu .handle-wrapper .pull-handle div.user_controls .control-button:hover svg {
   fill: #b00951;
   opacity: 1.2;
 }
-.pull-down-menu .pull-handle div.user_controls .control-prompt {
+.pull-down-menu .handle-wrapper .pull-handle div.user_controls .control-prompt {
+  float: left;
   font-style: italic;
-  padding-top: 6px;
-  width: 372px;
 }
-.pull-down-menu .pull-handle div.user_controls:hover {
+.pull-down-menu .handle-wrapper .pull-handle div.user_controls:hover {
   color: #b00951;
 }
-.pull-down-menu .pull-handle div.user_controls:hover svg {
+.pull-down-menu .handle-wrapper .pull-handle div.user_controls:hover svg {
   fill: #b00951;
 }
-.pull-down-menu .pull-handle div.pull-switch {
+.pull-down-menu .handle-wrapper .pull-handle div.layer_controls {
+  width: 372px;
+  position: absolute;
+  margin-left: 756px;
+  text-align: left;
+  cursor: pointer;
+}
+.pull-down-menu .handle-wrapper .pull-handle div.layer_controls .layer-controls-prompt {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+.pull-down-menu .handle-wrapper .pull-handle div.layer_controls .layer-controls-prompt:hover {
+  color: #b00951;
+}
+.pull-down-menu .handle-wrapper .pull-handle div.layer_controls ul.layerlist {
+  display: none;
+  padding-top: 11px;
+}
+.pull-down-menu .handle-wrapper .pull-handle div.layer_controls ul.layerlist li.maplayer {
+  background-color: rgba(0, 0, 0, 0.82);
+  padding-left: 12px;
+  padding-right: 12px;
+  margin-top: 1px;
+}
+.pull-down-menu .handle-wrapper .pull-handle div.layer_controls ul.layerlist li.maplayer:hover {
+  color: #b00951;
+}
+.pull-down-menu .handle-wrapper .pull-handle div.pull-switch {
   margin: 0 auto;
   width: 180px;
   text-align: center;
 }
-.pull-down-menu .pull-handle div.pull-switch:hover svg {
+.pull-down-menu .handle-wrapper .pull-handle div.pull-switch:hover svg {
   fill: #b00951;
   opacity: 0.7;
 }
-.pull-down-menu .pull-handle svg.chevron {
+.pull-down-menu .handle-wrapper .pull-handle svg.chevron {
   fill: #fcfcfc;
   opacity: 0.2;
 }
-.pull-down-menu .pull-handle g.flipped {
+.pull-down-menu .handle-wrapper .pull-handle g.flipped {
   transform: rotate(180, 18, 18);
 }
-.pull-down-menu .pull-handle .edit-mode-link {
+.pull-down-menu .handle-wrapper .pull-handle .edit-mode-link {
   position: absolute;
-  margin-left: 756px;
-  padding-top: 6px;
+  margin-left: 0;
 }
-.pull-down-menu .pull-handle .edit-mode-link:hover {
+.pull-down-menu .handle-wrapper .pull-handle .edit-mode-link:hover {
   color: #b00951;
 }
 .photogrid {

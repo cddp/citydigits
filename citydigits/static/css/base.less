@@ -13,6 +13,10 @@
 // URLS
 @static_prefix: "http://localhost/static/citydigits/";
 
+.translucent(@amount:0.82){
+  background-color: rgba(0,0,0, @amount);
+}
+
 .icon(@color:@white, @opacity:0.2){
   height: @vu;
   width: @vu;
@@ -26,6 +30,12 @@
       fill: @magenta;
       opacity: @opacity + 0.5;
     }
+  }
+}
+
+.hovercolor(){
+  &:hover {
+    color: @magenta;
   }
 }
 
@@ -81,8 +91,6 @@ a {
 
 
 #header {
-  background-color: rgba(0,0,0,0.8);
-  color: @white;
   width: 100%;
   position: fixed;
   top: 0;
@@ -123,72 +131,111 @@ a {
 }
 
 .pull-down-menu {
-  margin: 0 auto;
-  .cols(6);
-  .columns {
-    padding-top: @vu;
-    .col-big {
-      .cols(4);
-      position: absolute;
-    }
-    .col-small {
-      margin-left: @col * 4 + @gut * 3;
-      .cols(2);
-    }
+  background-color: rgba(0,0,0,0.82);
+  color: @white;
+  .menu-wrapper {
+    position: relative;
     border-bottom: 1px solid @white;
-  }
- 
-  .pull-handle {
-    text-align: center;
-    cursor: pointer;
-    background-color: @black;
-    opacity: 1.0;
-    div.user_controls {
-      position: absolute;
-      margin-left: 0;
-      padding-left: @pad;
-      .control-button {
-        float: left;
-        .icon( @white, 0.7);
-        margin-right: @gut;
+    width: 100%;
+    padding-bottom: @vu / 4;
+
+    .columns {
+      margin: 0 auto;// center this div
+      .cols(6);
+      padding-top: @vu;
+      .col-big {
+        .xpad();
+        .cols(4);
+        position: absolute;
       }
-      .control-prompt {
-        font-style: italic;
-        padding-top: @pad/2;
+      .col-small {
+        margin-left: @col * 4 + @gut * 3;
+        .xpad();
         .cols(2);
       }
-      &:hover {
-        color: @magenta;
-        svg {
-          fill: @magenta;
-        }
-      }
     }
+  }
 
-    div.pull-switch {
-      margin: 0 auto;
-      width: @col;
-      text-align: center;
-      &:hover {
-        svg {
-          fill: @magenta;
-          opacity: 0.7;
+  .handle-wrapper {
+    text-align: center;
+    width: 100%;
+    background-color: @black;
+    opacity: 1.0;
+    padding-top: @vu/4;
+
+    .pull-handle {
+      margin: 0 auto;// center this div
+      .cols(6);
+
+      div.user_controls {
+        cursor: pointer;
+        position: absolute;
+        margin-left: @col * 4 + @gut * 3;
+        padding-left: @pad;
+        .control-button {
+          float: left;
+          margin-left: @gut;
+          .icon( @white, 0.7);
+        }
+        .control-prompt {
+          float: left;
+          font-style: italic;
+        }
+        &:hover {
+          color: @magenta;
+          svg {
+            fill: @magenta;
+          }
         }
       }
-    }
-    svg.chevron {
-      fill: @white;
-      opacity: 0.2;
-    }
-    g.flipped {
-      transform: rotate(180, 18, 18);
-    }
-    .edit-mode-link {
-      position: absolute;
-      margin-left: @col * 4 + @gut * 3;
-      padding-top: @pad/2;
-      &:hover {
-        color: @magenta;
+
+      div.layer_controls {
+        .cols(2);
+        position: absolute;
+        margin-left: @col * 4 + @gut * 3;
+        text-align: left;
+        cursor: pointer;
+        .layer-controls-prompt {
+          .xpad();
+          .hovercolor();
+        }
+        ul.layerlist {
+          display: none;
+          padding-top: @vu/4 + 2;
+          li.maplayer {
+            .translucent();
+            .xpad();
+            .hovercolor();
+            margin-top: 1px;
+            //border-top: 1px solid @white;
+          }
+        }
+      }
+
+      div.pull-switch {
+        margin: 0 auto;
+        width: @col;
+        text-align: center;
+        &:hover {
+          svg {
+            fill: @magenta;
+            opacity: 0.7;
+          }
+        }
+      }
+      svg.chevron {
+        fill: @white;
+        opacity: 0.2;
+      }
+      g.flipped {
+        transform: rotate(180, 18, 18);
+      }
+      .edit-mode-link {
+        position: absolute;
+        margin-left: 0;
+        &:hover {
+          color: @magenta;
+        }
       }
     }
   }
