@@ -47,8 +47,11 @@ def user_menu():
     return d
 
 def auth(request):
-    return { 'is_authenticated':True,
-             'edit_mode':True,
+    # randomly select auth and edit settings
+    isAuth = bool(random.randint(0,1))
+    isEdit = bool(random.randint(0,1))
+    return { 'is_authenticated':isAuth,
+            'edit_mode':isEdit,
             }
 
 def pick_a_few(things):

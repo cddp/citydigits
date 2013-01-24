@@ -97,6 +97,7 @@ a:hover {
 }
 .pull-down-menu .columns {
   padding-top: 36px;
+  border-bottom: 1px solid #fcfcfc;
 }
 .pull-down-menu .columns .col-big {
   width: 756px;
@@ -109,6 +110,8 @@ a:hover {
 .pull-down-menu .pull-handle {
   text-align: center;
   cursor: pointer;
+  background-color: #000000;
+  opacity: 1.0;
 }
 .pull-down-menu .pull-handle div.user_controls {
   position: absolute;
