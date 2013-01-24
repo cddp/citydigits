@@ -26,12 +26,14 @@ var Models = function(){
 		}
 		return things;
 	};
+	{% if interviewJsons and questionJsons %}
     models.interviews = {{interviewJsons}};
 	models.questions = {{questionJsons}};
 	models.photos = models.collectObjs(models.interviews, 'photos');
 	models.audios = models.collectObjs(models.interviews, 'audios');
     models.locations = models.collectObjs(models.interviews, 'location');
     models.quotes = models.collectObjs(models.audios, 'quotes');
+	{% endif %}
 }
 
 var models = Models();
