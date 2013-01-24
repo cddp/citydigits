@@ -199,6 +199,9 @@ a:hover {
 .pull-down-menu .handle-wrapper .pull-handle div.layer_controls ul.layerlist li.maplayer.off span {
   opacity: 0.5;
 }
+.pull-down-menu .handle-wrapper .pull-handle div.layer_controls ul.layerlist li.maplayer.off:hover span {
+  opacity: 1.0;
+}
 .pull-down-menu .handle-wrapper .pull-handle div.pull-switch {
   margin: 0 auto;
   width: 180px;
