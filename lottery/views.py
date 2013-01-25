@@ -111,7 +111,6 @@ def public_splash(request):
         'page_title':"Home - CityDigits: Lottery",
         'splash': True,
     }
-    c.update( map_context(choose_random=True) )
     c.update( auth( request ) )
     templates = [
         'lottery/interview_map.html',
@@ -121,6 +120,8 @@ def public_splash(request):
     if 'map' not in template:
         c['interviews'] = list(Interview.objects.all())
         random.shuffle(c['interviews'])
+    else:
+        c.update( map_context(choose_random=True) )
     return render_to_response( template, c )
 
 def about(request):
