@@ -50,16 +50,9 @@ def auth(request):
     # randomly select auth and edit settings
     isAuth = bool(random.randint(0,1))
     isEdit = bool(random.randint(0,1))
-    layers = {
-            "Interviews":"OFF",
-            "Lottery Sales":"ON",
-            "Population":"OFF",
-            "Commercial Areas":"ON",
-            }
     return {
             'is_authenticated':isAuth,
             'edit_mode':isEdit,
-            'maplayers': layers,
             }
 
 def pick_a_few(things):
@@ -165,12 +158,12 @@ def map_context(highlight_id=None, choose_random=False):
     interviews = Interview.objects.all()
     photos = [i.photo_set.all()[0] for i in interviews]
     # layers (fake for now)
-    layers = [
-            "Interviews",
-            "Lottery Sales",
-            "Population",
-            "Commercial Areas",
-            ]
+    layers = {
+            "Interviews":"OFF",
+            "Lottery Sales":"ON",
+            "Population":"OFF",
+            "Commercial Areas":"ON",
+            }
     if highlight_id:
         # find the correct interview
         interview = [i for i in interviews if str(i.id)==highlight_id][0]

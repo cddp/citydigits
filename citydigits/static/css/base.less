@@ -170,7 +170,7 @@ a {
       div.user_controls {
         cursor: pointer;
         position: absolute;
-        margin-left: @col * 4 + @gut * 3;
+        margin-left: 0;
         padding-left: @pad;
         .control-button {
           float: left;
@@ -192,7 +192,7 @@ a {
       div.layer_controls {
         .cols(2);
         position: absolute;
-        margin-left: @col * 4 + @gut * 3;
+        margin-left: 0;
         text-align: left;
         cursor: pointer;
         .layer-controls-prompt {
@@ -235,6 +235,7 @@ a {
         margin: 0 auto;
         width: @col;
         text-align: center;
+        cursor: pointer;
         &:hover {
           svg {
             fill: @magenta;
@@ -249,9 +250,11 @@ a {
       g.flipped {
         transform: rotate(180, 18, 18);
       }
+
       .edit-mode-link {
         position: absolute;
-        margin-left: 0;
+        margin-left: @col * 4 + @gut * 3;
+        cursor: pointer;
         &:hover {
           color: @magenta;
         }

@@ -130,7 +130,7 @@ a:hover {
 .pull-down-menu .handle-wrapper .pull-handle div.user_controls {
   cursor: pointer;
   position: absolute;
-  margin-left: 756px;
+  margin-left: 0;
   padding-left: 12px;
 }
 .pull-down-menu .handle-wrapper .pull-handle div.user_controls .control-button {
@@ -161,7 +161,7 @@ a:hover {
 .pull-down-menu .handle-wrapper .pull-handle div.layer_controls {
   width: 372px;
   position: absolute;
-  margin-left: 756px;
+  margin-left: 0;
   text-align: left;
   cursor: pointer;
 }
@@ -206,6 +206,7 @@ a:hover {
   margin: 0 auto;
   width: 180px;
   text-align: center;
+  cursor: pointer;
 }
 .pull-down-menu .handle-wrapper .pull-handle div.pull-switch:hover svg {
   fill: #b00951;
@@ -220,7 +221,8 @@ a:hover {
 }
 .pull-down-menu .handle-wrapper .pull-handle .edit-mode-link {
   position: absolute;
-  margin-left: 0;
+  margin-left: 756px;
+  cursor: pointer;
 }
 .pull-down-menu .handle-wrapper .pull-handle .edit-mode-link:hover {
   color: #b00951;

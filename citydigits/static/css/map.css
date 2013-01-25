@@ -130,7 +130,7 @@ a:hover {
 .pull-down-menu .handle-wrapper .pull-handle div.user_controls {
   cursor: pointer;
   position: absolute;
-  margin-left: 756px;
+  margin-left: 0;
   padding-left: 12px;
 }
 .pull-down-menu .handle-wrapper .pull-handle div.user_controls .control-button {
@@ -161,7 +161,7 @@ a:hover {
 .pull-down-menu .handle-wrapper .pull-handle div.layer_controls {
   width: 372px;
   position: absolute;
-  margin-left: 756px;
+  margin-left: 0;
   text-align: left;
   cursor: pointer;
 }
@@ -176,19 +176,37 @@ a:hover {
   display: none;
   padding-top: 11px;
 }
-.pull-down-menu .handle-wrapper .pull-handle div.layer_controls ul.layerlist li.maplayer {
-  background-color: rgba(0, 0, 0, 0.82);
+.pull-down-menu .handle-wrapper .pull-handle div.layer_controls ul.layerlist li {
   padding-left: 12px;
   padding-right: 12px;
   margin-top: 1px;
 }
-.pull-down-menu .handle-wrapper .pull-handle div.layer_controls ul.layerlist li.maplayer:hover {
+.pull-down-menu .handle-wrapper .pull-handle div.layer_controls ul.layerlist li:hover {
   color: #b00951;
+}
+.pull-down-menu .handle-wrapper .pull-handle div.layer_controls ul.layerlist li .maplayerstatus {
+  position: absolute;
+  right: 12px;
+  font-size: 0.7em;
+  font-weight: bold;
+}
+.pull-down-menu .handle-wrapper .pull-handle div.layer_controls ul.layerlist li.maplayer.on {
+  background-color: #000000;
+}
+.pull-down-menu .handle-wrapper .pull-handle div.layer_controls ul.layerlist li.maplayer.off {
+  background-color: rgba(0, 0, 0, 0.82);
+}
+.pull-down-menu .handle-wrapper .pull-handle div.layer_controls ul.layerlist li.maplayer.off span {
+  opacity: 0.5;
+}
+.pull-down-menu .handle-wrapper .pull-handle div.layer_controls ul.layerlist li.maplayer.off:hover span {
+  opacity: 1.0;
 }
 .pull-down-menu .handle-wrapper .pull-handle div.pull-switch {
   margin: 0 auto;
   width: 180px;
   text-align: center;
+  cursor: pointer;
 }
 .pull-down-menu .handle-wrapper .pull-handle div.pull-switch:hover svg {
   fill: #b00951;
@@ -203,7 +221,8 @@ a:hover {
 }
 .pull-down-menu .handle-wrapper .pull-handle .edit-mode-link {
   position: absolute;
-  margin-left: 0;
+  margin-left: 756px;
+  cursor: pointer;
 }
 .pull-down-menu .handle-wrapper .pull-handle .edit-mode-link:hover {
   color: #b00951;
