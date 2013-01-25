@@ -220,6 +220,8 @@ a:hover {
   transform: rotate(180, 18, 18);
 }
 .pull-down-menu .handle-wrapper .pull-handle .edit-mode-link {
+  padding-left: 12px;
+  padding-right: 12px;
   position: absolute;
   margin-left: 756px;
   cursor: pointer;

@@ -49,7 +49,10 @@ def user_menu():
 def auth(request):
     # randomly select auth and edit settings
     isAuth = bool(random.randint(0,1))
-    isEdit = bool(random.randint(0,1))
+    if isAuth:
+        isEdit = bool(random.randint(0,1))
+    else:
+        isEdit = False
     return {
             'is_authenticated':isAuth,
             'edit_mode':isEdit,
