@@ -17,13 +17,8 @@ var Views = function(){
 		// remove audio track
 		alert('delete this audio track');
 	}
-	views.linkAudioToInterview = function(interview_id, audio_id){
-		// add the audio to the interview
-		// move it in the DOM
-		alert('link this track to the selected interview');
-	}
-	
-	views.addQuote = function(audio_id){
+
+	views.addQuote = function(audio_id, quoteText){
 		// go to audio answer
 		// focus on text field
 		alert('add a quote to this audio track');

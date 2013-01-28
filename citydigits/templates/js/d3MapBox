@@ -1,0 +1,2 @@
+{% load static %}
+    <script type="text/javascript" src="{% get_static_prefix %}js/d3GeoJsonLayer.js"></script>
