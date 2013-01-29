@@ -26,6 +26,18 @@ var Models = function(){
 		}
 		return things;
 	};
+
+	models.getByAtt = function(model, att, val){
+		var modelSet = models[model];
+		for (i=0;i<modelSet.length;i++){
+			var obj = modelSet[i];
+			if (obj[att] == val){
+				return obj;
+			}
+		}
+		return null;
+	};
+
 	{% if interviewJsons and questionJsons %}
     models.interviews = {{interviewJsons}};
 	models.questions = {{questionJsons}};
@@ -34,8 +46,13 @@ var Models = function(){
     models.locations = models.collectObjs(models.interviews, 'location');
     models.quotes = models.collectObjs(models.audios, 'quotes');
 	{% endif %}
-}
+	{% if maplayerJsons %}
+	models.mapLayers = {{maplayerJsons}};
+	{% endif %}
 
-var models = Models();
+	return models;
+}
+models = Models();
+
 
 

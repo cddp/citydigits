@@ -3,6 +3,8 @@
 
 // global variables
 var map,
+    models,
+    views,
     w, h,
     splitPage,
     markers,
@@ -143,30 +145,80 @@ function mapSetup(obj){
     map.center( center );
     map.zoom(17); // zoom in 
     {% endif %}
+    map.setZoomRange(12,18);
+    map.interaction.off();
 }
+
 $(window).ready(function(){
     isAuth = {%if is_authenticated%}true{%else%}false{%endif%};
     isEdit = {%if edit_mode%}true{%else%}false{%endif%};
     setMapSize();
     splitStyles();
     // interview location geojsons
-	interviewGeoJsons = {{interviewGeoJsons}};
-    {% include "lottery/js/interview_data.js" %}
-    {% include "lottery/js/input_controller.js" %}
-	{% if selected_interview %}
-	selectedInterviewId = {{selected_interview}};
-	{% endif %}
+    interviewGeoJsons = {{interviewGeoJsons}};
+
+    // setup models
+    {% include "lottery/js/models.js" %}
+
+    // setup views
+    {% include "lottery/js/views.js" %}
+
+    dropDownMenu(".layer_controls", 100);
+
+    {% if selected_interview %}
+    selectedInterviewId = {{selected_interview}};
+    {% endif %}
 
     var path = window.location.pathname;
     splitPage = (path.indexOf("split") !== -1);
 
     var basemap = 'sw2279.NewYork';
-    var salesLayer = "sw2279.NewYorkSales";
-    var layerSet = [basemap,
-    {% if not isEdit %}salesLayer,{%endif%}
-    ];
+    // add all mapbox layers to map
+    var layerSet = [basemap, {% if not edit_mode %}{% if mapbox_layers %}{% for mblayer in mapbox_layers %}
+    "{{mblayer.mapbox_url}}",{% endfor %}
+    {%endif%}{%endif%}];
     
     mapbox.auto('map', layerSet, mapSetup);
+
+    // layer listeners
+    // this function turns layers off
+    $('.maplayer').click(function(e){
+      // get the layer id
+      var layerName = $(this).attr('id');
+      // lookup the layer object
+      var layerObj = models.getByAtt('mapLayers', 'name', layerName);
+      // change the class, turn it off or on
+      if ($(this).hasClass('on')){
+        $(this).removeClass('on').addClass('off')
+           .find('.maplayerstatus').html('OFF');
+
+        // now go to the map and turn it off
+        if (layerObj.type.indexOf('mapbox')!==-1){
+          // it's a mapbox tile layer
+          map.disableLayer(layerObj.mapbox_url);
+        } else {
+          // let's assume it's a d3GeoJsonLayer
+          // make it disapper
+        //  finish this
+        }
+      } else { // assume it is off
+        $(this).removeClass('off').addClass('on')
+           .find('.maplayerstatus').html('ON');
+
+        console.log('turning it off');
+
+        // now go to the map and turn it off
+        if (layerObj.type.indexOf('mapbox')!==-1){
+          // it's a mapbox tile layer
+          map.enableLayer(layerObj.mapbox_url);
+        } else {
+          // let's assume it's a d3GeoJsonLayer
+          // make it disapper
+        //  finish this
+        }
+      }
+    }); 
+
 
 }); // end window ready function
     

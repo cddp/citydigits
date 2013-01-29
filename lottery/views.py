@@ -12,6 +12,7 @@ from lottery.models import Interview, Location, Photo
 from django.forms.models import model_to_dict
 from lottery.sample_data import sample_data as sample
 from lottery.sample_data import sample_interview
+from lottery.sample_data import sample_layers
 
 # drop down menu contents
 def drop_down_menu():
@@ -161,13 +162,17 @@ def map_context(highlight_id=None, choose_random=False):
             )
     interviews = Interview.objects.all()
     photos = [i.photo_set.all()[0] for i in interviews]
-    # layers (fake for now)
-    layers = {
-            "Interviews":"OFF",
-            "Lottery Sales":"ON",
-            "Population":"OFF",
-            "Commercial Areas":"ON",
-            }
+    # get sample layers
+    mapbox_layers = []
+    geojson_layers = []
+    layers = []
+    for layer in sample_layers.layers:
+        if 'mapbox' in layer['type']:
+            mapbox_layers.append(layer)
+        elif layer['type'] == 'geoJson':
+            geojson_layers.append( layer )
+        layers.append( layer )
+
     if highlight_id:
         # find the correct interview
         interview = [i for i in interviews if str(i.id)==highlight_id][0]
@@ -195,7 +200,11 @@ def map_context(highlight_id=None, choose_random=False):
         'mapcenter':center.coords,
         'interview':interview,
         'maplayers': layers,
+        'maplayerJsons': json.dumps(layers),
+        'mapbox_layers':mapbox_layers,
+        'geojson_layers':geojson_layers,
         }
+
 
 def interview_map(request, highlight_id=None):
     c = {

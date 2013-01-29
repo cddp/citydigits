@@ -23,10 +23,11 @@ function dropDownMenu(selector, speed){
             // li
             // li
     var container = $(selector);
+    var triggerDiv = container.children('div');
     // make sure it is hidden
     var list = container.children('ul');
     list.hide();
-    container.click(function(e){
+    triggerDiv.click(function(e){
             console.log('layers clicked');
             list.slideToggle( speed||170 );
             });
@@ -37,7 +38,6 @@ $(".pull-switch").click(slideMenu);
 {% if not splash %}
 
 slideMenu("", 100);
-dropDownMenu(".layer_controls", 100);
 
 {% endif %}
 
