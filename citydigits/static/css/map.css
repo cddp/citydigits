@@ -274,7 +274,20 @@ a:hover {
   color: #b00951;
 }
 #map .d3-vec {
-  position: relative;
+  position: absolute;
+}
+#map .boroughs {
+  position: absolute;
+}
+#map .boroughs svg g path {
+  stroke: #000000;
+  stroke-width: 2px;
+  fill: #fcfcfc;
+  opacity: 0.2;
+}
+#map .boroughs svg g path:hover {
+  fill: #ff0;
+  opacity: 0.4;
 }
 #map circle.marker-base {
   fill: #b00951;

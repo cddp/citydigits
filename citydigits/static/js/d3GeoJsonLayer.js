@@ -42,7 +42,7 @@ function d3GeoJsonLayer(className){
     layer.drawPaths = function(){
         // get d3's path drawing function
         var path = d3.geo.path().projection( projectGeoToMap );
-        layer.features.attr("d", path);
+		layer.features.attr("d", function(d){return path(d.geometry);});
     };
 
     layer.draw = function(){

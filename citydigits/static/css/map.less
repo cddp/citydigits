@@ -3,7 +3,24 @@
 
 #map {
   .d3-vec {
-    position: relative;
+    position: absolute;
+  }
+  .boroughs {
+    position: absolute;
+    svg {
+      g {
+        path {
+          stroke: @black;
+          stroke-width: 2px;
+          fill: @white;
+          opacity: 0.2;
+          &:hover {
+            fill: #ff0;
+            opacity: 0.4;
+          }
+        }
+      }
+    }
   }
   circle.marker-base {
     fill: @magenta;

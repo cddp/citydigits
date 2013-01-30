@@ -177,17 +177,17 @@ def map_context(highlight_id=None, choose_random=False):
         # find the correct interview
         interview = [i for i in interviews if str(i.id)==highlight_id][0]
         # use this point as the center
-        center = interview.location.geom()
+        center = interview.location.get_geom()
     elif choose_random:
         # random highlight for splash page
         interview = random.choice(interviews)
-        center = interview.location.geom()
+        center = interview.location.get_geom()
         highlight_id = interview.id
     else:
         # no highlighted interview
         interview = None
         # center on the centroid of all the points
-        center = MultiPoint([i.location.geom() for i in interviews]).centroid
+        center = MultiPoint([i.location.get_geom() for i in interviews]).centroid
     # turn the interviews into geojson features
     locations = [n.as_geojson_feature( interview_fields ) for n in interviews]
     # add the photos
@@ -202,7 +202,7 @@ def map_context(highlight_id=None, choose_random=False):
         'maplayers': layers,
         'maplayerJsons': json.dumps(layers),
         'mapbox_layers':mapbox_layers,
-        'geojson_layers':geojson_layers,
+        'geojson_layers':json.dumps(geojson_layers),
         }
 
 

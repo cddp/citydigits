@@ -23,6 +23,12 @@ var bsh = 10;
 var bsw = 4;
 var baseRadius = 7;
 
+// setup models
+{% include "lottery/js/models.js" %}
+
+// setup views
+{% include "lottery/js/views.js" %}
+
 function moveToDot(e){
     // When something is clicked, we want to move the map
     // this.__data__ accesses the data associated by d3
@@ -120,11 +126,12 @@ function splitStyles(){
 
 function layerSetup(obj){
     map = obj;
+
     // make the layer
-    var interviewLayer = d3GeoJsonLayer('d3-vec')
+    var interviewLayer = d3GeoJsonLayer('d3-vec');
     // edit draw and data functions
-    interviewLayer.customData( interviewMarkerData )
-    interviewLayer.customDraw( interviewMarkerDraw )
+    interviewLayer.customData( interviewMarkerData );
+    interviewLayer.customDraw( interviewMarkerDraw );
     // add data
     interviewLayer.data(interviewGeoJsons);
     // add listeners
@@ -132,8 +139,22 @@ function layerSetup(obj){
     // add the layer
     map.addLayer( interviewLayer );
 
-    // make the sales layer
+    {% if not edit_mode %}
 
+    // add all the geojson layers
+    for (i=0;i<models.mapLayers.length;i++){
+      // get the layer
+      var thisLayer = models.mapLayers[i];
+      if (thisLayer.type == 'geoJson'){
+        // make the actual d3 layer
+        var d3Layer = d3GeoJsonLayer(thisLayer.name);
+        // assume a features attribute containing the data
+        d3Layer.data(thisLayer.features);
+        map.addLayer(d3Layer);
+      }
+    }
+
+    {% endif %}
 }
 
 function mapSetup(obj){
@@ -156,12 +177,6 @@ $(window).ready(function(){
     splitStyles();
     // interview location geojsons
     interviewGeoJsons = {{interviewGeoJsons}};
-
-    // setup models
-    {% include "lottery/js/models.js" %}
-
-    // setup views
-    {% include "lottery/js/views.js" %}
 
     dropDownMenu(".layer_controls", 100);
 
@@ -199,13 +214,12 @@ $(window).ready(function(){
         } else {
           // let's assume it's a d3GeoJsonLayer
           // make it disapper
-        //  finish this
+          $('.'+layerObj.name).css("display", "none");
+          // there is probably a better way to disable this
         }
       } else { // assume it is off
         $(this).removeClass('off').addClass('on')
            .find('.maplayerstatus').html('ON');
-
-        console.log('turning it off');
 
         // now go to the map and turn it off
         if (layerObj.type.indexOf('mapbox')!==-1){
@@ -213,8 +227,8 @@ $(window).ready(function(){
           map.enableLayer(layerObj.mapbox_url);
         } else {
           // let's assume it's a d3GeoJsonLayer
-          // make it disapper
-        //  finish this
+          // there is probably a better way to disable this
+          $('.'+layerObj.name).css("display", "block");
         }
       }
     }); 
