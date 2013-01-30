@@ -1,6 +1,10 @@
 {% load static %}
 <!doctype html>
+{% if angular %}
+<html ng-app lang="{% if language %}{{language}}{% else %}en-us{%endif %}">
+  {% else %}
 <html lang="{% if language %}{{language}}{% else %}en-us{%endif %}">
+  {% endif %}
     <head>
       <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
       <link rel="shortcut icon" href="{% get_static_prefix %}img/favicon.png">
@@ -9,6 +13,10 @@
         {% block css %}
         <link rel="stylesheet" href="{% get_static_prefix %}css/base.css" type="text/css"/>
         {% endblock %}
+        {% if angular %}
+          {% include "js/angular" %}
+        {% endif %}
+
     </head>
     <body>
       {% block body %}
