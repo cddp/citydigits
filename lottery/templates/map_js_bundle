@@ -1,0 +1,7 @@
+{% load static %}
+    {% include "js/jquery" %}
+    {% include "js/d3" %}
+    {% include "lottery/js/dropdown_js.html" %}
+    {% include "js/d3MapBox" %}
+    <script type="text/javascript" src="{% get_static_prefix %}js/neighborhoods.js"></script>
+    {% include "lottery/js/load_map.html" %}
