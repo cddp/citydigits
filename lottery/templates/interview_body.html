@@ -1,15 +1,16 @@
 {% load static %}
 {% load markymark %}
 
-<div class="interview-column">
+<div id="{{interview.id}}" class="interview interview-column">
+
     {% if interview.photos %}
-        <div class="interview-photo-wrapper">
+        <div id="{{interview.photos.0.id}}" class="interview-photo-wrapper">
             <!--show the first image-->
             <img class="interview-photo" src="{{interview.photos.0.image}}">
         </div>
     {% else %}
         <!--or show an empty photo input-->
-        <div class="interview-photo-input">
+        <div class="interview-photo-input {%if is_authenticated and edit_mode%}addphoto{%endif%}">
             <div class="bigicon">
                 {% include "lottery/svg/camera_simple.svg" %}
             </div>
@@ -20,7 +21,8 @@
             {% endif %}
         </div>
     {% endif %}
-    <div class="interview-description">
+
+    <div class="interview-description{%if edit_mode%} edit-description{%endif%}">
         {% if interview.description %}
             {{interview.description}}
         {% else %}
@@ -31,8 +33,9 @@
             {% endif %}
         {% endif %}
     </div>
+
     {% for question in interview.questions %}
-    <div class="questionblock">
+    <div id="{{question.id}}" class="questionblock">
         {% if is_authenticated and edit_mode %}
         <div class="record-button">
             {% include "lottery/svg/microphone.svg" %}
@@ -46,9 +49,10 @@
             {% endif %}
             {{question.text}}
         </div>
+
         {% if question.audios %}
             {% for audio in question.audios %}
-            <div class="answer_audio">
+            <div id="{{audio.id}}" class="answer_audio">
                 {% if is_authenticated and edit_mode %}
                 <div class="audio-delete">
                     {% include "lottery/svg/x.svg" %}
@@ -59,9 +63,10 @@
                 {% endif %}
             </div>
             <!--end of audio-->
+
                 <div class="quotes">
                 {% for quote in audio.quotes %}
-                    <div class="answer-quote">
+                <div id="{{quote.id}}" class="answer-quote">
                         <span class="qm">“</span>{{quote}}<span class="qm">”</span>
                     {% if is_authenticated and edit_mode %}
                         <span class="quote-delete">
@@ -70,6 +75,7 @@
                     {% endif %}
                     </div>
                 {% endfor %}
+
                     {% if is_authenticated and edit_mode %}
                     <div class="answer-quote">
                         <span class="qm">“</span><input class="answer-quote-input" type="text" name="answer-quote" placeholder=" add a quote from the audio track" ><span class="qm" >”</span>
@@ -77,6 +83,7 @@
                     {% endif %}
                 </div>
                 <!--end of quotes-->
+
             {% endfor %}
         {% endif %}
     </div>
