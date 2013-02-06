@@ -274,7 +274,20 @@ a:hover {
   color: #b00951;
 }
 #map .d3-vec {
-  position: relative;
+  position: absolute;
+}
+#map .boroughs {
+  position: absolute;
+}
+#map .boroughs svg g path {
+  stroke: #000000;
+  stroke-width: 2px;
+  fill: #fcfcfc;
+  opacity: 0.2;
+}
+#map .boroughs svg g path:hover {
+  fill: #ff0;
+  opacity: 0.4;
 }
 #map circle.marker-base {
   fill: #b00951;
@@ -297,24 +310,24 @@ a:hover {
   width: 50%;
   float: left;
 }
-#interview {
+.interview.text {
   text-align: center;
   width: 50%;
   margin-left: 50%;
 }
-#interview .interview-column {
+.interview.text .interview-column {
   margin: 0 auto;
   text-align: left;
   width: 564px;
 }
-#interview .interview-column .interview-photo-wrapper {
+.interview.text .interview-column .photo.in-column {
   height: 360px;
   overflow: hidden;
 }
-#interview .interview-column .interview-photo-wrapper .interview-photo {
+.interview.text .interview-column .photo.in-column img {
   width: 564px;
 }
-#interview .interview-column .interview-photo-input {
+.interview.text .interview-column .interview-photo-input {
   width: 564px;
   background-color: #cccccc;
   height: 360px;
@@ -322,10 +335,10 @@ a:hover {
   position: relative;
   cursor: pointer;
 }
-#interview .interview-column .interview-photo-input:hover path {
+.interview.text .interview-column .interview-photo-input:hover path {
   fill: #b00951;
 }
-#interview .interview-column .interview-photo-input .bigicon {
+.interview.text .interview-column .interview-photo-input .bigicon {
   height: 36px;
   width: 36px;
   padding-top: 8px;
@@ -334,28 +347,28 @@ a:hover {
   width: 180px;
   padding-top: 0;
 }
-#interview .interview-column .interview-photo-input .bigicon svg {
+.interview.text .interview-column .interview-photo-input .bigicon svg {
   fill: #fcfcfc;
   opacity: 0.9;
 }
-#interview .interview-column .interview-photo-input .bigicon:hover svg {
+.interview.text .interview-column .interview-photo-input .bigicon:hover svg {
   fill: #b00951;
   opacity: 1.4;
 }
-#interview .interview-column .interview-photo-input .bigicon svg {
+.interview.text .interview-column .interview-photo-input .bigicon svg {
   margin-top: 72px;
 }
-#interview .interview-column .interview-photo-input .prompt {
+.interview.text .interview-column .interview-photo-input .prompt {
   margin-top: 72px;
 }
-#interview .interview-column .interview-description {
+.interview.text .interview-column .description {
   margin-top: 36px;
   width: 564px;
   font-size: 1.5em;
   line-height: 1.5em;
   font-weight: bold;
 }
-#interview .interview-column .interview-description input.interview-description-input {
+.interview.text .interview-column .description input.interview-description-input {
   margin: 0;
   padding: 0;
   font-size: 1em;
@@ -364,22 +377,22 @@ a:hover {
   width: 564px;
   border: 1px solid #000000;
 }
-#interview .interview-column .questionblock {
+.interview.text .interview-column .question {
   border-top: 1px solid #808080;
   width: 564px;
   margin-bottom: 18px;
   margin-top: 18px;
 }
-#interview .interview-column .questionblock .record-button {
+.interview.text .interview-column .question .record-button {
   position: absolute;
   margin-left: -12px;
   padding-top: 12px;
   cursor: pointer;
 }
-#interview .interview-column .questionblock .record-button:hover svg {
+.interview.text .interview-column .question .record-button:hover svg {
   fill: #b00951;
 }
-#interview .interview-column .questionblock .question {
+.interview.text .interview-column .question .question-text {
   margin-top: 9px;
   padding-left: 12px;
   padding-right: 12px;
@@ -387,57 +400,57 @@ a:hover {
   font-style: italic;
   color: #999999;
 }
-#interview .interview-column .questionblock .question .audio-play {
+.interview.text .interview-column .question .question-text .audio-play {
   position: absolute;
   margin-left: 504px;
   cursor: pointer;
   padding-top: 4px;
 }
-#interview .interview-column .questionblock .question .audio-play svg {
+.interview.text .interview-column .question .question-text .audio-play svg {
   height: 36px;
   width: 36px;
 }
-#interview .interview-column .questionblock .question .audio-play:hover svg {
+.interview.text .interview-column .question .question-text .audio-play:hover svg {
   fill: #b00951;
 }
-#interview .interview-column .questionblock .answer_audio {
+.interview.text .interview-column .question .audio {
   margin-top: 9px;
   padding-left: 12px;
   padding-right: 12px;
   padding-left: 48px;
 }
-#interview .interview-column .questionblock .answer_audio .audio-delete {
+.interview.text .interview-column .question .audio .audio-delete {
   position: absolute;
   margin-left: 360px;
   cursor: pointer;
 }
-#interview .interview-column .questionblock .answer_audio .audio-delete svg {
+.interview.text .interview-column .question .audio .audio-delete svg {
   height: 36px;
   width: 36px;
 }
-#interview .interview-column .questionblock .answer_audio .audio-delete:hover svg {
+.interview.text .interview-column .question .audio .audio-delete:hover svg {
   fill: #b00951;
 }
-#interview .interview-column .questionblock .quotes {
+.interview.text .interview-column .question .container-quote {
   padding-left: 12px;
   padding-right: 12px;
 }
-#interview .interview-column .questionblock .quotes .answer-quote {
+.interview.text .interview-column .question .container-quote .quote {
   border-top: 1px solid #cccccc;
   margin-left: 36px;
   font-style: italic;
 }
-#interview .interview-column .questionblock .quotes .answer-quote .quote-delete {
+.interview.text .interview-column .question .container-quote .quote .quote-delete {
   cursor: pointer;
 }
-#interview .interview-column .questionblock .quotes .answer-quote .quote-delete svg {
+.interview.text .interview-column .question .container-quote .quote .quote-delete svg {
   width: 20px;
   height: 20px;
 }
-#interview .interview-column .questionblock .quotes .answer-quote .quote-delete:hover svg {
+.interview.text .interview-column .question .container-quote .quote .quote-delete:hover svg {
   fill: #b00951;
 }
-#interview .interview-column .questionblock .quotes .answer-quote .answer-quote-input {
+.interview.text .interview-column .question .container-quote .quote .answer-quote-input {
   margin: 0;
   padding: 0;
   font-family: "Open Sans", "Helvetica Neue", "Helvetica", "Droid Sans", "Arial", sans-serif;
@@ -448,7 +461,7 @@ a:hover {
   width: 480px;
   font-weight: 200;
 }
-#interview .interview-column .questionblock .quotes .answer-quote .qm {
+.interview.text .interview-column .question .container-quote .quote .qm {
   color: #999999;
   font-weight: bold;
 }

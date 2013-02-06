@@ -3,7 +3,7 @@
 
 // global variables
 var map,
-    models,
+    things,
     views,
     w, h,
     splitPage,
@@ -23,8 +23,8 @@ var bsh = 10;
 var bsw = 4;
 var baseRadius = 7;
 
-// setup models
-{% include "lottery/js/models.js" %}
+// setup things
+{% include "lottery/js/things.js" %}
 
 // setup views
 {% include "lottery/js/views.js" %}
@@ -142,9 +142,9 @@ function layerSetup(obj){
     {% if not edit_mode %}
 
     // add all the geojson layers
-    for (i=0;i<models.mapLayers.length;i++){
+    for (i=0;i<things.mapLayers.length;i++){
       // get the layer
-      var thisLayer = models.mapLayers[i];
+      var thisLayer = things.mapLayers[i];
       if (thisLayer.type == 'geoJson'){
         // make the actual d3 layer
         var d3Layer = d3GeoJsonLayer(thisLayer.name);
@@ -201,7 +201,7 @@ $(window).ready(function(){
       // get the layer id
       var layerName = $(this).attr('id');
       // lookup the layer object
-      var layerObj = models.getByAtt('mapLayers', 'name', layerName);
+      var layerObj = things.getByAtt('mapLayers', 'name', layerName);
       // change the class, turn it off or on
       if ($(this).hasClass('on')){
         $(this).removeClass('on').addClass('off')

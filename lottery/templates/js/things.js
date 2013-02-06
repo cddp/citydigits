@@ -1,5 +1,5 @@
 
-var Models = function(){
+var quickModels = function(){
 	/* basically builds a sort of database with a set of tables
 	*/
     var models = {};
@@ -52,7 +52,7 @@ var Models = function(){
 
 	return models;
 }
-models = Models();
+things = quickModels();
 
 
 

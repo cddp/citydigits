@@ -154,14 +154,7 @@ def interview_detail_context(c):
                 }
 
 
-def map_context(highlight_id=None, choose_random=False):
-    # get the interviews
-    interview_fields = (
-            'id',
-            'location_id',
-            )
-    interviews = Interview.objects.all()
-    photos = [i.photo_set.all()[0] for i in interviews]
+def map_overlays():
     # get sample layers
     mapbox_layers = []
     geojson_layers = []
@@ -172,7 +165,21 @@ def map_context(highlight_id=None, choose_random=False):
         elif layer['type'] == 'geoJson':
             geojson_layers.append( layer )
         layers.append( layer )
+    return {
+        'maplayers': layers,
+        'maplayerJsons': json.dumps(layers),
+        'mapbox_layers':mapbox_layers,
+        'geojson_layers':json.dumps(geojson_layers),
+        }
 
+def map_context(highlight_id=None, choose_random=False):
+    # get the interviews
+    interview_fields = (
+            'id',
+            'location_id',
+            )
+    interviews = Interview.objects.all()
+    photos = [i.photo_set.all()[0] for i in interviews]
     if highlight_id:
         # find the correct interview
         interview = [i for i in interviews if str(i.id)==highlight_id][0]
@@ -199,12 +206,7 @@ def map_context(highlight_id=None, choose_random=False):
         'interviewGeoJsons':json.dumps(locations),
         'mapcenter':center.coords,
         'interview':interview,
-        'maplayers': layers,
-        'maplayerJsons': json.dumps(layers),
-        'mapbox_layers':mapbox_layers,
-        'geojson_layers':json.dumps(geojson_layers),
         }
-
 
 def interview_map(request, highlight_id=None):
     c = {
@@ -214,6 +216,8 @@ def interview_map(request, highlight_id=None):
     c.update( interview_test_data() )
     c.update( map_context( highlight_id ) )
     c.update( auth( request ) )
+    if not c['edit_mode']:
+        d.update( map_overlays() )
     template = 'lottery/interview_map.html',
     return render_to_response( template, c )
 

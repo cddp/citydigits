@@ -6,7 +6,7 @@
   float: left;
 }
 
-#interview {
+.interview.text {
   text-align: center;
   width: 50%;
   margin-left: 50%;
@@ -14,10 +14,10 @@
     margin: 0 auto;
     text-align: left;
     .cols(3);
-    .interview-photo-wrapper {
+    .photo.in-column {
       height: @vu * 10;
       overflow: hidden;
-      .interview-photo {
+      img {
         .cols(3);
       }
     }
@@ -49,7 +49,7 @@
       }
     }
 
-    .interview-description {
+    .description {
       margin-top: @vu;
       .cols(3);
       font-size: 1.5em;
@@ -65,7 +65,7 @@
       }
     }
 
-    .questionblock {
+    .question {
       border-top: 1px solid lighten(@black, 50%);
       .cols(3);
       margin-bottom: @vu / 2;
@@ -82,7 +82,7 @@
         }
       }
 
-      .question {
+      .question-text {
         margin-top: @vu/4;
         .xpad();
         font-weight: bold;
@@ -105,7 +105,7 @@
         }
       }
 
-      .answer_audio {
+      .audio {
         margin-top: @vu/4;
         .xpad();
         padding-left: @vu + @pad;
@@ -125,9 +125,9 @@
         }
       }
 
-      .quotes {
+      .container-quote {
         .xpad();
-        .answer-quote {
+        .quote {
           .quote-delete {
             svg { 
               width: @char;
