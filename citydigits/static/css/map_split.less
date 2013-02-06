@@ -24,6 +24,16 @@
 
     .interview-photo-input {
       .cols(3);
+      .camera.button {
+        position: absolute;
+      }
+      #video {
+        position: relative;
+        z-index: 9;
+      }
+      #canvas {
+        position: absolute;
+      }
       background-color: lighten(@text, 80%);
       height: @vu * 10;
       text-align: center;

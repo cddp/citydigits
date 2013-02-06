@@ -335,6 +335,12 @@ a:hover {
   position: relative;
   cursor: pointer;
 }
+.interview.text .interview-column .interview-photo-input .camera.button {
+  position: absolute;
+}
+.interview.text .interview-column .interview-photo-input #canvas {
+  position: absolute;
+}
 .interview.text .interview-column .interview-photo-input:hover path {
   fill: #b00951;
 }

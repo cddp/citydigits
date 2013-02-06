@@ -2,7 +2,6 @@
  *
  *
  */
-var description_input = $('<input class="interview-description-input" type="text" name="interview-description" placeholder=" Name, Retailer or Player, Place" >');
 
 $(document).ready(function(){
 // for the description, change the description of the interview
@@ -26,10 +25,31 @@ models.tables.interview.listen(null, 'input', '.edit-description input',
 // for the photo thing, get make a new photo
 $('.addphoto').click(function(e){
     var thisNode = $(this);
+    // save things
+    var contents = thisNode.html();
+    var h = thisNode.height();
+    var w = thisNode.width(); 
+    // set it to blank
+    thisNode.html('');
     // append a snapshot button
+    var button = $('<div class="camera button">Take Photo</div>');
+    var videoBit = $('<video id="video" width="'+w+'" height="'+h+'" autoplay="" ></video>');
+    thisNode.append(button);
+    thisNode.append(videoBit);
     // replace everything with a canvas
-
-
+    var canvasBit = $('<canvas id="canvas" width="'+w+'" height="'+h+'"></canvas>');
+    thisNode.append(canvasBit);
+    var canvas = document.getElementById("canvas");
+    var video = document.getElementById("video");
+    var context = canvas.getContext("2d");
+    navigator.webkitGetUserMedia({'video':true}, function (stream) {
+        console.log(stream);
+        var objectURL = window.webkitURL.createObjectURL(stream);
+        video.src = objectURL;
+        video.play();
+    }, function (error) {
+        thisNode.html(contents);
+    });
 });
-// for the quote thing, add a new quote
-});
+
+}); // end of document ready

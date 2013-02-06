@@ -1,10 +1,4 @@
 
-$('.addphoto').click(function(e){
-	var interview_id = $(this).parents('.interview').attr('id');
-	// add a photo
-	views.addInterviewPhoto(interview_id);
-});
-
 $('.delete-photo').click(function(e){
 	// there is no delete photo button
 	var photo_id = $(this).parents('.interview-photo-wrapper').attr('id');
