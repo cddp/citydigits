@@ -128,6 +128,8 @@ ModelInstance.prototype = {
 
 ModelTable = function (owner, name, items) {
     // for a set of objects
+    // this.items must be declared here, otherwise it'd be a class attribute
+    this.items = [];
     this.name = name; // example "interview"
     this.owner = owner; // owner is a Models object
     // build up items
@@ -145,7 +147,6 @@ ModelTable.prototype = {
     // ModelTable methods and default properties
 
     owner:null,
-    items:[],
     name:null,
     domContainers:null,
 
