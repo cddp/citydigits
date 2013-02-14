@@ -28,7 +28,6 @@ function loadQuestions(){
         q.en = questions_en[i];
         q.es = questions_es[i];
         var m = models.tables.question.add(q);
-        console.log(m);
     }
 }
 function hasGetUserMedia() {
@@ -63,12 +62,14 @@ $(document).ready(function(){
 
 
 // add objects
-models.addTable('interview', []);
+models.addTable('interview', interviewObjects);
 models.tables.interview.domContainers = $('#contents');
 models.addTable('photo', []); // maybe prepopulated from server.
 models.addTable('audio', []); // prepopulated from server
 models.addTable('quote', []); // these refer to audio files
 models.addTable('question', []); // prepopulated from server
+
+console.log(models.tables.interview.items)
 
 
 loadQuestions();

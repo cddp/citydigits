@@ -136,15 +136,17 @@ $('.interview-column').on('click', '.camera.button', function(e){
             console.log(remote_id);
             // no interviews are loaded locally, so this doesn't work
             var interview = models.tables.interview.getBy('remote_id', remote_id );
-            console.log(interview);
+            // create base for photo object
+            var obj = {
+                interview: interview.data.uuid,
+                url: imgUrl,
+            };
+            // save photo object to client data
+            var photo = models.tables.photo.add(obj);
+            console.log(photo);
         }
     }
     
-    // get its UUID
-    // make a photo object
-    // link the photo to the interview
-    // set its url
-    // save it
 });
 
 

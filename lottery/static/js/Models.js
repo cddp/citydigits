@@ -17,6 +17,7 @@ ModelInstance = function (table, id, obj) {
      * argument as their base data. The properties of the object literal are
      * merged with the ModelInstance.
      */
+    console.log(obj);
     this.table = table; // points to the ModelTable for this object
     this.id = id; // set the local id
     // set the data as a property
@@ -24,9 +25,10 @@ ModelInstance = function (table, id, obj) {
     // this is a flag that indicates if this should be synced
     this.is_dirty = false;
     if (obj.id) { // it's from the server
+        console.log('adding remote id');
         // we are using both remote and uuids
         // it's redundant but it makes for nicer html
-        this.remote_id = obj.id;
+        this.data.remote_id = obj.id;
         // get all existing dom elements and assign the new id
         $('.rid' + obj.id + '.' + this.table.name).addClass('.id' + id);
     } else { // we're making a new thing locally

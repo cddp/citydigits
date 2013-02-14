@@ -1,4 +1,5 @@
 {% load static %}
+{% autoescape off %}
 <script type="text/javascript" >
 {% if questions %}
 var questions = {{questions}};
@@ -6,6 +7,10 @@ var questions = {{questions}};
 {% if photos %}
 var photos = {{photos}};
 {% endif %}
+{% if interviewJsons %}
+var interviewObjects = {{interviewJsons}};
+{% endif %}
 
 </script>
 <script type="text/javascript" src="{% get_static_prefix %}lottery/js/init_data.js"></script>
+{% endautoescape %}

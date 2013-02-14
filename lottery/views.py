@@ -1,5 +1,6 @@
 import random # for random choice between splash pages
 import json
+import uuid
 from pprint import pprint
 
 from django.shortcuts import render_to_response, get_object_or_404
@@ -89,6 +90,7 @@ def interview_test_data():
     # tie the photos together
     for i in interview_dicts:
         i['description'] = ""
+        i['uuid'] = str(uuid.uuid4())
         i['photos'] = []
         i['questions'] = []
         for n, q in enumerate(questions):
