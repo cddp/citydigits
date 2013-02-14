@@ -34,11 +34,13 @@
                 {% if is_authenticated and edit_mode %}
                     <!--show controls if someone wants to edit things-->
                     <div class="user_controls">
-                        <div class="control-prompt">
-                            Add a new interview to the map
-                        </div>
-                        <div class="control-button">
-                            {% include "lottery/svg/add_marker.svg" %}
+                        <div class="addpoint control-wrapper">
+                            <div class="control-prompt">
+                                Add a new interview to the map
+                            </div>
+                            <div class="control-button">
+                                {% include "lottery/svg/add_marker.svg" %}
+                            </div>
                         </div>
                     </div>
                     <!--end user controls-->

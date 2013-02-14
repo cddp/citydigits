@@ -26,7 +26,10 @@ function d3GeoJsonLayer(className){
         .append("div")
         .attr("class", className);
     var svg = div.append('svg');
-    var g = svg.append('g');
+    var g = svg.append('g').attr('class', 'geoJsonLayer');
+
+    // name the layer
+    layer.name = className;
 
     layer.parent = div.node();
     layer.map = map;
@@ -113,10 +116,11 @@ function d3GeoJsonLayer(className){
                     .enter()
                     .append("path");
             } // end feature setup
+            return layer;
         } else { // there is a custom data function
-            layer.features = layer.customDataFunction( g, collection);
+            console.log( collection );
+            return layer.features = layer.customDataFunction( g, collection);
         }
-    return layer;
     }; // end of .data() method
 
     layer.extent = function() {

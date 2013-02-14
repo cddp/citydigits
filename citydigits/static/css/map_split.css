@@ -83,6 +83,9 @@ a:hover {
   font-size: 0.7em;
   line-height: 20px;
 }
+#contents {
+  overflow: hidden;
+}
 #map {
   position: absolute;
   left: 0;
@@ -133,29 +136,32 @@ a:hover {
   margin-left: 0;
   padding-left: 12px;
 }
-.pull-down-menu .handle-wrapper .pull-handle div.user_controls .control-button {
+.pull-down-menu .handle-wrapper .pull-handle div.user_controls .control-wrapper {
+  height: 36px;
+}
+.pull-down-menu .handle-wrapper .pull-handle div.user_controls .control-wrapper .control-button {
   float: left;
   margin-left: 12px;
   height: 36px;
   width: 36px;
   padding-top: 8px;
 }
-.pull-down-menu .handle-wrapper .pull-handle div.user_controls .control-button svg {
+.pull-down-menu .handle-wrapper .pull-handle div.user_controls .control-wrapper .control-button svg {
   fill: #fcfcfc;
   opacity: 0.7;
 }
-.pull-down-menu .handle-wrapper .pull-handle div.user_controls .control-button:hover svg {
+.pull-down-menu .handle-wrapper .pull-handle div.user_controls .control-wrapper .control-button:hover svg {
   fill: #b00951;
   opacity: 1.2;
 }
-.pull-down-menu .handle-wrapper .pull-handle div.user_controls .control-prompt {
+.pull-down-menu .handle-wrapper .pull-handle div.user_controls .control-wrapper .control-prompt {
   float: left;
   font-style: italic;
 }
-.pull-down-menu .handle-wrapper .pull-handle div.user_controls:hover {
+.pull-down-menu .handle-wrapper .pull-handle div.user_controls .control-wrapper:hover {
   color: #b00951;
 }
-.pull-down-menu .handle-wrapper .pull-handle div.user_controls:hover svg {
+.pull-down-menu .handle-wrapper .pull-handle div.user_controls .control-wrapper:hover svg {
   fill: #b00951;
 }
 .pull-down-menu .handle-wrapper .pull-handle div.layer_controls {
@@ -273,7 +279,7 @@ a:hover {
 .interview .interview-text .punct {
   color: #b00951;
 }
-#map .d3-vec {
+#map .interviews {
   position: absolute;
 }
 #map .boroughs {
@@ -336,6 +342,15 @@ a:hover {
   cursor: pointer;
 }
 .interview.text .interview-column .interview-photo-input .camera.button {
+  width: 100%;
+  position: absolute;
+  color: #fcfcfc;
+  background-color: #000000;
+}
+.interview.text .interview-column .interview-photo-input .camera.button:hover {
+  background-color: #b00951;
+}
+.interview.text .interview-column .interview-photo-input #video {
   position: absolute;
 }
 .interview.text .interview-column .interview-photo-input #canvas {

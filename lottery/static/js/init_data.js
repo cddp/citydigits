@@ -70,11 +70,7 @@ models.addTable('audio', []); // prepopulated from server
 models.addTable('quote', []); // these refer to audio files
 models.addTable('question', []); // prepopulated from server
 
-// make a new interview, get an id
-var interview = models.tables.interview.add({});
-console.log(interview);
 
-console.log(models.tables.interview.domContainers);
 loadQuestions();
 // addPhoto();
 

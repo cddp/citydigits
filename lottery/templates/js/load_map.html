@@ -7,7 +7,6 @@ var map,
     views,
     w, h,
     splitPage,
-    markers,
     isAuth,
     isEdit,
     selectedInterviewId;
@@ -39,16 +38,17 @@ function moveToDot(e){
 }
 
 function interviewMarkerData(g, collection){
-	var features = g.selectAll("g")
-		.data(collection.features)
-		.enter()
-		.append("g");
-  if (isEdit){
-  features.append("circle")
-    .attr("class", "marker-base")
-    .attr("r", baseRadius);
-  }
-  markers = features.append("a")
+
+    // new selection
+	var features = g.selectAll("g.location")
+		.data(collection.features);
+
+    // enter, add things
+    var newfeatures = features.enter()
+        .append("g")
+        .attr('class', 'location');
+
+    newfeatures.append("a")
 		.attr("xlink:href", function(d){
 			// add links for now, this will change later
       if (splitPage){
@@ -60,8 +60,8 @@ function interviewMarkerData(g, collection){
         } else { 
           return "/lottery/map/"+d.id+"/";
           }}}).append("g")
-    .attr("class","marker-links");
-  markers.append("polygon")
+    .attr("class","marker-links")
+        .append("polygon")
 		.attr("class", "interview-marker")
 		.attr("points", function(d){
 			if (d.id == selectedInterviewId){
@@ -71,8 +71,17 @@ function interviewMarkerData(g, collection){
 				// little marker
 				return mw+",0 0,0 0,"+mh+" "+((mw/2)-sw)+","+mh+" "+((mw/2)-sw)+","+(mh+sh)+" "+(mw/2)+","+mh+" "+mw+","+mh+" ";
         }})
-  markers.append("image")
-    .attr("xlink:href", function(d){
+    .attr("transform",function(d){
+            if (d.id == selectedInterviewId){
+                var x = -bmw/2 + bsw;
+                var y = -(bmh+bsh);
+            } else {
+                var x = -mw/2 + sw;
+                var y = -(mh+sh);
+            }
+        return "translate("+x+","+y+")";
+        })
+    .append("image").attr("xlink:href", function(d){
         if (d.id == selectedInterviewId){
           return d.properties.photo;
         } else {
@@ -88,6 +97,16 @@ function interviewMarkerData(g, collection){
           } else {
             return 0;
         }});
+
+
+    if (isEdit){
+        newfeatures.append("circle")
+        .attr("class", "marker-base")
+        .attr("r", baseRadius);
+    }
+
+    // remove any old features
+    features.exit().remove();
     return features;
 }
 
@@ -97,16 +116,6 @@ function interviewMarkerDraw( features ){
         var y = geoJsonProject(d)[1];
         return "translate("+x+","+y+")";
       });
-	markers.attr("transform",function(d){
-			if (d.id == selectedInterviewId){
-				var x = -bmw/2 + bsw;
-				var y = -(bmh+bsh);
-			} else {
-				var x = -mw/2 + sw;
-				var y = -(mh+sh);
-			}
-		return "translate("+x+","+y+")";
-		});
 }
 
 function setMapSize(){
@@ -128,7 +137,7 @@ function layerSetup(obj){
     map = obj;
 
     // make the layer
-    var interviewLayer = d3GeoJsonLayer('d3-vec');
+    var interviewLayer = d3GeoJsonLayer('interviews');
     // edit draw and data functions
     interviewLayer.customData( interviewMarkerData );
     interviewLayer.customDraw( interviewMarkerDraw );

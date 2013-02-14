@@ -14,6 +14,7 @@
     margin: 0 auto;
     text-align: left;
     .cols(3);
+
     .photo.in-column {
       height: @vu * 10;
       overflow: hidden;
@@ -25,11 +26,16 @@
     .interview-photo-input {
       .cols(3);
       .camera.button {
+        width: 100%;
         position: absolute;
+        color: @back;
+        background-color: @black;
+        &:hover {
+          background-color: @magenta;
+        }
       }
       #video {
-        position: relative;
-        z-index: 9;
+        position: absolute;
       }
       #canvas {
         position: absolute;

@@ -121,6 +121,7 @@ a {
 
 
 #contents {
+  overflow: hidden;
 }
 
 #map {
@@ -172,19 +173,22 @@ a {
         position: absolute;
         margin-left: 0;
         padding-left: @pad;
-        .control-button {
-          float: left;
-          margin-left: @gut;
-          .icon( @white, 0.7);
-        }
-        .control-prompt {
-          float: left;
-          font-style: italic;
-        }
-        &:hover {
-          color: @magenta;
-          svg {
-            fill: @magenta;
+        .control-wrapper {
+          height: @vu;
+          .control-button {
+            float: left;
+            margin-left: @gut;
+            .icon( @white, 0.7);
+          }
+          .control-prompt {
+            float: left;
+            font-style: italic;
+          }
+          &:hover {
+            color: @magenta;
+            svg {
+              fill: @magenta;
+            }
           }
         }
       }

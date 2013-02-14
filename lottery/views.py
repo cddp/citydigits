@@ -88,8 +88,8 @@ def interview_test_data():
     # make sure we have interview jsons
     # tie the photos together
     for i in interview_dicts:
-        i['description'] = random.choice([random.choice(descriptions), ""])
-        i['photos'] = pick_a_few(photos)
+        i['description'] = ""
+        i['photos'] = []
         i['questions'] = []
         for n, q in enumerate(questions):
             question = {'id':n,'text':q,'audios':[]}
@@ -217,7 +217,7 @@ def interview_map(request, highlight_id=None):
     c.update( map_context( highlight_id ) )
     c.update( auth( request ) )
     if not c['edit_mode']:
-        d.update( map_overlays() )
+        c.update( map_overlays() )
     template = 'lottery/interview_map.html',
     return render_to_response( template, c )
 
