@@ -46,6 +46,7 @@ function finishAddingInterview(control, contents){
 }
 
 $(document).ready(function(){
+
 // for the description, change the description of the interview
 models.tables.interview.listen(null, 'input', '.edit-description input',
     function(e){
@@ -149,5 +150,62 @@ $('.interview-column').on('click', '.camera.button', function(e){
     
 });
 
+function closeQuoteInput (inputItem, uuid) {
+    // just close things up
+    var value = inputItem.val();
+    var par = inputItem.parent('.quote');
+    var other = par.find('.quote-text');
+    if (other.length < 1) {
+        // there was no other
+        var other = $('<span class="quote-text"></span>');
+        other.attr('uuid', uuid);
+        other.insertBefore(inputItem);
+    } else {
+        other.show();
+    }
+    other.html(value);
+    inputItem.remove();
+}
+
+$('.interview-column').on('keyup','input.answer-quote-input', function(e){
+    // is this an existing quote?
+    // either way save it
+    var value = $(this).val();
+    var par = $(this).parent('.quote');
+    var uuid = par.attr('uuid');
+    var audio = par.parent().prev();
+    var audio_uuid = audio.attr('uuid');
+    var obj = {
+        'text':value,
+        'uuid':uuid,
+        'audio': audio_uuid,
+    }
+    // was the key the return key?
+    if (e.keyCode == 13){
+        // they hit return
+        closeQuoteInput( $(this), uuid);
+    }
+
+}).on('blur', 'input.answer-quote-input', function(e){
+    // if it's not empty
+    var value = $(this).val();
+    if (value !== "") {
+        // if we lose focus, make it not a input
+        // do the same as the return key
+        closeQuoteInput( $(this));
+    }
+});
+
+// the quote editing listener
+$('.interview-column').on('click','.quote-text', function(e){
+    // turn it into an input
+    var value = $(this).html();
+    var input = $('input.answer-quote-input').first().clone();
+    input.val(value);
+    input.attr('uuid', $(this).attr('uuid') );
+    input.insertAfter($(this));
+    $(this).hide();
+    console.log('clicked on an existing quote');
+});
 
 }); // end of document ready

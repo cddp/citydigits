@@ -5,6 +5,7 @@ from pprint import pprint
 
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core import serializers
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from django.contrib.gis.geos import *
 
@@ -88,8 +89,11 @@ def interview_test_data():
     quotes = sample.quotes
     # make sure we have interview jsons
     # tie the photos together
+    aid = 0
+    qid = 0
     for i in interview_dicts:
         i['description'] = ""
+        #generate a uuid, and make it a string to keep it jsonifiable
         i['uuid'] = str(uuid.uuid4())
         i['photos'] = []
         i['questions'] = []
@@ -98,8 +102,22 @@ def interview_test_data():
             these_mp3s = pick_a_few(audios)
             for a in these_mp3s:
                 obj = {}
+                obj['id'] = aid
                 obj['url'] = a
+                obj['uuid'] = str(uuid.uuid4())
                 obj['quotes'] = pick_a_few(quotes)
+                new = []
+                for q in obj['quotes']:
+                    qObj = {
+                            'id': qid,
+                            'uuid':str(uuid.uuid4()),
+                            'text': q,
+                            'audio': obj['uuid'],
+                            }
+                    new.append(qObj)
+                    qid += 1
+                obj['quotes'] = new
+                aid += 1
                 question['audios'].append(obj)
             i['questions'].append(question)
     d['interviews'] = interview_dicts
@@ -107,6 +125,7 @@ def interview_test_data():
     d['questionJsons'] = json.dumps(questions)
     return d
 
+@ensure_csrf_cookie
 def public_splash(request):
     # if authenticated, go to user home
     # if request.user.is_authenticated:
@@ -139,6 +158,7 @@ def about(request):
     template = "lottery/about.html"
     return render_to_response( template, c )
 
+@ensure_csrf_cookie
 def interview_photo_grid(request):
     c = {
         "menu":drop_down_menu(),
@@ -210,6 +230,7 @@ def map_context(highlight_id=None, choose_random=False):
         'interview':interview,
         }
 
+@ensure_csrf_cookie
 def interview_map(request, highlight_id=None):
     c = {
         "menu":drop_down_menu(),
@@ -223,6 +244,7 @@ def interview_map(request, highlight_id=None):
     template = 'lottery/interview_map.html',
     return render_to_response( template, c )
 
+@ensure_csrf_cookie
 def interview_split(request, interview_id):
     c = {
         "menu":drop_down_menu(),
@@ -271,3 +293,10 @@ def user_tutorial(request):
 
 def interview_map_detail(request, interview_id):
     pass
+
+
+def api(request):
+    """A function to handle incoming ajax data."""
+    pass
+
+

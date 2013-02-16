@@ -1,7 +1,7 @@
 {% load static %}
 {% load markymark %}
 
-<div class="rid{{interview.id}} interview text">
+<div class="rid{{interview.id}} interview text" uuid="{{interview.uuid}}">
     <div class="interview-column">
 
         {% if interview.photos %}
@@ -40,7 +40,7 @@
         </div>
 
         {% for question in interview.questions %}
-        <div class="rid{{question.id}} question">
+        <div class="rid{{question.id}} question" uuid="{{question.uuid}}">
             {% if is_authenticated and edit_mode %}
             <div class="record-button">
                 {% include "lottery/svg/microphone.svg" %}
@@ -57,7 +57,7 @@
 
             {% if question.audios %}
                 {% for audio in question.audios %}
-                <div class="rid{{audio.id}} audio">
+                <div class="rid{{audio.id}} audio" uuid="{{audio.uuid}}">
                     {% if is_authenticated and edit_mode %}
                     <div class="audio-delete">
                         {% include "lottery/svg/x.svg" %}
@@ -71,8 +71,8 @@
 
                     <div class="container-quote">
                     {% for quote in audio.quotes %}
-                    <div id="{{quote.id}}" class="rid{{qoute.id}} quote">
-                            <span class="qm">“</span>{{quote}}<span class="qm">”</span>
+                    <div id="{{quote.id}}" class="rid{{quote.id}} quote" uuid="{{quote.uuid}}">
+                        <span class="qm">“</span><span class="quote-text">{{quote.text}}</span><span class="qm">”</span>
                         {% if is_authenticated and edit_mode %}
                             <span class="quote-delete">
                             {% include "lottery/svg/x.svg" %}

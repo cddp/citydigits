@@ -69,7 +69,6 @@ models.addTable('audio', []); // prepopulated from server
 models.addTable('quote', []); // these refer to audio files
 models.addTable('question', []); // prepopulated from server
 
-console.log(models.tables.interview.items)
 
 
 loadQuestions();
