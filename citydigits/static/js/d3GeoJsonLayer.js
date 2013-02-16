@@ -118,7 +118,6 @@ function d3GeoJsonLayer(className){
             } // end feature setup
             return layer;
         } else { // there is a custom data function
-            console.log( collection );
             return layer.features = layer.customDataFunction( g, collection);
         }
     }; // end of .data() method

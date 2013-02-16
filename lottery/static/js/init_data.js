@@ -27,7 +27,7 @@ function loadQuestions(){
         var q = {};
         q.en = questions_en[i];
         q.es = questions_es[i];
-        var m = models.tables.question.add(q);
+        var m = models.tables.question.addOrEdit(q);
     }
 }
 function hasGetUserMedia() {
@@ -59,7 +59,6 @@ function addAudio(e){
 var models = Models(); // initialize the models global
 
 $(document).ready(function(){
-
 
 // add objects
 models.addTable('interview', interviewObjects);

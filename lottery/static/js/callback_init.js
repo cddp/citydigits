@@ -27,7 +27,7 @@ function addInterviewAndMarker(e) {
                 'lng':geopoint['lon'],
                 'lat':geopoint['lat'],
             };
-            var interview = Interview(models.tables.interview.add(obj));
+            var interview = Interview(models.tables.interview.addOrEdit(obj));
             geoJson = interview.toGeoJson();
             interviewGeoJsons.push(geoJson);
             var layer = map.getLayer('interviews');
@@ -143,7 +143,7 @@ $('.interview-column').on('click', '.camera.button', function(e){
                 url: imgUrl,
             };
             // save photo object to client data
-            var photo = models.tables.photo.add(obj);
+            var photo = models.tables.photo.addOrEdit(obj);
             console.log(photo);
         }
     }

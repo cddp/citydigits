@@ -1,8 +1,13 @@
 import random # for random choice between splash pages
 import json
+import re
+import base64
 import uuid
+import cStringIO
 from pprint import pprint
+from PIL import Image
 
+from django.http import HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core import serializers
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -294,9 +299,23 @@ def user_tutorial(request):
 def interview_map_detail(request, interview_id):
     pass
 
+def handleImageData(photoObj):
+    dataUrlPattern = re.compile('data:image/(png|jpeg);base64,(.*)$')
+    imgb64 = dataUrlPattern.match(photoObj['url']).group(2)
+    if imgb64 is not None and len(imgb64) > 0:
+        tempImg = cStringIO.StringIO(imgb64.decode('base64'))
+        image = Image.open(tempImg)
+        print image
+    return image
 
-def api(request):
+def api(request, modeltype):
     """A function to handle incoming ajax data."""
-    pass
-
+    if request.method == 'POST':
+        data = request.POST
+        if modeltype == 'photo':
+            handleImageData(data)
+        d = {}
+        d['success'] = True
+        return HttpResponse(json.dumps(d),
+                mimetype='application/javascript')
 

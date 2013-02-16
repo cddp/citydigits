@@ -11,6 +11,7 @@ from lottery.views import (
             interview_split,
             data_explorer,
             edit_map,
+            api,
         )
 
 urlpatterns = patterns('',
@@ -34,6 +35,9 @@ urlpatterns = patterns('',
     url(r'^map-split/(\d+)/$', interview_split, name="interview_split"),
 
     url(r'^data/$', data_explorer, name="data_explorer"),
+
+    # model api
+    url(r'^api/(\w+)/$', api, name="api"),
 
     # public_tutorial
     url(r'^tutorial/$', public_tutorial, name="public_tutorial"),

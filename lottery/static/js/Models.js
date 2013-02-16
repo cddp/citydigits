@@ -32,12 +32,6 @@ ModelInstance = function (table, id, obj) {
     } else { // we're making a new thing locally
         // give it a uuid
         this.data.uuid = makeRandomUUID();
-        // sync it with the database
-        var request = this.buildAjaxRequest(function (response) {
-            // set the remote_id to confirm it's presence 
-            // in the remote database
-            this.remote_id = response.id;
-        });
     }
     // set properties
     this.selector = '.id' + id + '.' + this.table.name; // example: ".id3.interview"
@@ -107,8 +101,9 @@ ModelInstance.prototype = {
         return {
             type:'POST',
             url:'/lottery/api/' + this.table.name + '/',
-            params: obj, // send this ModelInstance (is that smart?)
+            data: obj, // send this ModelInstance (is that smart?)
             success: callback, // set the response handler
+            // processData: false,
         };
     },
 
@@ -117,7 +112,9 @@ ModelInstance.prototype = {
         var request = this.buildAjaxRequest(function (response) {
             // set the remote_id to confirm it's presence 
             // in the remote database
+            self.is_dirty = false;
             self.remote_id = response.id;
+            console.log(response);
         });
         // not yet implemented
         queue.add(request);
@@ -137,7 +134,7 @@ ModelTable = function (owner, name, items) {
     // domContainers should be a jQuery selection
     this.domContainers = $('.container-' + name);
     for (var i=0; i<items.length; i++){
-        this.add( items[i] )
+        this.addOrEdit( items[i] )
     }
 };
 
@@ -149,20 +146,26 @@ ModelTable.prototype = {
     domContainers:null,
 
     // methods
-    add: function (obj) {
-        // add an object to this model table
-        // get the next id for this object
-        var id = this.items.length;
-        // convert it to a model instance
-        var model = new ModelInstance(this, id, obj);
-        // then add it
+    addOrEdit: function (obj) {
+        var model;
+        // check if it is a Model Instance
+        if (!obj.hasOwnProperty('table')) {
+            // add an object to this model table
+            // get the next id for this object
+            var id = this.items.length;
+            // convert it to a model instance
+            model = new ModelInstance(this, id, obj);
+        } else {
+            // it is an existing instance
+            model = obj;
+        }
+        // mark it as dirty
+        model.is_dirty = true;
+        // then add it / update it
         this.items[model.id] = model;
+        // add it to the syncing queue
+        model.sync(models.ajaxQueue)
         return model;
-    },
-    
-    edit: function (obj) {
-        // use the input object's id to update the existing object instance
-        this.items[obj.id] = obj;
     },
 
     getBy: function (key, value) {
@@ -222,8 +225,8 @@ Models = function () {
     var models = {};
     models.tables = {};
 
-    ajaxQueue = AjaxQueue();
-    ajaxQueue.run();
+    models.ajaxQueue = AjaxQueue();
+    models.ajaxQueue.run();
 
     models.sync = function () {
         // search for unsynced items and sync them
