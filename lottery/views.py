@@ -49,11 +49,6 @@ def drop_down_menu():
     }
     return d
 
-def user_menu():
-    d = {
-            }
-    return d
-
 def auth(request):
     # randomly select auth and edit settings
     isAuth = bool(random.randint(0,1))
@@ -65,70 +60,6 @@ def auth(request):
             'is_authenticated':True,
             'edit_mode':True,
             }
-
-def pick_a_few(things):
-    selected = []
-    amounts = [1, 1, 0, random.randint(0,3)]
-    amount = random.choice(amounts)
-    for i in range(amount):
-        selected.append( random.choice(things) )
-    return selected
-
-def is_complete_interview(interview):
-    if not interview.photos:
-        return False
-
-def interview_test_data():
-    d = {}
-    interviews = Interview.objects.all()
-    interview_dicts = [i.to_dict( exclude=['body']) for i in interviews]
-    locations = []
-    for i in interviews:
-        location = i.location.to_dict()
-        locations.append(location)
-    photos = Photo.objects.all()
-    photos = [p.to_dict(True, exclude=['date_added']) for p in photos]
-    descriptions = sample.descriptions
-    audios = sample.audios
-    questions = sample.questions
-    quotes = sample.quotes
-    # make sure we have interview jsons
-    # tie the photos together
-    aid = 0
-    qid = 0
-    for i in interview_dicts:
-        i['description'] = ""
-        #generate a uuid, and make it a string to keep it jsonifiable
-        i['uuid'] = str(uuid.uuid4())
-        i['photos'] = []
-        i['questions'] = []
-        for n, q in enumerate(questions):
-            question = {'id':n,'text':q,'audios':[]}
-            these_mp3s = pick_a_few(audios)
-            for a in these_mp3s:
-                obj = {}
-                obj['id'] = aid
-                obj['url'] = a
-                obj['uuid'] = str(uuid.uuid4())
-                obj['quotes'] = pick_a_few(quotes)
-                new = []
-                for q in obj['quotes']:
-                    qObj = {
-                            'id': qid,
-                            'uuid':str(uuid.uuid4()),
-                            'text': q,
-                            'audio': obj['uuid'],
-                            }
-                    new.append(qObj)
-                    qid += 1
-                obj['quotes'] = new
-                aid += 1
-                question['audios'].append(obj)
-            i['questions'].append(question)
-    d['interviews'] = interview_dicts
-    d['interviewJsons'] = json.dumps(interview_dicts)
-    d['questionJsons'] = json.dumps(questions)
-    return d
 
 @ensure_csrf_cookie
 def public_splash(request):
@@ -179,7 +110,6 @@ def interview_detail_context(c):
     return {
             'interview':random.choice(c['interviews'])
                 }
-
 
 def map_overlays():
     # get sample layers
@@ -256,20 +186,9 @@ def interview_split(request, interview_id):
         'page_title':"Interview Map Detail - CityDigits: Lottery",
     }
     c.update( map_context( interview_id ) )
-    c.update( interview_test_data() )
     c.update( interview_detail_context( c ) )
     c.update( auth( request ) )
     template = 'lottery/interview_split.html',
-    return render_to_response( template, c )
-
-def interview_detail(request, interview_id):
-    interview = sample_interview
-    c = {
-        "menu":drop_down_menu(),
-        'page_title':"Interview %s - CityDigits: Lottery: Lottery" % interview_id,
-    }
-    c.update( interview_detail_context( interview_id ) )
-    template = 'lottery/interview_detail.html',
     return render_to_response( template, c )
 
 def edit_map(request):
@@ -296,9 +215,6 @@ def public_tutorial(request):
 def user_tutorial(request):
     pass
 
-def interview_map_detail(request, interview_id):
-    pass
-
 def handleImageData(photoObj):
     dataUrlPattern = re.compile('data:image/(png|jpeg);base64,(.*)$')
     imgb64 = dataUrlPattern.match(photoObj['url']).group(2)
@@ -311,6 +227,7 @@ def handleImageData(photoObj):
 def api(request, modeltype):
     """A function to handle incoming ajax data."""
     if request.method == 'POST':
+        print request.user{{
         data = request.POST
         if modeltype == 'photo':
             handleImageData(data)
