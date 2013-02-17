@@ -79,24 +79,37 @@ class Win( DataModel ):
         return '%s $%s at %s on %s' % ( self.game, self.amount,
                 self.retailer.name, self.date)
 
-class Question( DataModel, UUIDModel ):
-    """A class for storing questions for interviews."""
-    text = models.TextField()
-    text_es = models.TextField( null=True, blank=True )
 
-    def __unicode__(self):
-        return self.text
+
 
 class Interview( GeeseModel, DataModel, UUIDModel ):
     """A class for storing information about interviews."""
     point = models.PointField()
-    description = models.CharField( max_length=300 )
+    description = models.CharField( max_length=300, null=True, blank=True )
     date_added = models.DateTimeField( auto_now_add=True )
     date_edited = models.DateTimeField( auto_now=True )
     creators = models.ManyToManyField( 'UserProfile', null=True, blank=True )
 
     def __unicode__(self):
-        return self.slug
+        return self.description
+
+    def is_complete(self):
+        """This method checks if the interview has sufficient information to be
+        displayed to the public.
+        """
+        # is there a description?
+        if not self.description:
+            return False
+        # was it made by someone?
+        if self.creators.count() < 1:
+            return False
+        # does it have any photos?
+        if self.photo_set.count() < 1:
+            return False
+        # does it have any audio files?
+        if self.audio_set.count() < 1:
+            return False
+        return True
 
     def as_geojson_feature(self, fields=None):
         # get the geojson representation of the feature
@@ -109,6 +122,14 @@ class Interview( GeeseModel, DataModel, UUIDModel ):
         feature['id'] = self.id
         return feature
 
+class Question( DataModel, UUIDModel ):
+    """A class for storing questions for interviews."""
+    text_en = models.TextField()
+    text_es = models.TextField( null=True, blank=True )
+
+    def __unicode__(self):
+        return self.text_en
+
 class Photo( DataModel, UUIDModel ):
     """For storing photos related to interviews or users.
     """
@@ -116,6 +137,9 @@ class Photo( DataModel, UUIDModel ):
     creators = models.ManyToManyField( 'UserProfile', null=True, blank=True )
     image = models.ImageField( upload_to=get_upload_path )
     interview = models.ForeignKey( 'Interview', null=True, blank=True )
+
+    def __unicode__(self):
+        return self.image.url
 
     def get_upload_path( self, filename ):
         return 'lottery/photos/%s' % filename
@@ -125,9 +149,13 @@ class Photo( DataModel, UUIDModel ):
 
 class Audio( DataModel, UUIDModel ):
     """for storing audio tracks from interviews."""
+    date_added = models.DateTimeField( auto_now_add=True )
     interview = models.ForeignKey( 'Interview' )
     question = models.ForeignKey('Question', null=True, blank=True )
     file = models.FileField( upload_to=get_upload_path )
+
+    def __unicode__(self):
+        return self.file.url
 
     def get_upload_path( self, filename ):
         return 'lottery/audios/%s' % filename
@@ -137,8 +165,13 @@ class Audio( DataModel, UUIDModel ):
 
 class Quote( DataModel, UUIDModel ):
     """A model for storing quotes of Audio tracks."""
+    date_added = models.DateTimeField( auto_now_add=True )
+    date_edited = models.DateTimeField( auto_now=True )
     text = models.TextField()
     audio = models.ForeignKey('Audio')
+
+    def __unicode__(self):
+        return self.text
 
     class Meta:
         abstract=True
