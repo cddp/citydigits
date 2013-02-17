@@ -4,12 +4,12 @@ from django.forms.models import model_to_dict
 
 from citydigits.settings import MEDIA_ROOT
 from geese.models import GeeseModel
-from datertots.models import  DataModel
+from datertots.models import  DataModel, UUIDModel
 
 def get_upload_path(instance, filepath):
     return instance.get_upload_path(filepath)
 
-class UserProfile( DataModel ):
+class UserProfile( DataModel, UUIDModel ):
     """This class should store information about a user who uploads interviews.
     """
     user = models.OneToOneField( User )
@@ -46,7 +46,7 @@ class RetailerManager(models.Manager):
     def get_by_natural_key(self, retailer_id):
         self.get( retailer_id=retailer_id )
 
-class Retailer( DataModel):
+class Retailer( DataModel ):
     """For storing distinct retailer names and retailer IDs
     """
     name = models.CharField( max_length = 500 )
@@ -58,7 +58,7 @@ class Retailer( DataModel):
     def natrual_key(self):
         return self.retailer_id
 
-class SalesWeek( DataModel):
+class SalesWeek( DataModel ):
     """For storing one week of sales at a particular place.
     """
     week = models.DateField()
@@ -79,27 +79,23 @@ class Win( DataModel ):
         return '%s $%s at %s on %s' % ( self.game, self.amount,
                 self.retailer.name, self.date)
 
-class InterviewManager(models.Manager):
-    def get_by_natural_key(self, slug):
-        return self.get(slug=slug)
+class Question( DataModel, UUIDModel ):
+    """A class for storing questions for interviews."""
+    text = models.TextField()
+    text_es = models.TextField( null=True, blank=True )
 
-class Interview( DataModel ):
+    def __unicode__(self):
+        return self.text
+
+class Interview( GeeseModel, DataModel, UUIDModel ):
     """A class for storing information about interviews."""
-    slug = models.SlugField()
+    point = models.PointField()
+    description = models.CharField( max_length=300 )
     date_added = models.DateTimeField( auto_now_add=True )
     date_edited = models.DateTimeField( auto_now=True )
     creators = models.ManyToManyField( 'UserProfile', null=True, blank=True )
-    body = models.TextField( null=True, blank=True )
-    location = models.ForeignKey( 'Location', null=True, blank=True )
-    process_as = models.CharField( max_length=50, default="markdown",
-            null=True, blank=True )
-
-    objects = InterviewManager()
 
     def __unicode__(self):
-        return self.slug
-
-    def natural_key(self):
         return self.slug
 
     def as_geojson_feature(self, fields=None):
@@ -107,25 +103,19 @@ class Interview( DataModel ):
         location = self.location
         feature = location.as_geojson_feature_dict()
         feature['properties'] = model_to_dict(self, fields)
-        feature['properties']['location_id'] = location.id
-        if fields == None or 'body' in fields:
+        if fields == None or 'description' in fields:
             asciibody = self.body.encode('utf-8')
-            feature['properties']['body'] = asciibody
+            feature['properties']['description'] = asciibody
         feature['id'] = self.id
         return feature
 
-def interviews_locations():
-    return Interview.objects.select_related()
-
-class Photo( DataModel ):
+class Photo( DataModel, UUIDModel ):
     """For storing photos related to interviews or users.
     """
     date_added = models.DateTimeField( auto_now_add=True )
     creators = models.ManyToManyField( 'UserProfile', null=True, blank=True )
     image = models.ImageField( upload_to=get_upload_path )
     interview = models.ForeignKey( 'Interview', null=True, blank=True )
-    location = models.ForeignKey( 'Location', null=True, blank=True )
-    caption = models.TextField( null=True, blank=True )
 
     def get_upload_path( self, filename ):
         return 'lottery/photos/%s' % filename
@@ -133,29 +123,26 @@ class Photo( DataModel ):
     def natural_key(self):
         return self.image.url
 
-class AudioFile( DataModel ):
-    """for storing audio interviews"""
-    pass
+class Audio( DataModel, UUIDModel ):
+    """for storing audio tracks from interviews."""
+    interview = models.ForeignKey( 'Interview' )
+    question = models.ForeignKey('Question', null=True, blank=True )
+    file = models.FileField( upload_to=get_upload_path )
+
+    def get_upload_path( self, filename ):
+        return 'lottery/audios/%s' % filename
+
     class Meta:
         abstract=True
 
-class Borough( DataModel ):
-    """For storing the 5 boroughs"""
-    pass
+class Quote( DataModel, UUIDModel ):
+    """A model for storing quotes of Audio tracks."""
+    text = models.TextField()
+    audio = models.ForeignKey('Audio')
+
     class Meta:
         abstract=True
 
-class Neighborhood( DataModel ):
-    """For storing the different neighborhoods"""
-    pass
-    class Meta:
-        abstract = True
-
-class BlockGroup( DataModel ):
-    """For storing block group data """
-    pass
-    class Meta:
-        abstract = True
 
 
 
