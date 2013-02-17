@@ -17,21 +17,29 @@ ModelInstance = function (table, id, obj) {
      * argument as their base data. The properties of the object literal are
      * merged with the ModelInstance.
      */
+    console.log('instantiating a new ModelInstance with id:');
+    console.log(table.name,id);
     this.table = table; // points to the ModelTable for this object
     this.id = id; // set the local id
     // set the data as a property
     this.data = obj;
     // this is a flag that indicates if this should be synced
-    this.is_dirty = false;
     if (obj.id) { // it's from the server
+        console.log('this object already has an id I think its from the server');
         // we are using both remote and uuids
         // it's redundant but it makes for nicer html
         this.data.remote_id = obj.id;
+        console.log('marking as clean');
+        this.is_dirty = false;
         // get all existing dom elements and assign the new id
         $('.rid' + obj.id + '.' + this.table.name).addClass('.id' + id);
     } else { // we're making a new thing locally
+        console.log('This object has no id, I think I just made it on the client.');
+        console.log('marking as dirty');
+        this.is_dirty = true;
         // give it a uuid
         this.data.uuid = makeRandomUUID();
+        console.log('Just gave it a UUID:', this.data.uuid);
     }
     // set properties
     this.selector = '.id' + id + '.' + this.table.name; // example: ".id3.interview"
@@ -47,7 +55,6 @@ ModelInstance.prototype = {
     selector: null, // selector can be used to select html representations of this 
     // we won't actually delete things, we'll use is_deleted to filter them
     is_deleted: false,
-    is_dirty: false,
 
     // get the dom elements that are associated with this object
     getDomElements: function (selector) {
@@ -90,6 +97,7 @@ ModelInstance.prototype = {
     // generate an ajax request for this object.
     // This should maybe be called upon object creation.
     buildAjaxRequest: function (callback) {
+        console.log('building ajax request');
         // callback is a function to call upon success of the ajax request
         // there is only one api method, and it is an add/edit
         // `deletion` is an edit to an existing thing, not an actual deletion
@@ -102,22 +110,32 @@ ModelInstance.prototype = {
             type:'POST',
             url:'/lottery/api/' + this.table.name + '/',
             data: obj, // send this ModelInstance (is that smart?)
+            dataType: "json",
             success: callback, // set the response handler
             // processData: false,
         };
     },
 
     sync: function (queue) {
-        var self = this;
-        var request = this.buildAjaxRequest(function (response) {
+        var me = this;
+        // build the request
+        var request = this.buildAjaxRequest(function (data) {
+            console.log('in the done callback');
             // set the remote_id to confirm it's presence 
             // in the remote database
-            self.is_dirty = false;
-            self.remote_id = response.id;
-            console.log(response);
+            me.is_dirty = false;
+            console.log('just marked this ModelInstance as clean.');
+            console.log("Here's the ModelInstance:");
+            console.log(me);
+            console.log('this was returned by the server:');
+            console.log(data);
+            //self.remote_id = response.id;
         });
-        // not yet implemented
+        console.log('built request and callback');
+
+        // add it to the queue
         queue.add(request);
+        console.log('added request to queue');
     },
 };
 
@@ -133,6 +151,7 @@ ModelTable = function (owner, name, items) {
     // representations of objects.
     // domContainers should be a jQuery selection
     this.domContainers = $('.container-' + name);
+    // add all the items given
     for (var i=0; i<items.length; i++){
         this.addOrEdit( items[i] )
     }
@@ -150,21 +169,35 @@ ModelTable.prototype = {
         var model;
         // check if it is a Model Instance
         if (!obj.hasOwnProperty('table')) {
+            console.log('I was given a new object to instantiate');
             // add an object to this model table
             // get the next id for this object
             var id = this.items.length;
             // convert it to a model instance
+            // it should be dirty by default
             model = new ModelInstance(this, id, obj);
+            console.log('is this model dirty? I just made it.');
+            console.log(model.is_dirty);
+            // then add it / update it
+            this.items[model.id] = model;
         } else {
+            console.log('I was given a ModelInstance');
             // it is an existing instance
             model = obj;
+            // mark it as dirty
+            model.is_dirty = true;
+            console.log('is this model dirty? I just marked it.');
+            console.log(model.is_dirty);
+            // then add it / update it
+            this.items[model.id] = model;
         }
-        // mark it as dirty
-        model.is_dirty = true;
-        // then add it / update it
-        this.items[model.id] = model;
-        // add it to the syncing queue
-        model.sync(models.ajaxQueue)
+        if (model.is_dirty) {
+            console.log('This model that I just added or edited appears dirty');
+            console.log('running model.sync()');
+            model.sync(models.ajaxQueue)
+        } else {
+            console.log('This model appears clean, I wont sync it');
+        }
         return model;
     },
 
@@ -228,17 +261,17 @@ Models = function () {
     models.ajaxQueue = AjaxQueue();
     models.ajaxQueue.run();
 
-    models.sync = function () {
-        // search for unsynced items and sync them
-        for (modelname in tables) {
-            var table = models.tables[modelname];
-            for (var i=0; i<table.items.length; i++){
-                if (table.items[i].remote_id == null||table.items[i].is_dirty) {
-                    table.items[i].sync(ajaxQueue);
-                }
-            }
-        }
-    };
+    //models.sync = function () {
+        //// search for unsynced items and sync them
+        //for (modelname in tables) {
+            //var table = models.tables[modelname];
+            //for (var i=0; i<table.items.length; i++){
+                //if (table.items[i].remote_id == null||table.items[i].is_dirty) {
+                    //table.items[i].sync(ajaxQueue);
+                //}
+            //}
+        //}
+    //};
 
     models.addTable = function (name, items) {
         models.tables[name] = new ModelTable(models, name, items);
@@ -246,7 +279,4 @@ Models = function () {
     return models;
 };
 
-
-
-console.log(csrftoken);
 

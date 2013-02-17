@@ -1,5 +1,6 @@
 
 AjaxQueue = function(timeout) {
+    console.log('Instantiating Ajax Queue');
 
     var que = {}; // this object
 
@@ -11,6 +12,7 @@ AjaxQueue = function(timeout) {
     que.add = function (request) {
         // adds a request to the ajax queue
         requests.push(request);
+        console.log('adding a request to the queue.');
     };
 
     que.remove = function (request) {
@@ -20,24 +22,26 @@ AjaxQueue = function(timeout) {
     };
 
     que.run = function() {
+        console.log('inside queue.run');
         if (requests.length) {
+            console.log('There are this many requests in the queue:');
+            console.log(requests.length);
             // if there are any requests
-            // get the completion success attribute of the request
-            var onComplete = requests[0].complete;
+            // get the success attribute of the request
+            var request = requests.shift();
+            console.log('Just shifted the queue, now there are', requests.length);
+            var done = request.success;
+            // pop off the first item
+            console.log('about to call $.ajax');
+            $.ajax(request);
+            console.log('just called $.ajax');
+            console.log('about to call run() again');
+            que.run();
+            console.log('just called run() again');
+            // run more
 
-            requests[0].complete = function () {
-                if (typeof onComplete === 'function') {
-                    // call it
-                    onComplete();
-                }
-                // pop off the first item
-                requests.shift();
-                // run more
-                que.run();
-            };
-
-            $.ajax(requests[0]);
         } else {
+            console.log("Doesn't look like there are any requests");
             que.tid = setTimeout( function(){ que.run(); }, que.t);
         }
     };

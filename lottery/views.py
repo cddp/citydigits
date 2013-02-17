@@ -314,8 +314,11 @@ def api(request, modeltype):
         data = request.POST
         if modeltype == 'photo':
             handleImageData(data)
+        else:
+            print dict(data)
         d = {}
         d['success'] = True
+        d['something_else'] = 'hello'
         return HttpResponse(json.dumps(d),
                 mimetype='application/javascript')
 
