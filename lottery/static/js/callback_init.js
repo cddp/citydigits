@@ -112,9 +112,16 @@ $('.interview-column').on('click', '.addphoto', function(e){
 
     // this may need to chance for different browsers
     navigator.webkitGetUserMedia({'video':true}, function (stream) {
+        console.log("getting user media");
+        console.log(navigator.webkitGetUserMedia);
+        console.log(stream);
         var objectURL = window.webkitURL.createObjectURL(stream);
+        console.log("made a URL:");
+        console.log(objectURL);
         video.src = objectURL;
         video.play();
+        console.log("Told the video to play");
+        console.log(video);
     }, function (error) {
         thisNode.html(contents);
     });
