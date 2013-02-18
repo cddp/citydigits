@@ -1,10 +1,10 @@
 from django.contrib.gis.db import models
 from django.contrib.auth.models import User
-from django.forms.models import model_to_dict
 
 from citydigits.settings import MEDIA_ROOT
 from geese.models import GeeseModel
 from datertots.models import  DataModel, UUIDModel
+from datertots.models import model_to_dict
 
 def get_upload_path(instance, filepath):
     return instance.get_upload_path(filepath)
@@ -160,9 +160,6 @@ class Audio( DataModel, UUIDModel ):
     def get_upload_path( self, filename ):
         return 'lottery/audios/%s' % filename
 
-    class Meta:
-        abstract=True
-
 class Quote( DataModel, UUIDModel ):
     """A model for storing quotes of Audio tracks."""
     date_added = models.DateTimeField( auto_now_add=True )
@@ -172,9 +169,6 @@ class Quote( DataModel, UUIDModel ):
 
     def __unicode__(self):
         return self.text
-
-    class Meta:
-        abstract=True
 
 
 

@@ -14,7 +14,9 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 
 from django.contrib.gis.geos import *
 
-from lottery.models import Interview, Location, Photo
+from lottery.models import (
+        Interview, Question, Location, Photo, Quote, Audio,
+        )
 
 from django.forms.models import model_to_dict
 from lottery.sample_data import sample_data as sample
@@ -61,6 +63,77 @@ def auth(request):
             'edit_mode':True,
             }
 
+def map_overlays():
+    # get sample layers
+    mapbox_layers = []
+    geojson_layers = []
+    layers = []
+    for layer in sample_layers.layers:
+        if 'mapbox' in layer['type']:
+            mapbox_layers.append(layer)
+        elif layer['type'] == 'geoJson':
+            geojson_layers.append( layer )
+        layers.append( layer )
+    return {
+        'maplayers': layers,
+        'maplayerJsons': json.dumps(layers),
+        'mapbox_layers':mapbox_layers,
+        'geojson_layers':json.dumps(geojson_layers),
+        }
+
+def data_setup(c, highlight_id=None, choose_random=False ):
+    """Adds all the data to a context dictionary
+        Checks input context for auth
+    """
+
+    # get everything
+    questions = Question.objects.all()
+    quotes = Quote.objects.all()
+    audios = Audio.objects.all()
+    photos = Photo.objects.all()
+    interviews = Interview.objects.all()
+
+    # setup template context
+    c['questions'] = questions
+    c['quotes'] = quotes
+    c['audios'] = audios
+    c['photos'] = photos
+    c['interviews'] = interviews
+
+    interviewGeoJsons = [n.as_geojson_feature_dict() for n in interviews]
+
+    if interviews:
+        if highlight_id:
+            # find the correct interview
+            interview = [i for i in interviews if str(i.id)==highlight_id][0]
+            # use this point as the center
+            center = interview.get_geom()
+        elif choose_random:
+            # random highlight for splash page
+            interview = random.choice(interviews)
+            center = interview.get_geom()
+            highlight_id = interview.id
+        else:
+            # no highlighted interview
+            interview = None
+            # center on the centroid of all the points
+            center = MultiPoint([i.location.get_geom() for i in interviews]).centroid
+
+        # set highlight
+        c['interview'] = interview
+        c['mapcenter'] = center
+
+    # setup javascript models context
+    # all of these should use natural_key for serialization
+    c['questionJsons'] = [n.to_json(True) for n in questions]
+    c['quoteJsons'] = [n.to_json(True) for n in quotes]
+    c['audioJsons'] = [n.to_json(True) for n in audios]
+    c['photoJsons'] = [n.to_json(True) for n in photos]
+    c['interviewJsons'] = [n.to_json(True) for n in interviews]
+    c['interviewGeoJsons'] = json.dumps(interviewGeoJsons)
+
+    return c
+
 @ensure_csrf_cookie
 def public_splash(request):
     # if authenticated, go to user home
@@ -73,16 +146,12 @@ def public_splash(request):
         'splash': True,
     }
     c.update( auth( request ) )
+    c.update( data_setup( c, choose_random=True) )
     templates = [
         'lottery/interview_map.html',
         'lottery/interview_photo_grid.html',
             ]
     template = random.choice( templates )
-    if 'map' not in template:
-        c['interviews'] = list(Interview.objects.all())
-        random.shuffle(c['interviews'])
-    else:
-        c.update( map_context(choose_random=True) )
     return render_to_response( template, c )
 
 def about(request):
@@ -102,68 +171,11 @@ def interview_photo_grid(request):
         'interviews':Interview.objects.all(),
     }
     c.update( auth( request ) )
-    random.shuffle(list(c['interviews']))
+    c.update( data_setup( c, choose_random=True) )
+    if not c['is_authenticated']:
+        random.shuffle(list(c['interviews']))
     template = 'lottery/interview_photo_grid.html',
     return render_to_response( template, c )
-
-def interview_detail_context(c):
-    return {
-            'interview':random.choice(c['interviews'])
-                }
-
-def map_overlays():
-    # get sample layers
-    mapbox_layers = []
-    geojson_layers = []
-    layers = []
-    for layer in sample_layers.layers:
-        if 'mapbox' in layer['type']:
-            mapbox_layers.append(layer)
-        elif layer['type'] == 'geoJson':
-            geojson_layers.append( layer )
-        layers.append( layer )
-    return {
-        'maplayers': layers,
-        'maplayerJsons': json.dumps(layers),
-        'mapbox_layers':mapbox_layers,
-        'geojson_layers':json.dumps(geojson_layers),
-        }
-
-def map_context(highlight_id=None, choose_random=False):
-    # get the interviews
-    interview_fields = (
-            'id',
-            'location_id',
-            )
-    interviews = Interview.objects.all()
-    photos = [i.photo_set.all()[0] for i in interviews]
-    if highlight_id:
-        # find the correct interview
-        interview = [i for i in interviews if str(i.id)==highlight_id][0]
-        # use this point as the center
-        center = interview.location.get_geom()
-    elif choose_random:
-        # random highlight for splash page
-        interview = random.choice(interviews)
-        center = interview.location.get_geom()
-        highlight_id = interview.id
-    else:
-        # no highlighted interview
-        interview = None
-        # center on the centroid of all the points
-        center = MultiPoint([i.location.get_geom() for i in interviews]).centroid
-    # turn the interviews into geojson features
-    locations = [n.as_geojson_feature( interview_fields ) for n in interviews]
-    # add the photos
-    for i, loc in enumerate(locations):
-        loc['properties']['photo'] = photos[i].image.url
-    # return a context dictionary
-    return {
-        'selected_interview': highlight_id,
-        'interviewGeoJsons':json.dumps(locations),
-        'mapcenter':center.coords,
-        'interview':interview,
-        }
 
 @ensure_csrf_cookie
 def interview_map(request, highlight_id=None):
@@ -171,9 +183,8 @@ def interview_map(request, highlight_id=None):
         "menu":drop_down_menu(),
         'page_title':"Interview Map - CityDigits: Lottery",
     }
-    c.update( interview_test_data() )
-    c.update( map_context( highlight_id ) )
     c.update( auth( request ) )
+    c.update( data_setup( c, highlight_id) )
     if not c['edit_mode']:
         c.update( map_overlays() )
     template = 'lottery/interview_map.html',
@@ -185,9 +196,9 @@ def interview_split(request, interview_id):
         "menu":drop_down_menu(),
         'page_title':"Interview Map Detail - CityDigits: Lottery",
     }
-    c.update( map_context( interview_id ) )
-    c.update( interview_detail_context( c ) )
     c.update( auth( request ) )
+    c.update( auth( request ) )
+    c.update( data_setup( c, interview_id) )
     template = 'lottery/interview_split.html',
     return render_to_response( template, c )
 
@@ -227,7 +238,7 @@ def handleImageData(photoObj):
 def api(request, modeltype):
     """A function to handle incoming ajax data."""
     if request.method == 'POST':
-        print request.user{{
+        print request.user
         data = request.POST
         if modeltype == 'photo':
             handleImageData(data)

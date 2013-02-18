@@ -109,6 +109,7 @@ $('.interview-column').on('click', '.addphoto', function(e){
     thisNode.append(canvasBit);
     thisNode.append(button);
 
+    // this may need to chance for different browsers
     navigator.webkitGetUserMedia({'video':true}, function (stream) {
         var objectURL = window.webkitURL.createObjectURL(stream);
         video.src = objectURL;

@@ -7,10 +7,8 @@ from lottery.views import (
             interview_map,
             public_tutorial,
             user_tutorial,
-            interview_detail,
             interview_split,
             data_explorer,
-            edit_map,
             api,
         )
 
@@ -23,14 +21,10 @@ urlpatterns = patterns('',
 
     # interview_photo_grid
     url(r'^interviews/$', interview_photo_grid, name="photo_grid"),
-    # interview_detail
-    url(r'^interviews/(\d+)/$', interview_detail, name="interview_detail"),
     # interview_map
     url(r'^map/$', interview_map, name="interview_map"),
     # intrview map highlight
     url(r'^map/(\d+)/$', interview_map, name="interview_highlight"),
-    # interview_map
-    url(r'^map/edit/$', edit_map, name="edit_map"),
     # interview_split
     url(r'^map-split/(\d+)/$', interview_split, name="interview_split"),
 
