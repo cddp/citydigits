@@ -21,7 +21,7 @@ class LocationManager(models.GeoManager):
     def get_by_natural_key(self, point):
         self.get( point=point )
 
-class Location( GeeseModel,  DataModel ):
+class Location( GeeseModel ):
     """For storing the locations, of retailers or interviews."""
     point = models.PointField( null=True, blank=True )
     address_text = models.TextField( null=True, blank=True )
@@ -82,7 +82,7 @@ class Win( DataModel ):
 
 
 
-class Interview( GeeseModel, DataModel, UUIDModel ):
+class Interview( GeeseModel, UUIDModel ):
     """A class for storing information about interviews."""
     point = models.PointField()
     description = models.CharField( max_length=300, null=True, blank=True )
@@ -91,7 +91,10 @@ class Interview( GeeseModel, DataModel, UUIDModel ):
     creators = models.ManyToManyField( 'UserProfile', null=True, blank=True )
 
     def __unicode__(self):
-        return self.description
+        if self.description:
+            return self.description
+        else:
+            return self.point.wkt
 
     def is_complete(self):
         """This method checks if the interview has sufficient information to be

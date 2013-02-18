@@ -117,7 +117,7 @@ def data_setup(c, highlight_id=None, choose_random=False ):
             # no highlighted interview
             interview = None
             # center on the centroid of all the points
-            center = MultiPoint([i.location.get_geom() for i in interviews]).centroid
+            center = MultiPoint([i.get_geom() for i in interviews]).centroid
 
         # set highlight
         c['interview'] = interview
@@ -226,27 +226,52 @@ def public_tutorial(request):
 def user_tutorial(request):
     pass
 
-def handleImageData(photoObj):
+def makePhoto(data):
     dataUrlPattern = re.compile('data:image/(png|jpeg);base64,(.*)$')
-    imgb64 = dataUrlPattern.match(photoObj['url']).group(2)
+    imgb64 = dataUrlPattern.match(data['url']).group(2)
     if imgb64 is not None and len(imgb64) > 0:
         tempImg = cStringIO.StringIO(imgb64.decode('base64'))
         image = Image.open(tempImg)
         print image
     return image
 
+def makeInterview(data):
+    p = data['point']
+    point = Point( p['lng'], p['lat'] )
+    if 'remote_id' in data:
+        interview = Interview.objects.get(id=data['remote_id'])
+    else:
+        interview = Interview()
+        interview.uuid = data['uuid']
+    interview.point = point
+    if 'description' in data:
+        interview.description = data['description']
+    interview.save()
+    return interview.id
+
+def makeAudio(data):
+    pass
+
+def makeQuote(data):
+    pass
+
+apiMakers = {
+        'photo':makePhoto,
+        'interview':makeInterview,
+        'audio':makeAudio,
+        'quote':makeQuote,
+        }
+
 def api(request, modeltype):
     """A function to handle incoming ajax data."""
     if request.method == 'POST':
         print request.user
         data = json.loads(request.POST['object'])
-        if modeltype == 'photo':
-            handleImageData(data)
-        else:
-            pprint( data )
+        pprint( data )
+        result = apiMakers[modeltype](data)
+        pprint( result )
         d = {}
-        d['success'] = True
-        d['something_else'] = 'hello'
+        d['remote_id'] = result
         return HttpResponse(json.dumps(d),
                 mimetype='application/javascript')
 

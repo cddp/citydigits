@@ -131,13 +131,13 @@ ModelInstance.prototype = {
             console.log('in the done callback');
             // set the remote_id to confirm it's presence 
             // in the remote database
-            me.is_dirty = false;
             console.log('just marked this ModelInstance as clean.');
             console.log("Here's the ModelInstance:");
             console.log(me);
             console.log('this was returned by the server:');
             console.log(data);
-            //self.remote_id = response.id;
+            me.remote_id = data.remote_id;
+            me.is_dirty = false;
         });
         console.log('built request and callback');
 
