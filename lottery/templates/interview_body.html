@@ -39,20 +39,15 @@
             {% endif %}
         </div>
 
-        {% for question in interview.questions %}
+        {% for question in questions %}
         <div class="rid{{question.id}} question" uuid="{{question.uuid}}">
-            {% if is_authenticated and edit_mode %}
-            <div class="record-button">
-                {% include "lottery/svg/microphone.svg" %}
-            </div>
-            {% endif %}
             <div class="question-text">
                 {% if not edit_mode %}
                 <div class="audio-play">
                     {% include "lottery/svg/speaker.svg" %}
                 </div>
                 {% endif %}
-                {{question.text}}
+                {{question.text_en}}
             </div>
 
             {% if question.audios %}

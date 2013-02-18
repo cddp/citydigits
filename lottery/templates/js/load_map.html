@@ -51,15 +51,8 @@ function interviewMarkerData(g, collection){
     newfeatures.append("a")
 		.attr("xlink:href", function(d){
 			// add links for now, this will change later
-      if (splitPage){
-        // we are on a split page
-				return "/lottery/map-split/"+d.id+"/";
-      } else { // we are on map highlight page
-          if (d.id == selectedInterviewId){
             return "/lottery/map-split/"+d.id+"/";
-        } else { 
-          return "/lottery/map/"+d.id+"/";
-          }}}).append("g")
+          }).append("g")
     .attr("class","marker-links")
         .append("polygon")
 		.attr("class", "interview-marker")

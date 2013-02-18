@@ -1,9 +1,10 @@
 import random # for random choice between splash pages
+import os
 import json
 import re
 import base64
 import uuid
-import cStringIO
+import StringIO
 from pprint import pprint
 from PIL import Image
 
@@ -11,9 +12,11 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core import serializers
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.core.files.base import ContentFile
 
 from django.contrib.gis.geos import *
 
+from citydigits.settings import MEDIA_ROOT
 from lottery.models import (
         Interview, Question, Location, Photo, Quote, Audio,
         )
@@ -228,12 +231,21 @@ def user_tutorial(request):
 
 def makePhoto(data):
     dataUrlPattern = re.compile('data:image/(png|jpeg);base64,(.*)$')
-    imgb64 = dataUrlPattern.match(data['url']).group(2)
-    if imgb64 is not None and len(imgb64) > 0:
-        tempImg = cStringIO.StringIO(imgb64.decode('base64'))
-        image = Image.open(tempImg)
-        print image
-    return image
+    imgb64 = dataUrlPattern.match(data.pop('url')).group(2)
+    img_name = data['interview'] + '.jpg'
+    img_file = ContentFile(imgb64.decode('base64'), name=img_name)
+    image = Image.open(img_file)
+    interview = Interview.objects.get(uuid=data['interview'])
+    photo = Photo()
+    photo.interview = interview
+    photo.image = img_file
+    photo.save()
+    img_path = os.path.join(MEDIA_ROOT, photo.get_upload_path(img_name))
+    image.save(img_path, format='JPEG')
+    return {
+            'remote_id':photo.id,
+            'url':photo.image.url,
+            }
 
 def makeInterview(data):
     p = data['point']
@@ -247,7 +259,7 @@ def makeInterview(data):
     if 'description' in data:
         interview.description = data['description']
     interview.save()
-    return interview.id
+    return { 'remote_id':interview.id }
 
 def makeAudio(data):
     pass
@@ -265,13 +277,9 @@ apiMakers = {
 def api(request, modeltype):
     """A function to handle incoming ajax data."""
     if request.method == 'POST':
-        print request.user
         data = json.loads(request.POST['object'])
-        pprint( data )
         result = apiMakers[modeltype](data)
         pprint( result )
-        d = {}
-        d['remote_id'] = result
-        return HttpResponse(json.dumps(d),
+        return HttpResponse(json.dumps(result),
                 mimetype='application/javascript')
 
