@@ -22,6 +22,8 @@ ModelInstance = function (table, id, obj) {
     this.table = table; // points to the ModelTable for this object
     this.id = id; // set the local id
     // set the data as a property
+    console.log('here is the data I received for the model:');
+    console.log(obj);
     this.data = obj;
     // this is a flag that indicates if this should be synced
     if (obj.id) { // it's from the server
@@ -41,6 +43,9 @@ ModelInstance = function (table, id, obj) {
         this.data.uuid = makeRandomUUID();
         console.log('Just gave it a UUID:', this.data.uuid);
     }
+    console.log('here is the new model:');
+    console.log(this);
+
     // set properties
     this.selector = '.id' + id + '.' + this.table.name; // example: ".id3.interview"
 };
@@ -109,7 +114,10 @@ ModelInstance.prototype = {
         return {
             type:'POST',
             url:'/lottery/api/' + this.table.name + '/',
-            data: obj, // send this ModelInstance (is that smart?)
+            data: {
+                // the object must be stringified to keep its point
+                "object": JSON.stringify(obj),
+            }, // send this ModelInstance (is that smart?)
             dataType: "json",
             success: callback, // set the response handler
             // processData: false,
@@ -171,6 +179,8 @@ ModelTable.prototype = {
         if (!obj.hasOwnProperty('table')) {
             console.log('I was given a new object to instantiate');
             // add an object to this model table
+            console.log("here's the object I received:");
+            console.log(obj);
             // get the next id for this object
             var id = this.items.length;
             // convert it to a model instance

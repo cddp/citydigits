@@ -80,8 +80,12 @@ function d3GeoJsonLayer(className){
             } else {
                 collection = geoJsonOrFeatures;
         }
-        // get the geometry type from the first feature
-        layer.featureType = collection.features[0].geometry.type;
+        if (collection.features.length > 0){
+            // get the geometry type from the first feature
+            layer.featureType = collection.features[0].geometry.type;
+        } else {
+            layer.featureType = 'Point';
+        }
         if (layer.featureType == 'Point'){ // if we have points
             // bounds are [[left, bottom],[right,top]]
             layer.bounds = [

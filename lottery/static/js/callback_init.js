@@ -22,11 +22,12 @@ function addInterviewAndMarker(e) {
             // convert the point to geographic coordinates
             var geopoint = map.pointLocation(point);
             // make the new interview
-            var obj = {};
-            obj.location = {
+            var obj = {}; 
+            obj.point = {
                 'lng':geopoint['lon'],
                 'lat':geopoint['lat'],
             };
+            console.log(obj);
             var interview = Interview(models.tables.interview.addOrEdit(obj));
             geoJson = interview.toGeoJson();
             interviewGeoJsons.push(geoJson);

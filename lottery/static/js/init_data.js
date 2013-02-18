@@ -9,11 +9,11 @@ var models = Models(); // initialize the models global
 $(document).ready(function(){
 
 // add objects
-models.addTable('interview', interviewObjects);
+models.addTable('interview', interviewJsons);
 models.tables.interview.domContainers = $('#contents');
-models.addTable('photo', photoJsons) // maybe prepopulated from server.
-models.addTable('audio', audioJsons); // prepopulated from server
-models.addTable('quote', quoteJsons); // these refer to audio files
-models.addTable('question', questionJsons); // prepopulated from server
+models.addTable('photo', photoJsons); 
+models.addTable('audio', audioJsons); 
+models.addTable('quote', quoteJsons); 
+models.addTable('question', questionJsons);
 
 });

@@ -125,11 +125,11 @@ def data_setup(c, highlight_id=None, choose_random=False ):
 
     # setup javascript models context
     # all of these should use natural_key for serialization
-    c['questionJsons'] = [n.to_json(True) for n in questions]
-    c['quoteJsons'] = [n.to_json(True) for n in quotes]
-    c['audioJsons'] = [n.to_json(True) for n in audios]
-    c['photoJsons'] = [n.to_json(True) for n in photos]
-    c['interviewJsons'] = [n.to_json(True) for n in interviews]
+    c['questionJsons'] = json.dumps([n.to_json_format(True) for n in questions])
+    c['quoteJsons'] = json.dumps([n.to_json_format(True) for n in quotes])
+    c['audioJsons'] = json.dumps([n.to_json_format(True) for n in audios])
+    c['photoJsons'] = json.dumps([n.to_json_format(True) for n in photos])
+    c['interviewJsons'] = json.dumps([n.to_json_format(True) for n in interviews])
     c['interviewGeoJsons'] = json.dumps(interviewGeoJsons)
 
     return c
@@ -239,11 +239,11 @@ def api(request, modeltype):
     """A function to handle incoming ajax data."""
     if request.method == 'POST':
         print request.user
-        data = request.POST
+        data = json.loads(request.POST['object'])
         if modeltype == 'photo':
             handleImageData(data)
         else:
-            print dict(data)
+            pprint( data )
         d = {}
         d['success'] = True
         d['something_else'] = 'hello'

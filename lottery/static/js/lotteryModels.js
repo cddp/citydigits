@@ -10,12 +10,12 @@
 var Interview = function (model) {
     model.toGeoJson = function () {
         var gj = {};
-        var location = model.data.location;
-        delete model.data.location;
+        var point = model.data.point;
+        delete model.data.point;
         gj.properties = model.data;
         gj.geometry = {
             type:"Point",
-            coordinates:[ location['lng'], location['lat'] ],
+            coordinates:[ point['lng'], point['lat'] ],
         };
         gj.id = model.id;
         gj.type = 'Feature';

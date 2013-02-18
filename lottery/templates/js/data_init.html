@@ -1,15 +1,13 @@
 {% load static %}
 {% autoescape off %}
 <script type="text/javascript" >
-{% if questions %}
-var questions = {{questions}};
-{% endif %}
-{% if photos %}
-var photos = {{photos}};
-{% endif %}
-{% if interviewJsons %}
-var interviewObjects = {{interviewJsons}};
-{% endif %}
+
+// load json lists for each model
+var questionJsons = {{questionJsons}};
+var quoteJsons = {{quoteJsons}};
+var audioJsons = {{audioJsons}};
+var photoJsons = {{photoJsons}};
+var interviewJsons = {{interviewJsons}};
 
 </script>
 <script type="text/javascript" src="{% get_static_prefix %}lottery/js/init_data.js"></script>
