@@ -190,7 +190,7 @@ def interview_map(request, highlight_id=None):
     c.update( data_setup( c, highlight_id) )
     if not c['edit_mode']:
         c.update( map_overlays() )
-    template = 'lottery/interview_map.html',
+    template = 'lottery/interview_split.html',
     return render_to_response( template, c )
 
 @ensure_csrf_cookie
@@ -199,7 +199,6 @@ def interview_split(request, interview_id):
         "menu":drop_down_menu(),
         'page_title':"Interview Map Detail - CityDigits: Lottery",
     }
-    c.update( auth( request ) )
     c.update( auth( request ) )
     c.update( data_setup( c, interview_id) )
     template = 'lottery/interview_split.html',
