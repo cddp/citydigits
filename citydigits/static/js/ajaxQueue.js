@@ -22,7 +22,6 @@ AjaxQueue = function(timeout) {
     };
 
     que.run = function() {
-        console.log('inside queue.run');
         if (requests.length) {
             console.log('There are this many requests in the queue:');
             console.log(requests.length);
@@ -41,7 +40,6 @@ AjaxQueue = function(timeout) {
             // run more
 
         } else {
-            console.log("Doesn't look like there are any requests");
             que.tid = setTimeout( function(){ que.run(); }, que.t);
         }
     };

@@ -9,6 +9,28 @@ var audioJsons = {{audioJsons}};
 var photoJsons = {{photoJsons}};
 var interviewJsons = {{interviewJsons}};
 
+
+/*
+ * For setting up the view, we need to have initial states
+ * with events we wil change those states.
+ * This means that our event listeners should rely on states in order to know
+ * how to respond
+ * css classes can be used to manage states.
+ * Our primary states are:
+ *      authenticated
+ *      editing
+ *      detail_open
+ *      detail_closed
+ *      item_selected
+ */
+
+var states = {};
+// load state information for states
+states.is_authenticated = {{is_authenticated}};
+states.is_editing = {{is_editing}};
+states.is_editing = {{is_editing}};
+states.selected_interview = {{selected_interview}};
+
 </script>
 <script type="text/javascript" src="{% get_static_prefix %}lottery/js/init_data.js"></script>
 {% endautoescape %}
