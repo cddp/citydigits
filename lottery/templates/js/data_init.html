@@ -28,8 +28,16 @@ var states = {};
 // load state information for states
 states.is_authenticated = {{authenticated}};
 states.is_editing = {{editing}};
+{% if detail_open %}
 states.detail_open = {{detail_open}};
+{% else %}
+states.detail_open = false;
+{% endif %}
+{% if selected_interview %}
 states.selected_interview = {{selected_interview}};
+{% else %}
+states.selected_interview = null;
+{% endif %}
 
 </script>
 <script type="text/javascript" src="{% get_static_prefix %}lottery/js/init_data.js"></script>

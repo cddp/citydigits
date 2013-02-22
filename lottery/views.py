@@ -127,7 +127,8 @@ def data_setup(c, highlight_id=None, choose_random=False ):
         # set highlight
         c['interview'] = interview
         c['mapcenter'] = center
-        c['selected_interview'] = interview.id
+        if interview:
+            c['selected_interview'] = interview.id
 
     # setup javascript models context
     # all of these should use natural_key for serialization
