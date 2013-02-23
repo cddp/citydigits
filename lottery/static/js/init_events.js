@@ -4,15 +4,11 @@
  */
 
 
-// Here are some event listeners for touch events to test on the ipad
-$(document).on( 'touchstart', function(e){
-    console.log("touchstart event!", e);
-});
-$(document).on( 'touchend', function(e){
-    console.log("touchend event!", e);
-});
-$(document).on( 'touchmove', function(e){
-    console.log("touchmove event!", e);
+// test the tap
+Tap.tapify('.question-text');
+$('.interview.text').on('tap', '.question-text', function(e){
+    console.log('tapped!');
+    console.log(e);
 });
 
 
