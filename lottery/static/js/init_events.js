@@ -4,10 +4,11 @@
  */
 
 
-// test the tap
-Tap.enableTap($('.interview.text'), '.question-text');
+// test the tap on map
+var theMap = $('#map');
+Tap.enableTap(theMap);
 
-$('.interview.text').on('tap', '.question-text', function(e){
+theMap.on('tap', function(e){
     console.log('tapped!');
     console.log(e);
 });
