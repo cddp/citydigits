@@ -9,7 +9,7 @@ var Tap = (function(){
     tap = {};
     tap.touching = false;
     tap.lastTouchEvent = null;
-    tap.enableTap = function (jq, subselector) {
+    tap.fireTaps = function (jq, subselector) {
         // set the touchstart listener
         jq.on('touchstart mousedown', subselector, function (e) {
             var cachedX = e.pageX;

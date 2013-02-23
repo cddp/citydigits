@@ -5,8 +5,7 @@
 
 
 // test the tap on map
-var theMap = $('#map');
-Tap.enableTap(theMap);
+Tap.fireTaps($('.body'));
 
 //theMap.on('tap', function(e){
     //if (states.adding_point) {
