@@ -64,6 +64,11 @@ function finishAddingInterview(control, contents){
 
 $(document).ready(function(){
 
+    // check if we are on detail page or not
+    if (!states.detail_open){
+        $('.interview.text').hide();
+        $('#map').css('width', '100%');
+    }
 // for the description, change the description of the interview
 models.tables.interview.listen(null, 'input', '.edit-description input',
     function(e){

@@ -194,7 +194,7 @@ def interview_map(request, highlight_id=None):
     c.update( data_setup( c, highlight_id) )
     if not c['edit_mode']:
         c.update( map_overlays() )
-    c['detail_open'] = json.dumps(True)
+    c['detail_open'] = json.dumps(False)
     template = 'lottery/interview_split.html',
     return render_to_response( template, c )
 
@@ -206,7 +206,7 @@ def interview_split(request, interview_id):
     }
     c.update( auth( request ) )
     c.update( data_setup( c, interview_id) )
-    c['detail_open'] = json.dumps(False)
+    c['detail_open'] = json.dumps(True)
     template = 'lottery/interview_split.html',
     return render_to_response( template, c )
 
