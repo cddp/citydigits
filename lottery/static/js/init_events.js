@@ -5,10 +5,7 @@
 
 
 // test the tap on map
-Tap.fireTaps($('.body'));
-$('.body').on('tap', function(e){
-    console.log('just been tapped!');
-});
+//Tap.fireTaps($('body'), '#contents');
 
 //theMap.on('tap', function(e){
     //if (states.adding_point) {
@@ -43,32 +40,64 @@ function addInterviewAndMarker(e) {
                 'lat':geopoint['lat'],
             };
             console.log(obj);
+            // adding the object!
             var interview = Interview(models.tables.interview.addOrEdit(obj));
+
+            // updating the layer
             geoJson = interview.toGeoJson();
             interviewGeoJsons.push(geoJson);
             var layer = map.getLayer('interviews');
             layer.data(interviewGeoJsons);
             layer.draw();
-            finishAddingInterview(e.data.control, e.data.contents);
+
+            // clean up
+            $('body').off('mousemove', '#contents', markerMouse);
+            $('body').off('click', '#contents', addInterviewAndMarker);
+            $('.new_marker').remove();
+            states.adding_point = false;
+            e.data.control.removeClass('addingpoint');
+            e.data.control.addClass('addpoint');
+            e.data.control.html(e.data.contents);
+
+            var center = map.center();
+            var height = $(map.parent).height();
+
+            $('#map').animate({'width': '50%'},
+                {
+                done: function (){
+                    $('.interview.text').show();
+                    console.log( 'should be at');
+                    console.log(geopoint);
+                    },
+                duration: 1000,
+                step: function(now, fx){
+                    // adjust the dimensions
+                    var width = $(map.parent).width();
+                    var dimensions = new MM.Point(width, height);
+                    map.setSize(dimensions);
+                    // adjust the map center
+                    var percent = Math.abs(now - fx.start)/Math.abs(fx.end - fx.start);
+                    var dLat = (center.lat - geopoint.lat) * percent;
+                    var dLon = (center.lon - geopoint.lon) * percent;
+                    var tempCenter = new MM.Location( center.lat - dLat, center.lon - dLon );
+                    map.setCenter( tempCenter );
+                },
+            });
+            //map.windowResize();
+
 }
 
-function finishAddingInterview(control, contents){
-        $('body').off('mousemove', '#contents', markerMouse);
-        $('body').off('click tap', '#contents', addInterviewAndMarker);
-        $('.new_marker').remove();
-        states.adding_point = true;
-        control.removeClass('addingpoint');
-        control.addClass('addpoint');
-        control.html(contents);
-}
 
 $(document).ready(function(){
 
-    // check if we are on detail page or not
-    if (!states.detail_open){
-        $('.interview.text').hide();
-        $('#map').css('width', '100%');
-    }
+// check if we are on detail page or not
+if (!states.detail_open){
+    $('.interview.text').hide();
+    $('#map').css('width', '100%');
+} else {
+    $('#map').css('width', '50%');
+}
+
 // for the description, change the description of the interview
 models.tables.interview.listen(null, 'input', '.edit-description input',
     function(e){
@@ -91,6 +120,7 @@ $('.user_controls').on('click', '.addpoint', {}, function(e){
     var svg = $('.add_marker').clone();
     control.removeClass('addpoint');
     control.addClass('addingpoint');
+    states.adding_point = true;
     var contents = control.html();
     control.html('Select the location for the interview');
     svg.insertAfter($('#map'));
@@ -104,7 +134,7 @@ $('.user_controls').on('click', '.addpoint', {}, function(e){
     var g = svg.find('g');
     // as the mouse moves follow it with the svg marker
     $('body').on('mousemove', '#contents', {'g':g}, markerMouse);
-    $('body').on('click tap', '#contents', {
+    $('body').on('click', '#contents', {
                         'g':g,
                         'control':control,
                         'contents':contents,
@@ -113,6 +143,7 @@ $('.user_controls').on('click', '.addpoint', {}, function(e){
 
 // for the photo thing, get make a new photo
 $('.interview-column').on('click', '.addphoto', function(e){
+    console.log('.addphoto clicked');
     var thisNode = $(this);
     thisNode.removeClass('addphoto');
     thisNode.addClass('addingphoto');
@@ -130,7 +161,21 @@ $('.interview-column').on('click', '.addphoto', function(e){
     thisNode.append(videoBit);
     thisNode.append(canvasBit);
     thisNode.append(button);
+    console.log('canvas appended');
 
+    var userMediaCaller = (function () {
+        if (navigator.getUserMedia){
+            return navigator.getUserMedia;
+        }
+        if (navigator.webkitGetUserMedia){
+            return navigator.webkitGetUserMedia;
+        }
+        console.log('no get user media');
+    }());
+    // alternative on iOS 6: 
+    // <input type="file" accept="image/*" capture="camera">
+    // <!-- Accept Multiple Images -->
+    // <input type="file" accept="image/*" multiple>
     // this may need to chance for different browsers
     navigator.webkitGetUserMedia({'video':true}, function (stream) {
         console.log("getting user media");

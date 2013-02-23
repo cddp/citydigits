@@ -313,8 +313,6 @@ a:hover {
 }
 #map {
   position: fixed !important;
-  width: 50%;
-  float: left;
 }
 .interview.text {
   text-align: center;

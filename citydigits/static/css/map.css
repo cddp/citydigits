@@ -279,6 +279,10 @@ a:hover {
 .interview .interview-text .punct {
   color: #b00951;
 }
+#map {
+  position: fixed !important;
+  width: 100%;
+}
 #map .interviews {
   position: absolute;
 }
