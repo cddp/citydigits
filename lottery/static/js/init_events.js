@@ -8,10 +8,10 @@
 var theMap = $('#map');
 Tap.enableTap(theMap);
 
-theMap.on('tap', function(e){
-    console.log('tapped!');
-    console.log(e);
-});
+//theMap.on('tap', function(e){
+    //if (states.adding_point) {
+    //}
+//});
 
 
 
@@ -52,8 +52,9 @@ function addInterviewAndMarker(e) {
 
 function finishAddingInterview(control, contents){
         $('body').off('mousemove', '#contents', markerMouse);
-        $('body').off('click', '#contents', addInterviewAndMarker);
+        $('body').off('click tap', '#contents', addInterviewAndMarker);
         $('.new_marker').remove();
+        states.adding_point = true;
         control.removeClass('addingpoint');
         control.addClass('addpoint');
         control.html(contents);
@@ -96,7 +97,7 @@ $('.user_controls').on('click', '.addpoint', {}, function(e){
     var g = svg.find('g');
     // as the mouse moves follow it with the svg marker
     $('body').on('mousemove', '#contents', {'g':g}, markerMouse);
-    $('body').on('click', '#contents', {
+    $('body').on('click tap', '#contents', {
                         'g':g,
                         'control':control,
                         'contents':contents,
