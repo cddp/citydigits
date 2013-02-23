@@ -9,9 +9,9 @@ var Tap = (function(){
     tap = {};
     tap.touching = false;
     tap.lastTouchEvent = null;
-    tap.tapify = function (selector) {
-        var thing = $(selector);
-        thing.on('touchstart mousedown', function (e) {
+    tap.enableTap = function (jq, subselector) {
+        // set the touchstart listener
+        jq.on('touchstart mousedown', subselector, function (e) {
             console.log('moused down');
             var cachedX = e.pageX;
             var cachedY = e.pageY;
@@ -33,19 +33,21 @@ var Tap = (function(){
                 // if the touching has ended within 200 ms, 
                 // and is in the same place, fire the tap
                 if ( !stillTouching && !movedX && !movedY ) {
-                    console.log('triggering tap');
+                    var target = $(e.currentTarget);
+                    console.log('triggering tap on:', target);
                     // fire the tap event
-                    $(this).trigger('tap');
+                    target.trigger('tap');
                 }
             }, 200);
         });
-        thing.on('touchend mouseup', function (e) {
+        // set the touchend listener
+        jq.on('touchend mouseup', subselector, function (e) {
             console.log('mouseup');
             console.log('set touching to false');
             tap.touching = false;
             tap.lastTouchEvent = e;
         });
-        return thing;
+        return jq;
     };
 
     return tap;

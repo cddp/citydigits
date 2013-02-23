@@ -5,7 +5,8 @@
 
 
 // test the tap
-Tap.tapify('.question-text');
+Tap.enableTap($('.interview.text'), '.question-text');
+
 $('.interview.text').on('tap', '.question-text', function(e){
     console.log('tapped!');
     console.log(e);
