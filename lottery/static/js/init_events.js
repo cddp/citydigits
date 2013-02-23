@@ -6,6 +6,9 @@
 
 // test the tap on map
 Tap.fireTaps($('.body'));
+$('.body').on('tap', function(e){
+    console.log('just been tapped!');
+});
 
 //theMap.on('tap', function(e){
     //if (states.adding_point) {
