@@ -4,31 +4,42 @@ AjaxQueue = function(timeout) {
 
     var que = {}; // this object
 
-    var requests = [];
+    que.requests = [];
 
     que.t = timeout || 1000;
-    que.tid = null;
+    que.timeoutId = null;
+
+    que.state = 'stopped';
+    que.stateChangeCallback = null;
+    que.changeState = function (state) {
+        que.state = state;
+        // if there's a status change call back
+        if (que.stateChangeCallback !== null ) {
+            que.stateChangeCallback(que);
+        }
+    };
 
     que.add = function (request) {
         // adds a request to the ajax queue
-        requests.push(request);
+        que.requests.push(request);
         console.log('adding a request to the queue.');
     };
 
     que.remove = function (request) {
-        if ($.inArray(request, requests) > -1) {
-            requests.splice( $.inArray(request, requests), 1);
+        if ($.inArray(request, que.requests) > -1) {
+            que.requests.splice( $.inArray(request, que.requests), 1);
         }
     };
 
     que.run = function() {
-        if (requests.length) {
+        if (que.requests.length) {
+            que.changeState('sending');
             console.log('There are this many requests in the queue:');
-            console.log(requests.length);
+            console.log(que.requests.length);
             // if there are any requests
             // get the success attribute of the request
-            var request = requests.shift();
-            console.log('Just shifted the queue, now there are', requests.length);
+            var request = que.requests.shift();
+            console.log('Just shifted the queue, now there are', que.requests.length);
             var done = request.success;
             // pop off the first item
             console.log('about to call $.ajax');
@@ -40,13 +51,18 @@ AjaxQueue = function(timeout) {
             // run more
 
         } else {
-            que.tid = setTimeout( function(){ que.run(); }, que.t);
+            // check for the thing is empty callback
+            if (que.state !== 'empty'){
+                que.changeState('empty');
+            }
+            que.timeoutId = setTimeout( function(){ que.run(); }, que.t);
         }
     };
 
     que.stop = function () {
-        requests = [];
-        clearTimeout(que.tid);
+        que.requests = [];
+        clearTimeout(que.timeoutId);
+        que.changeState('stopped');
     };
 
     return que;

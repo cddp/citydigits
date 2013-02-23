@@ -39,9 +39,11 @@ function addInterviewAndMarker(e) {
                 'lng':geopoint['lon'],
                 'lat':geopoint['lat'],
             };
-            console.log(obj);
             // adding the object!
             var interview = Interview(models.tables.interview.addOrEdit(obj));
+
+            // adjust the states
+            states.selected_interview = interview.uuid;
 
             // updating the layer
             geoJson = interview.toGeoJson();
@@ -58,6 +60,13 @@ function addInterviewAndMarker(e) {
             e.data.control.removeClass('addingpoint');
             e.data.control.addClass('addpoint');
             e.data.control.html(e.data.contents);
+              
+            // slide out the side panel
+            pullOutDetail(geopoint);
+
+}
+
+function pullOutDetail(newcenter){
 
             var center = map.center();
             var height = $(map.parent).height();
@@ -66,29 +75,58 @@ function addInterviewAndMarker(e) {
                 {
                 done: function (){
                     $('.interview.text').show();
-                    console.log( 'should be at');
-                    console.log(geopoint);
                     },
-                duration: 1000,
+                duration: 500,
                 step: function(now, fx){
                     // adjust the dimensions
                     var width = $(map.parent).width();
                     var dimensions = new MM.Point(width, height);
                     map.setSize(dimensions);
-                    // adjust the map center
-                    var percent = Math.abs(now - fx.start)/Math.abs(fx.end - fx.start);
-                    var dLat = (center.lat - geopoint.lat) * percent;
-                    var dLon = (center.lon - geopoint.lon) * percent;
-                    var tempCenter = new MM.Location( center.lat - dLat, center.lon - dLon );
-                    map.setCenter( tempCenter );
+
+                    if (newcenter !== null) {
+                        // adjust the map center
+                        var percent = Math.abs(now - fx.start)/Math.abs(fx.end - fx.start);
+                        var dLat = (center.lat - newcenter.lat) * percent;
+                        var dLon = (center.lon - newcenter.lon) * percent;
+                        var tempCenter = new MM.Location( center.lat - dLat, center.lon - dLon );
+                        map.setCenter( tempCenter );
+                    }
                 },
             });
-            //map.windowResize();
-
 }
 
+function sendingLoop(){
+    var statusBar = $('.sending');
+    if (statusBar.length > 0){
+        if (statusBar.html().indexOf('...') != -1){
+            statusBar.html( statusBar.html() + '.');
+        } else {
+            statusBar.html( statusBar.html().replace('...','');
+        }
+        setTimeout(sendingLoop, 400);
+    }
+}
+
+function ajaxStateManager(que){
+    if (que.state == 'sending'){
+        $('.edit-mode-link').removeClass('edit-mode-link')
+            .addClass('sending').html("Saving data ");
+        sendingLoop();
+    } else if (que.state == 'empty'){
+        var statusBar = $('.sending');
+        statusBar.removeClass('sending')
+            .addClass('empty').html("Data has been saved.");
+        setTimeout( function(){
+            statusBar.removeClass('empty')
+                .addClass('edit-mode-link')
+            .html('Stop editing interviews');
+        }, 4000);
+    }
+}
 
 $(document).ready(function(){
+
+models.ajaxQueue.stateChangeCallback(ajaxStateManager);
 
 // check if we are on detail page or not
 if (!states.detail_open){
