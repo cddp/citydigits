@@ -101,7 +101,7 @@ function sendingLoop(){
         if (statusBar.html().indexOf('...') != -1){
             statusBar.html( statusBar.html() + '.');
         } else {
-            statusBar.html( statusBar.html().replace('...','');
+            statusBar.html( statusBar.html().replace('...',''));
         }
         setTimeout(sendingLoop, 400);
     }
@@ -126,7 +126,7 @@ function ajaxStateManager(que){
 
 $(document).ready(function(){
 
-models.ajaxQueue.stateChangeCallback(ajaxStateManager);
+models.ajaxQueue.stateChangeCallback = ajaxStateManager;
 
 // check if we are on detail page or not
 if (!states.detail_open){
