@@ -1,0 +1,19 @@
+            <div class="audio" uuid="{{uuid}}">
+                <div class="audio-delete">
+                    <embed src="/static/lottery/svg/x.svg" type="image/svg+xml" />
+                </div>
+                <audio class="audio-player" controls>
+                    <source src="{{file}}" type="audio/mpeg">
+                </audio>
+                <div class="container-quote">
+                {{#audio.quotes}}
+                   {{>quote}}
+                <!--include quote template here-->
+                {{/audio.quotes}} <!--end of quotes-->
+
+                {{#edit_mode}} <!--add the quote field at the end-->
+                    {{>quote_new}}
+                {{/edit_mode}}
+
+                </div>
+            </div>

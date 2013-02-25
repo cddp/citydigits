@@ -1,0 +1,37 @@
+<div class="interview text" uuid="{{interview.uuid}}">
+    <div class="interview-column">
+
+        {{#interview.main_photo}}
+        {{>photo_main}}
+        {{/interview.main_photo}}
+
+        {{^interview.main_photo}}
+        {{>photo_new}}
+        {{/interview.main_photo}}
+
+        <div class="description{{#edit_mode}} edit-description{{/edit_mode}}">
+
+            {{#edit_mode }}
+                <input class="interview-description-input" type="text" name="interview-description" placeholder=" Name, Retailer or Player, Place" value="{{interview.description}}">
+            {{/edit_mode}}
+
+            {{^edit_mode}}
+                {{interview.description}}
+                {{^interview.description}}
+                    Untitled Interview
+                {{/interview.description}}
+            {{/edit_mode}}
+        </div>
+
+        {{#questions}}
+        {{>question}}
+        {{/questions}}
+
+        <!--additional photos-->
+        {{#interview.photos}}
+        {{>photo}}
+        {{/interview.photos}}
+    </div>
+    <!--end interview column-->
+</div>
+<!--end interview top level-->

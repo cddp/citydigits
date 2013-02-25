@@ -94,6 +94,7 @@ def data_setup(c, highlight_id=None, choose_random=False ):
     # get everything
     questions = Question.objects.all()
     quotes = Quote.objects.all()
+    notes = Note.objects.all()
     audios = Audio.objects.all()
     photos = Photo.objects.all()
     interviews = Interview.objects.all()
@@ -101,6 +102,7 @@ def data_setup(c, highlight_id=None, choose_random=False ):
     # setup template context
     c['questions'] = questions
     c['quotes'] = quotes
+    c['notes'] = notes
     c['audios'] = audios
     c['photos'] = photos
     c['interviews'] = interviews
@@ -134,6 +136,7 @@ def data_setup(c, highlight_id=None, choose_random=False ):
     # all of these should use natural_key for serialization
     c['questionJsons'] = json.dumps([n.to_json_format(True) for n in questions])
     c['quoteJsons'] = json.dumps([n.to_json_format(True) for n in quotes])
+    c['noteJsons'] = json.dumps([n.to_json_format(True) for n in notes])
     c['audioJsons'] = json.dumps([n.to_json_format(True) for n in audios])
     c['photoJsons'] = json.dumps([n.to_json_format(True) for n in photos])
     c['interviewJsons'] = json.dumps([n.to_json_format(True) for n in interviews])

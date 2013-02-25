@@ -173,6 +173,17 @@ class Quote( DataModel, UUIDModel ):
     def __unicode__(self):
         return self.text
 
+class Note( DataModel, UUIDModel ):
+    """A model for storing text notes on questions."""
+    date_added = models.DateTimeField( auto_now_add=True )
+    date_edited = models.DateTimeField( auto_now=True )
+    interview = models.ForeignKey( 'Interview' )
+    question = models.ForeignKey('Question')
+    text = models.TextField()
+
+    def __unicode__(self):
+        return self.text
+
 
 
 
