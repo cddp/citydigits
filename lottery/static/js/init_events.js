@@ -321,4 +321,5 @@ $('.interview-column').on('click','.quote-text', function(e){
     console.log('clicked on an existing quote');
 });
 
+console.log($.mustache);
 }); // end of document ready
