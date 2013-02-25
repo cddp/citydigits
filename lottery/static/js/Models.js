@@ -128,8 +128,10 @@ ModelInstance.prototype = {
         var root = '/lottery/api/' + this.table.name + '/';
         // include remote id and deleted in the data
         var obj = this.data;
+        console.log("heres the data",obj);
         obj.client_id = this.id;
         obj.is_deleted = this.is_deleted;
+        console.log("sending this:",obj);
         return {
             type:'POST',
             url:'/lottery/api/' + this.table.name + '/',
@@ -143,7 +145,7 @@ ModelInstance.prototype = {
         };
     },
 
-    sync: function (queue) {
+    sync: function (queue, callback) {
         var me = this;
         // build the request
         var request = this.buildAjaxRequest(function (data) {
@@ -155,8 +157,12 @@ ModelInstance.prototype = {
             console.log(me);
             console.log('this was returned by the server:');
             console.log(data);
-            me.remote_id = data.remote_id;
+            me.remote_id = data.id;
             me.is_dirty = false;
+            if (callback !== null) {
+                console.log('calling custom callback');
+                callback(data);
+            }
         });
         console.log('built request and callback');
 
@@ -192,7 +198,7 @@ ModelTable.prototype = {
     domContainers:null,
 
     // methods
-    addOrEdit: function (obj) {
+    addOrEdit: function (obj, callback) {
         var model;
         // check if it is a Model Instance
         if (!obj.hasOwnProperty('table')) {
@@ -223,7 +229,8 @@ ModelTable.prototype = {
         if (model.is_dirty) {
             console.log('This model that I just added or edited appears dirty');
             console.log('running model.sync()');
-            model.sync(models.ajaxQueue)
+            console.log("here's the new model:", model);
+            model.sync(models.ajaxQueue, callback)
         } else {
             console.log('This model appears clean, I wont sync it');
         }
@@ -235,8 +242,14 @@ ModelTable.prototype = {
         for (var i = 0; i < this.items.length; i++) {
             var item = this.items[i];
             if (!item.is_deleted) { // make sure it hasn't been deleted
-                if (item.data[key] == value) {
-                    return item;
+                if (key == "uuid") {
+                    if (item[key] == value) {
+                        return item;
+                    }
+                } else {
+                    if (item.data[key] == value) {
+                        return item;
+                    }
                 }
             }
         }

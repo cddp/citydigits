@@ -3,7 +3,7 @@
 // add photo from map highlight
 $('map .photo-input').click(function(e){
 	// get the id of this thing
-	var interview_id = $(this).attr('id');
+	var interview_id = $(this).attr('uuid');
 
 	// initiate photo adding process
 	views.addInterviewPhoto(interview_id);

@@ -1,11 +1,11 @@
             <!--or show an empty photo input-->
             <div class="interview-photo-input addphoto">
                 <div class="bigicon">
-                    <embed src="/static/lottery/svg/camera_simple.svg" type="image/svg+xml" />
+                    {{>camera_simple}}
                 </div>
                 {{#edit_mode}}
                 <div class="prompt photo-input">Click here to take a photo</div>
-                <input type="file" accept="image/*" capture="camera">
+                <!--<input type="file" accept="image/*" capture="camera">-->
                 {{/edit_mode}}
                 {{^edit_mode}}
                 <div class="prompt photo-input">No photos for this interview</div>

@@ -2,15 +2,23 @@
             {{^edit_mode}}
                 {{#main_audio}}
                     <div class="audio-play">
-                        <embed src="/static/lottery/svg/speaker.svg" type="image/svg+xml" />
+                        {{>speaker}}
                     </div>
                 {{/main_audio}}
             {{/edit_mode}}
             <div class="question-text">
                 {{text_en}}
             </div>
-
+            {{^edit_mode}}
+                {{#notes}}
+                {{>note}}
+                {{/notes}}
+            {{/edit_mode}}
             {{#edit_mode}}
+                {{#notes}}
+                {{>note_new}}
+                {{/notes}}
+                {{>note_new}}
             {{#audios}}
                {{>audio}}
             {{/audios}}

@@ -225,11 +225,15 @@ a:hover {
 .pull-down-menu .handle-wrapper .pull-handle g.flipped {
   transform: rotate(180, 18, 18);
 }
-.pull-down-menu .handle-wrapper .pull-handle .edit-mode-link {
+.pull-down-menu .handle-wrapper .pull-handle .edit-mode-link,
+.pull-down-menu .handle-wrapper .pull-handle .sending,
+.pull-down-menu .handle-wrapper .pull-handle .empty {
   padding-left: 12px;
   padding-right: 12px;
   position: absolute;
   margin-left: 756px;
+}
+.pull-down-menu .handle-wrapper .pull-handle .edit-mode-link {
   cursor: pointer;
 }
 .pull-down-menu .handle-wrapper .pull-handle .edit-mode-link:hover {

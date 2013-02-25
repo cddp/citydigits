@@ -255,10 +255,12 @@ a {
         transform: rotate(180, 18, 18);
       }
 
-      .edit-mode-link {
+      .edit-mode-link, .sending, .empty {
         .xpad();
         position: absolute;
         margin-left: @col * 4 + @gut * 3;
+      }
+      .edit-mode-link {
         cursor: pointer;
         &:hover {
           color: @magenta;

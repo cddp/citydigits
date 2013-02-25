@@ -14,6 +14,7 @@ models.tables.interview.domContainers = $('#contents');
 models.addTable('photo', photoJsons); 
 models.addTable('audio', audioJsons); 
 models.addTable('quote', quoteJsons); 
+models.addTable('note', noteJsons); 
 models.addTable('question', questionJsons);
 
 });

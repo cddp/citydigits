@@ -60,10 +60,11 @@ function addInterviewAndMarker(e) {
             e.data.control.removeClass('addingpoint');
             e.data.control.addClass('addpoint');
             e.data.control.html(e.data.contents);
+
+            renderDetail(interview.uuid);
               
             // slide out the side panel
             pullOutDetail(geopoint);
-
 }
 
 function pullOutDetail(newcenter){
@@ -74,6 +75,7 @@ function pullOutDetail(newcenter){
             $('#map').animate({'width': '50%'},
                 {
                 done: function (){
+                      console.log("showing interview");
                     $('.interview.text').show();
                     },
                 duration: 500,
@@ -115,153 +117,28 @@ function ajaxStateManager(que){
     } else if (que.state == 'empty'){
         var statusBar = $('.sending');
         statusBar.removeClass('sending')
-            .addClass('empty').html("Data has been saved.");
-        setTimeout( function(){
+            .addClass('empty').html("Changes saved ...");
+        statusBar.animate({"opacity":0}, 800,
+                function(){
+            statusBar.css('opacity', 1)
             statusBar.removeClass('empty')
                 .addClass('edit-mode-link')
             .html('Stop editing interviews');
-        }, 4000);
+        });
     }
 }
 
-$(document).ready(function(){
-
-models.ajaxQueue.stateChangeCallback = ajaxStateManager;
-
-// check if we are on detail page or not
-if (!states.detail_open){
-    $('.interview.text').hide();
-    $('#map').css('width', '100%');
-} else {
-    $('#map').css('width', '50%');
+function renderDetail (interviewUUID) {
+    var context = interviewContext( interviewUUID );
+    $.extend(context, mustache_context);
+    var textRender = $($.mustache(templates.interview, context, templates));
+    textRender.hide();
+    $('.interview.text').replaceWith(textRender);
+    splitStyles();
 }
 
-// for the description, change the description of the interview
-models.tables.interview.listen(null, 'input', '.edit-description input',
-    function(e){
-        // get the id of this interview
-        var id=0;
-        // get the new description value
-        var value = $(this).val();
-        // get the interview
-        var interview = models.tables.interview.items[id];
-        // set the desciption to this value
-        interview.data.description = value;
-        // mark the interview as dirty for updates
-        interview.is_dirty = true;
-});
-
-
-// for adding points
-$('.user_controls').on('click', '.addpoint', {}, function(e){
-    var control = $('.addpoint');
-    var svg = $('.add_marker').clone();
-    control.removeClass('addpoint');
-    control.addClass('addingpoint');
-    states.adding_point = true;
-    var contents = control.html();
-    control.html('Select the location for the interview');
-    svg.insertAfter($('#map'));
-    svg.attr('class', 'new_marker');
-    svg.attr('width', $('#map').innerWidth());
-    // I don't know why I need to subtract 11 pixels here, but I 
-    // couldn't find the cause
-    svg.attr('height', $('#map').innerHeight() - 11);
-    svg.css('position', 'relative');
-    // attach svg to mouse
-    var g = svg.find('g');
-    // as the mouse moves follow it with the svg marker
-    $('body').on('mousemove', '#contents', {'g':g}, markerMouse);
-    $('body').on('click', '#contents', {
-                        'g':g,
-                        'control':control,
-                        'contents':contents,
-                    }, addInterviewAndMarker);
-});
-
-// for the photo thing, get make a new photo
-$('.interview-column').on('click', '.addphoto', function(e){
-    console.log('.addphoto clicked');
-    var thisNode = $(this);
-    thisNode.removeClass('addphoto');
-    thisNode.addClass('addingphoto');
-    // save things
-    var contents = thisNode.html();
-    var h = thisNode.height();
-    var w = thisNode.width(); 
-    // set it to blank
-    thisNode.html('');
-    // append a snapshot button
-    var button = $('<div class="camera button">Take Photo</div>');
-    var videoBit = $('<video id="video" width="'+w+'" height="'+h+'" autoplay="" ></video>');
-    // replace everything with a canvas
-    var canvasBit = $('<canvas id="canvas" width="'+w+'" height="'+h+'"></canvas>');
-    thisNode.append(videoBit);
-    thisNode.append(canvasBit);
-    thisNode.append(button);
-    console.log('canvas appended');
-
-    var userMediaCaller = (function () {
-        if (navigator.getUserMedia){
-            return navigator.getUserMedia;
-        }
-        if (navigator.webkitGetUserMedia){
-            return navigator.webkitGetUserMedia;
-        }
-        console.log('no get user media');
-    }());
-    // alternative on iOS 6: 
-    // <input type="file" accept="image/*" capture="camera">
-    // <!-- Accept Multiple Images -->
-    // <input type="file" accept="image/*" multiple>
-    // this may need to chance for different browsers
-    navigator.webkitGetUserMedia({'video':true}, function (stream) {
-        console.log("getting user media");
-        console.log(navigator.webkitGetUserMedia);
-        console.log(stream);
-        var objectURL = window.webkitURL.createObjectURL(stream);
-        console.log("made a URL:");
-        console.log(objectURL);
-        video.src = objectURL;
-        video.play();
-        console.log("Told the video to play");
-        console.log(video);
-    }, function (error) {
-        thisNode.html(contents);
-    });
-});
-
-// set up photo snapshot listener
-$('.interview-column').on('click', '.camera.button', function(e){
-    var video = $('video');
-    var canvas = $('canvas');
-    var width = canvas.width();
-    var height = canvas.height();
-    var context = canvas[0].getContext('2d');
-    context.drawImage(video[0], 0, 0);
-    var imgUrl = canvas[0].toDataURL('image/jpg');
-    // get the corresponding interview
-    var classes = $('.interview.text').prop('class').split(' ');
-    for (var i=0; i<classes.length; i++ ) {
-        klass = classes[i];
-        if (klass.indexOf('rid') !== -1) {
-            var remote_id = parseInt(klass.split('rid')[1]);
-            // this is the id
-            console.log(remote_id);
-            // no interviews are loaded locally, so this doesn't work
-            var interview = models.tables.interview.getBy('remote_id', remote_id );
-            // create base for photo object
-            var obj = {
-                interview: interview.data.uuid,
-                url: imgUrl,
-            };
-            // save photo object to client data
-            var photo = models.tables.photo.addOrEdit(obj);
-            console.log(photo);
-        }
-    }
-    
-});
+// click may replace it with a form
+// return updates the model and restores any display. May add a form.
 
 function closeQuoteInput (inputItem, uuid) {
     // just close things up
@@ -317,43 +194,217 @@ function interviewContext (uuid) {
     var context = {
         "interview": interview.flat(),
         "questions":flatten(questions),
-        "edit_mode":true,
     };
     return context;
 }
 
 
-$('.interview-column').on('keyup','input.answer-quote-input', function(e){
-    // is this an existing quote?
-    // either way save it
-    var value = $(this).val();
-    var par = $(this).parent('.quote');
-    var uuid = par.attr('uuid');
-    var audio = par.parent().prev();
-    var audio_uuid = audio.attr('uuid');
-    var obj = {
-        'text':value,
-        'uuid':uuid,
-        'audio': audio_uuid,
-    }
-    // was the key the return key?
-    if (e.keyCode == 13){
-        // they hit return
-        closeQuoteInput( $(this), uuid);
-    }
 
-}).on('blur', 'input.answer-quote-input', function(e){
-    // if it's not empty
-    var value = $(this).val();
-    if (value !== "") {
-        // if we lose focus, make it not a input
-        // do the same as the return key
-        closeQuoteInput( $(this));
+
+function dealWithQuote(thing) {
+    var isNew = thing.parent().attr('class').indexOf('new') !== -1;
+    var interview = $('.interview.text').attr('uuid');
+    var question = thing.parents('.question').attr('uuid');
+    console.log(question);
+    var value = thing.val();
+    if (isNew) {
+        var obj = {
+            text: value,
+            interview: interview,
+            question: question,
+        }
+        thing.parent().removeClass('new');
+        // update the id
+        // update the uuid
+    } else {
+        var uuid = thing.parent().attr('uuid');
+        var obj = models.tables.note.getBy('uuid', uuid);
+        obj.data.interview = interview;
+        obj.data.question = question;
+        obj.data.text = value;
+    }
+    var note = models.tables.note.addOrEdit(obj, noteUpdateCallback);
+    console.log("here's the value", value);
+    console.log("grabbed note", note);
+    console.log("text changed");
+    // update the html
+    updated = $($.mustache( templates.note, note.flat(), templates));
+    newNote = $($.mustache( templates.note_new, {}, templates))
+    thing.parent().replaceWith(updated);
+    updated.after(newNote);
+    newNote.children('input').focus();
+    splitStyles();
+}
+
+function noteUpdateCallback(data){
+    // this receives data back from the server
+    var uuid = data['uuid'];
+    var note = models.tables.note.getBy('uuid', uuid);
+    // update the uuid of the note object
+}
+
+//
+//
+//
+// DOCUMENT READY FUNCTION
+//
+//
+//
+$(document).ready(function(){
+
+models.ajaxQueue.stateChangeCallback = ajaxStateManager;
+
+// check if we are on detail page or not
+if (!states.detail_open){
+    $('.interview.text').hide();
+    $('#map').css('width', '100%');
+} else {
+    $('#map').css('width', '50%');
+}
+
+$('#contents').on('keyup','.interview-description-input', function(e){
+    // did they press 'return'?
+    if (e.keyCode == 13){
+        var uuid = $('interview.text').attr('uuid');
+        var value = $(this).val();
+        console.log("here's the value:", value);
+        var interview = models.tables.interview.getBy('uuid', uuid);
+        interview.description = value;
+        console.log("grabbed interview", interview);
+        models.tables.interview.addOrEdit(interview);
+        console.log("description changed");
     }
 });
 
+
+// for adding points
+$('.user_controls').on('click', '.addpoint', {}, function(e){
+    var control = $('.addpoint');
+    var svg = $('.add_marker').clone();
+    control.removeClass('addpoint');
+    control.addClass('addingpoint');
+    states.adding_point = true;
+    var contents = control.html();
+    control.html('Select the location for the interview');
+    svg.insertAfter($('#map'));
+    svg.attr('class', 'new_marker');
+    svg.attr('width', $('#map').innerWidth());
+    // I don't know why I need to subtract 11 pixels here, but I 
+    // couldn't find the cause
+    svg.attr('height', $('#map').innerHeight() - 11);
+    svg.css('position', 'relative');
+    // attach svg to mouse
+    var g = svg.find('g');
+    // as the mouse moves follow it with the svg marker
+    $('body').on('mousemove', '#contents', {'g':g}, markerMouse);
+    $('body').on('click', '#contents', {
+                        'g':g,
+                        'control':control,
+                        'contents':contents,
+                    }, addInterviewAndMarker);
+});
+
+// for the photo thing, get make a new photo
+$('#contents').on('click', '.addphoto', function(e){
+    console.log('.addphoto clicked');
+    var thisNode = $(this);
+    thisNode.removeClass('addphoto');
+    thisNode.addClass('addingphoto');
+    // save things
+    var contents = thisNode.html();
+    var h = thisNode.height();
+    var w = thisNode.width(); 
+    // set it to blank
+    thisNode.html('');
+    // append a snapshot button
+    var button = $('<div class="camera button">Take Photo</div>');
+    var videoBit = $('<video id="video" width="'+w+'" height="'+h+'" autoplay="" ></video>');
+    // replace everything with a canvas
+    var canvasBit = $('<canvas id="canvas" width="'+w+'" height="'+h+'"></canvas>');
+    thisNode.append(videoBit);
+    thisNode.append(canvasBit);
+    thisNode.append(button);
+    console.log('canvas appended');
+
+    var userMediaCaller = (function () {
+        if (navigator.getUserMedia){
+            return navigator.getUserMedia;
+        }
+        if (navigator.webkitGetUserMedia){
+            return navigator.webkitGetUserMedia;
+        }
+        console.log('no get user media');
+    }());
+    // alternative on iOS 6: 
+    // <input type="file" accept="image/*" capture="camera">
+    // <!-- Accept Multiple Images -->
+    // <input type="file" accept="image/*" multiple>
+    // this may need to chance for different browsers
+    navigator.webkitGetUserMedia({'video':true}, function (stream) {
+        console.log("getting user media");
+        console.log(navigator.webkitGetUserMedia);
+        console.log(stream);
+        var objectURL = window.webkitURL.createObjectURL(stream);
+        console.log("made a URL:");
+        console.log(objectURL);
+        video.src = objectURL;
+        video.play();
+        console.log("Told the video to play");
+        console.log(video);
+    }, function (error) {
+        thisNode.html(contents);
+    });
+});
+
+// set up photo snapshot listener
+$('#contents').on('click', '.camera.button', function(e){
+    console.log("handling camera button click");
+    var video = $('video');
+    var canvas = $('canvas');
+    var width = canvas.width();
+    var height = canvas.height();
+    var context = canvas[0].getContext('2d');
+    context.drawImage(video[0], 0, 0);
+    var imgUrl = canvas[0].toDataURL('image/jpg');
+    // get the corresponding interview
+    var uuid = $('.interview.text').attr('uuid');
+    // create base for photo object
+    var obj = {
+        interview: uuid,
+        url: imgUrl,
+    };
+    // save photo object to client data
+    var photo = models.tables.photo.addOrEdit(obj);
+    console.log("added photo locally");
+    console.log(photo);
+});
+
+$('#contents').on('keyup keydown','input.answer-note-input', function(e){
+    //console.log(e);
+    if ($(this).val() !== ""){ // do nothing if empty
+        if (e.keyCode == 13 && e.type == "keyup"){
+            console.log("someone pressed return");
+            dealWithQuote($(this));
+        } else if (e.keyCode == 9 && e.type == "keydown") {
+            // make sure it's not empty
+                console.log("someone pressed tab down");
+                dealWithQuote($(this));
+        }
+    }
+})
+  
+//.on('blur', 'input.answer-quote-input', function(e){
+    //// if it's not empty
+    //var value = $(this).val();
+    //if (value !== "") {
+        //// if we lose focus, make it not a input
+        //// do the same as the return key
+        //closeQuoteInput( $(this));
+    //}
+//});
+
 // the quote editing listener
-$('.interview-column').on('click','.quote-text', function(e){
+$('#contents').on('click','.quote-text', function(e){
     // turn it into an input
     var value = $(this).html();
     var input = $('input.answer-quote-input').first().clone();
@@ -364,7 +415,4 @@ $('.interview-column').on('click','.quote-text', function(e){
     console.log('clicked on an existing quote');
 });
 
-var context = interviewContext("08481ad4-5686-4b29-bc5d-69e8747f4cd5");
-var textRender = $.mustache(templates.interview, context, templates);
-console.log(textRender);
 }); // end of document ready

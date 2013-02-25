@@ -5,6 +5,7 @@
   {% if interviews %}
   <ul class="photogrid">
     {% for interview in interviews %}
+    {% if interview.photo_set.all %}
     <a class="photogrid-link" href="/lottery/map-split/{{interview.id}}/">
       <li class="photogrid-item">
       <div class="interview-overlay" style="display: none;">
@@ -12,6 +13,7 @@
       </div>
       <img class="gridphoto" src="{% get_media_prefix %}{{interview.photo_set.all.0.image}}" /> </li>
     </a>
+    {% endif %}
     {% endfor %}
   </ul>
   {% endif %}

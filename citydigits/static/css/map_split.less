@@ -92,6 +92,27 @@
         }
       }
 
+      .note {
+          padding-left: @vu + @pad;
+          position: relative;
+          svg.x {
+            position: absolute;
+            right: @gut;
+            height: @vu;
+            width: @vu;
+          }
+          input {
+            .clear();
+            font-family: @sans;
+            border: 0;
+            border: 1px solid @text;
+            font-size: @char;
+            font-style: italic;
+            width: @col * 3 - @gut * 5;
+            font-weight: 200;
+          }
+      }
+
       .question-text {
         margin-top: @vu/4;
         .xpad();

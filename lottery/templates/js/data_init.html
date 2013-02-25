@@ -42,6 +42,11 @@ states.selected_interview = null;
 {% endif %}
 
 var templates = {{templatesJson}};
+var mustache_context = {
+    "edit_mode":true,
+    "static_root":"{% get_static_prefix %}",
+    "media_root":"{% get_media_prefix %}",
+}
 </script>
 <script type="text/javascript" src="{% get_static_prefix %}lottery/js/init_data.js"></script>
 {% endautoescape %}

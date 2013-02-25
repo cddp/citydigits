@@ -91,7 +91,7 @@ def map_overlays():
 def mustache_templates():
     # just read the files
     template_dir = os.path.join(TEMPLATE_DIRS[0], "lottery", "mustache")
-    files = [f for f in os.listdir(template_dir) if f[-5:] == ".html"]
+    files = [f for f in os.listdir(template_dir) if f[-5:] == ".html" or ".svg" in f]
     strings = {}
     # get all the strings
     for filename in files:
@@ -259,6 +259,7 @@ def user_tutorial(request):
 def makePhoto(data):
     dataUrlPattern = re.compile('data:image/(png|jpeg);base64,(.*)$')
     imgb64 = dataUrlPattern.match(data.pop('url')).group(2)
+    print data
     img_name = data['interview'] + '.jpg'
     img_file = ContentFile(imgb64.decode('base64'), name=img_name)
     image = Image.open(img_file)
@@ -269,14 +270,14 @@ def makePhoto(data):
     photo.save()
     img_path = os.path.join(MEDIA_ROOT, photo.get_upload_path(img_name))
     image.save(img_path, format='JPEG')
-    return {
-            'remote_id':photo.id,
-            'url':photo.image.url,
-            }
+    return json.dumps(photo.to_json_format(True))
 
 def makeInterview(data):
     p = data['point']
-    point = Point( p['lng'], p['lat'] )
+    if 'lat' in p:
+        point = Point(p['lng'], p['lat'])
+    else:
+        point = Point(*p)
     if 'remote_id' in data:
         interview = Interview.objects.get(id=data['remote_id'])
     else:
@@ -286,19 +287,46 @@ def makeInterview(data):
     if 'description' in data:
         interview.description = data['description']
     interview.save()
-    return { 'remote_id':interview.id }
+    return json.dumps(interview.to_json_format(True))
 
 def makeAudio(data):
     pass
 
 def makeQuote(data):
-    pass
+    if 'remote_id' in data:
+        quote = Quote.objects.get(id=data['remote_id'])
+    else:
+        quote = Quote()
+        quote.uuid = data['uuid']
+    interview = Interview.objects.get(uuid=data['interview'])
+    audio = Audio.objects.get(uuid=data['audio'])
+    quote.interview = interview
+    quote.audio = audio
+    quote.text = data['text']
+    quote.save()
+    return json.dumps(quote.to_json_format(True))
+
+def makeNote(data):
+    if 'remote_id' in data:
+        note = Note.objects.get(id=data['remote_id'])
+    else:
+        note = Note()
+        note.uuid = data['uuid']
+    interview = Interview.objects.get(uuid=data['interview'])
+    question = Question.objects.filter(uuid=data['question'])
+    note.interview = interview
+    note.question = question[0]
+    note.text = data['text']
+    note.save()
+    return json.dumps(note.to_json_format(True))
+
 
 apiMakers = {
         'photo':makePhoto,
         'interview':makeInterview,
         'audio':makeAudio,
         'quote':makeQuote,
+        'note':makeNote,
         }
 
 def api(request, modeltype):
