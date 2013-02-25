@@ -1,19 +1,19 @@
         <div class="question" uuid="{{uuid}}">
             {{^edit_mode}}
-                {{#question.main_audio}}
+                {{#main_audio}}
                     <div class="audio-play">
-                        {% include "lottery/svg/speaker.svg" %}
+                        <embed src="/static/lottery/svg/speaker.svg" type="image/svg+xml" />
                     </div>
-                {{/question.main_audio}}
+                {{/main_audio}}
             {{/edit_mode}}
             <div class="question-text">
-                {{question.text_en}}
+                {{text_en}}
             </div>
 
             {{#edit_mode}}
-            {{#question.audios}}
+            {{#audios}}
                {{>audio}}
-            {{#question.audios}}
+            {{/audios}}
             {{/edit_mode}}
         </div>
         <!--end of question block-->

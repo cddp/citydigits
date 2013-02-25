@@ -32,41 +32,6 @@ function flatten (items) {
     return items;
 }
 
-function interviewContext (uuid) {
-    // get the correct interview
-    var interview = models.table.interview.getBy("uuid", uuid).flat();
-    console.log("got an interview object");
-    console.log(interview);
-    // get all its photos
-    interview.photos = flatten(interview.getChildren("photo"));
-    // get all the questions
-    var questions = models.table.question.items;
-    // for each question:
-    for (var i=0; i<questions.length; i++){
-        var question = questions[i];
-        // get the notes and
-        // find the ones for this interview
-        var notes = interview.getChildrenFromList(question.getRelated("note"));
-        question.notes = flatten(notes);
-        // get the audios
-        // find the ones for this interview
-        var audios = interview.getChildrenFromList(question.getRelated("audio"));
-        // for each audio
-        for (var j=0; j<audios.length; j++){
-            // get the quotes
-            audios[j].quotes = flatten(audios[j].getChildren("quote"));
-        }
-        question.audios = flatten(audios);
-    }
-    return {
-        "interview": interview,
-        "questions":flatten(questions),
-    };
-}
-
-
-
-
 
 
 

@@ -1,5 +1,6 @@
 import random # for random choice between splash pages
 import os
+import codecs
 import json
 import re
 import base64
@@ -16,9 +17,10 @@ from django.core.files.base import ContentFile
 
 from django.contrib.gis.geos import *
 
-from citydigits.settings import MEDIA_ROOT
+from citydigits.settings import MEDIA_ROOT, TEMPLATE_DIRS
 from lottery.models import (
         Interview, Question, Location, Photo, Quote, Audio,
+        Note,
         )
 
 from django.forms.models import model_to_dict
@@ -86,6 +88,22 @@ def map_overlays():
         'geojson_layers':json.dumps(geojson_layers),
         }
 
+def mustache_templates():
+    # just read the files
+    template_dir = os.path.join(TEMPLATE_DIRS[0], "lottery", "mustache")
+    files = [f for f in os.listdir(template_dir) if f[-5:] == ".html"]
+    strings = {}
+    # get all the strings
+    for filename in files:
+        path = os.path.join(template_dir, filename)
+        key = os.path.splitext(filename)[0]
+        string = codecs.open(path, 'r', "utf-8").read()
+        # put them in a dictionary
+        strings[key] = string
+    # return it and then json.dumps it
+    return strings
+
+
 def data_setup(c, highlight_id=None, choose_random=False ):
     """Adds all the data to a context dictionary
         Checks input context for auth
@@ -141,6 +159,7 @@ def data_setup(c, highlight_id=None, choose_random=False ):
     c['photoJsons'] = json.dumps([n.to_json_format(True) for n in photos])
     c['interviewJsons'] = json.dumps([n.to_json_format(True) for n in interviews])
     c['interviewGeoJsons'] = json.dumps(interviewGeoJsons)
+    c['templatesJson'] = json.dumps(mustache_templates())
 
     return c
 

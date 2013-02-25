@@ -77,7 +77,7 @@ ModelInstance.prototype = {
         // We can assume this is okay here, because locally we won't do any
         // complicated lookups or joins. All lookups should be simple and
         // relation lookups are explicitly called by this method.
-        var table = this.owner.tables[modelName];
+        var table = this.table.owner.tables[modelName];
         if (table) {
             // gets the UUID stored under the modelname
             var otherUUID = this.data[modelName];
@@ -88,7 +88,7 @@ ModelInstance.prototype = {
 
     getChildren: function (modelName) {
         // this allows reverse foreign key lookups
-        var table = this.owner.tables[modelName];
+        var table = this.table.owner.tables[modelName];
         if (table) {
             // find all the objects in modelname table
             // that have an attribute of this thing's table 
@@ -101,11 +101,14 @@ ModelInstance.prototype = {
 
     getChildrenFromList: function (list) {
         var results = [];
-        for (var i=0; i<list.length; i++){
-            var item = list[i];
-            if (item[this.table.name] == this.uuid) {
-                results.push( item );
+        if (list !== null) {
+            for (var i=0; i<list.length; i++){
+                var item = list[i];
+                if (item[this.table.name] == this.uuid) {
+                    results.push( item );
+                }
             }
+        }
         return results
     },
 
@@ -113,7 +116,7 @@ ModelInstance.prototype = {
         // takes the data attribute and makes it top-level
         // creates a copy
         return $.extend({}, this, this.data);
-    };
+    },
 
     // generate an ajax request for this object.
     // This should maybe be called upon object creation.

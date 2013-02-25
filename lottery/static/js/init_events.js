@@ -280,6 +280,49 @@ function closeQuoteInput (inputItem, uuid) {
     inputItem.remove();
 }
 
+function interviewContext (uuid) {
+    // get the correct interview
+    var interview = models.tables.interview.getBy("uuid", uuid);
+    // get all its photos
+    interview.photos = flatten(interview.getChildren("photo"));
+    if (interview.photos.length > 0) {
+        interview.main_photo = interview.photos[0];
+    } else {
+        interview.main_photo = false;
+    }
+    // get all the questions
+    var questions = models.tables.question.items;
+    // for each question:
+    for (var i=0; i<questions.length; i++){
+        var question = questions[i];
+        // get the notes and
+        // find the ones for this interview
+        var notes = interview.getChildrenFromList(question.getRelated("note"));
+        question.notes = flatten(notes);
+        // get the audios
+        // find the ones for this interview
+        var audios = interview.getChildrenFromList(question.getRelated("audio"));
+        // for each audio
+        for (var j=0; j<audios.length; j++){
+            // get the quotes
+            audios[j].quotes = flatten(audios[j].getChildren("quote"));
+        }
+        question.audios = flatten(audios);
+        if (question.audios.length > 0) {
+            question.main_audio = question.audios[0];
+        } else {
+            question.main_audio = false;
+        }
+    }
+    var context = {
+        "interview": interview.flat(),
+        "questions":flatten(questions),
+        "edit_mode":true,
+    };
+    return context;
+}
+
+
 $('.interview-column').on('keyup','input.answer-quote-input', function(e){
     // is this an existing quote?
     // either way save it
@@ -321,5 +364,7 @@ $('.interview-column').on('click','.quote-text', function(e){
     console.log('clicked on an existing quote');
 });
 
-console.log($.mustache);
+var context = interviewContext("08481ad4-5686-4b29-bc5d-69e8747f4cd5");
+var textRender = $.mustache(templates.interview, context, templates);
+console.log(textRender);
 }); // end of document ready
