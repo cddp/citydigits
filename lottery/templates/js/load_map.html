@@ -42,11 +42,7 @@ function interviewMarkerData(g, collection){
         .append("g")
         .attr('class', 'location');
 
-    newfeatures.append("a")
-		.attr("xlink:href", function(d){
-			// add links for now, this will change later
-            return "/lottery/map-split/"+d.id+"/";
-          }).append("g")
+    newfeatures.append("g")
     .attr("class","marker-links")
         .append("polygon")
 		.attr("class", "interview-marker")
@@ -67,23 +63,18 @@ function interviewMarkerData(g, collection){
                 var y = -(mh+sh);
             }
         return "translate("+x+","+y+")";
-        })
-    .append("image").attr("xlink:href", function(d){
-        if (d.id == selectedInterviewId){
-          return d.properties.photo;
-        } else {
-          return "";
-        }}).attr('width', function(d){
-          if (d.id == selectedInterviewId){
-            return bmw - 12;
-          } else {
-            return 0;
-        }}).attr('height', function(d){
-          if (d.id == selectedInterviewId){
-            return bmh - 12;
-          } else {
-            return 0;
-        }});
+        }).on("click", mapMarkerClickHandler);
+    //.append("image").attr('width', function(d){
+    //      if (d.id == selectedInterviewId){
+    //        return bmw - 12;
+    //      } else {
+    //        return 0;
+    //    }}).attr('height', function(d){
+    //      if (d.id == selectedInterviewId){
+    //        return bmh - 12;
+    //      } else {
+    //        return 0;
+    //    }});
 
 
     if (isEdit){
@@ -228,10 +219,6 @@ $(window).ready(function(){
         }
       }
     }); 
-
-    {% include "lottery/js/interview_listeners.js" %}
-    {% include "lottery/js/map_listeners.js" %}
-
 
 }); // end window ready function
     

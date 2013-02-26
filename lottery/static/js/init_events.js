@@ -85,7 +85,7 @@ function pullOutDetail(newcenter){
                     var dimensions = new MM.Point(width, height);
                     map.setSize(dimensions);
 
-                    if (newcenter !== null) {
+                    if (newcenter) {
                         // adjust the map center
                         var percent = Math.abs(now - fx.start)/Math.abs(fx.end - fx.start);
                         var dLat = (center.lat - newcenter.lat) * percent;
@@ -158,8 +158,10 @@ function closeQuoteInput (inputItem, uuid) {
 }
 
 function interviewContext (uuid) {
+    console.log("uuid:", uuid);
     // get the correct interview
     var interview = models.tables.interview.getBy("uuid", uuid);
+    console.log("interview:", interview);
     // get all its photos
     interview.photos = flatten(interview.getChildren("photo"));
     if (interview.photos.length > 0) {
@@ -174,7 +176,10 @@ function interviewContext (uuid) {
         var question = questions[i];
         // get the notes and
         // find the ones for this interview
-        var notes = interview.getChildrenFromList(question.getRelated("note"));
+        var qnotes = question.getChildren("note");
+        console.log('qnotes:',qnotes);
+        var notes = interview.getChildrenFromList(qnotes);
+        console.log('notes:',notes);
         question.notes = flatten(notes);
         // get the audios
         // find the ones for this interview
@@ -201,7 +206,7 @@ function interviewContext (uuid) {
 
 
 
-function dealWithQuote(thing) {
+function dealWithNote(thing) {
     var isNew = thing.parent().attr('class').indexOf('new') !== -1;
     var interview = $('.interview.text').attr('uuid');
     var question = thing.parents('.question').attr('uuid');
@@ -243,6 +248,14 @@ function noteUpdateCallback(data){
     // update the uuid of the note object
 }
 
+function mapMarkerClickHandler (e) {
+    console.log("clicked on a marker");
+    var data = $(this).parent().parent()[0].__data__;
+    var uuid = data.properties.uuid;
+    renderDetail( uuid );
+    pullOutDetail();
+}
+
 //
 //
 //
@@ -265,11 +278,12 @@ if (!states.detail_open){
 $('#contents').on('keyup','.interview-description-input', function(e){
     // did they press 'return'?
     if (e.keyCode == 13){
-        var uuid = $('interview.text').attr('uuid');
+        var uuid = $('.interview.text').attr('uuid');
+        console.log("here's the uuid:", uuid);
         var value = $(this).val();
         console.log("here's the value:", value);
         var interview = models.tables.interview.getBy('uuid', uuid);
-        interview.description = value;
+        interview.data.description = value;
         console.log("grabbed interview", interview);
         models.tables.interview.addOrEdit(interview);
         console.log("description changed");
@@ -384,24 +398,13 @@ $('#contents').on('keyup keydown','input.answer-note-input', function(e){
     if ($(this).val() !== ""){ // do nothing if empty
         if (e.keyCode == 13 && e.type == "keyup"){
             console.log("someone pressed return");
-            dealWithQuote($(this));
+            dealWithNote($(this));
         } else if (e.keyCode == 9 && e.type == "keydown") {
-            // make sure it's not empty
-                console.log("someone pressed tab down");
-                dealWithQuote($(this));
+            console.log("someone pressed tab down");
+            dealWithNote($(this));
         }
     }
 })
-  
-//.on('blur', 'input.answer-quote-input', function(e){
-    //// if it's not empty
-    //var value = $(this).val();
-    //if (value !== "") {
-        //// if we lose focus, make it not a input
-        //// do the same as the return key
-        //closeQuoteInput( $(this));
-    //}
-//});
 
 // the quote editing listener
 $('#contents').on('click','.quote-text', function(e){

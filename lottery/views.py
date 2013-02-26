@@ -286,6 +286,9 @@ def makeInterview(data):
     interview.point = point
     if 'description' in data:
         interview.description = data['description']
+        print 'recorded description'
+    else:
+        print 'no description'
     interview.save()
     return json.dumps(interview.to_json_format(True))
 

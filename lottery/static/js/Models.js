@@ -89,11 +89,12 @@ ModelInstance.prototype = {
     getChildren: function (modelName) {
         // this allows reverse foreign key lookups
         var table = this.table.owner.tables[modelName];
+        console.log("in getchildren at", table);
         if (table) {
             // find all the objects in modelname table
             // that have an attribute of this thing's table 
             // with a value of this thing's uuid
-            return table.findMatching(this.table.name, this.uuid);
+            return table.findMatching(this.table.name, this.data.uuid);
         }
         
         return [];
@@ -159,7 +160,7 @@ ModelInstance.prototype = {
             console.log(data);
             me.remote_id = data.id;
             me.is_dirty = false;
-            if (callback !== null) {
+            if (callback) {
                 console.log('calling custom callback');
                 callback(data);
             }
@@ -246,10 +247,9 @@ ModelTable.prototype = {
                     if (item[key] == value) {
                         return item;
                     }
-                } else {
-                    if (item.data[key] == value) {
-                        return item;
-                    }
+                }
+                if (item.data[key] == value) {
+                    return item;
                 }
             }
         }
@@ -262,6 +262,11 @@ ModelTable.prototype = {
         for (var i = 0; i < this.items.length; i++) {
             var item = this.items[i];
             if (!item.is_deleted) { // make sure it hasn't been deleted
+                if (key == "uuid") {
+                    if (item[key] == value) {
+                        matches.push(item);
+                    }
+                }
                 if (item.data[key] == value) {
                     matches.push(item);
                 }
