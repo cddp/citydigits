@@ -39,11 +39,14 @@ function addInterviewAndMarker(e) {
                 'lng':geopoint['lon'],
                 'lat':geopoint['lat'],
             };
+            console.log("object:", obj.point);
             // adding the object!
             var interview = Interview(models.tables.interview.addOrEdit(obj));
 
             // adjust the states
-            states.selected_interview = interview.uuid;
+            states.selected_interview = interview.data.uuid;
+            console.log("interview:", interview);
+            console.log("uuid:", interview.data.uuid);
 
             // updating the layer
             geoJson = interview.toGeoJson();
@@ -61,7 +64,7 @@ function addInterviewAndMarker(e) {
             e.data.control.addClass('addpoint');
             e.data.control.html(e.data.contents);
 
-            renderDetail(interview.uuid);
+            renderDetail(interview.data.uuid);
               
             // slide out the side panel
             pullOutDetail(geopoint);
@@ -158,14 +161,20 @@ function closeQuoteInput (inputItem, uuid) {
 }
 
 function interviewContext (uuid) {
+    console.log("getting the interview context");
     console.log("uuid:", uuid);
     // get the correct interview
     var interview = models.tables.interview.getBy("uuid", uuid);
     console.log("interview:", interview);
     // get all its photos
-    interview.photos = flatten(interview.getChildren("photo"));
+    console.log("getting photos");
+    var relPhotos = interview.getChildren("photo");
+    console.log("uuid:", uuid);
+    console.log("photos:",relPhotos);
+    interview.photos = flatten(relPhotos);
     if (interview.photos.length > 0) {
-        interview.main_photo = interview.photos[0];
+        // snap off the first item
+        interview.main_photo = interview.photos.shift();
     } else {
         interview.main_photo = false;
     }
@@ -293,6 +302,15 @@ $('#contents').on('keyup','.interview-description-input', function(e){
 
 // for adding points
 $('.user_controls').on('click', '.addpoint', {}, function(e){
+    // clear the interview text thing if it's open
+    // and reset the map dimensions
+    $('#map').css("width", "100%");
+    $('.interview.text').css("margin-left", "0").hide();
+    var height = $(map.parent).height();
+    var width = $(map.parent).width();
+    var dimensions = new MM.Point(width, height);
+    map.setSize(dimensions);
+
     var control = $('.addpoint');
     var svg = $('.add_marker').clone();
     control.removeClass('addpoint');
